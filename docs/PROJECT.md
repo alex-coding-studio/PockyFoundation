@@ -58,8 +58,8 @@ squash-merges the approved current head only after CI succeeds and needs-accepta
 Only reviewers with write, maintain, or admin permission count; stale approvals and current
 change requests prevent merging. CI completion and removing needs-acceptance retry the merge.
 After a workflow merge, CI is dispatched on main because the workflow token does not trigger
-push workflows. PR and approval requirements, required CI and conversation resolution are
-enabled on main. Administrators may bypass them, so the owner can merge an approved PR whose
+push workflows. PR and approval requirements and required CI are enabled on main; resolving
+review conversations is not required. Administrators may bypass them, so the owner can merge an approved PR whose
 CI is queued after its gates pass locally. No tags or releases are produced implicitly.
 
 External issues and pull requests are not accepted; forks remain welcome under MIT. GitHub
