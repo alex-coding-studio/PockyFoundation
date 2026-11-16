@@ -182,5 +182,31 @@
             #expect(custom.pointSize == system.pointSize)
             #expect(custom.fontDescriptor.symbolicTraits == system.fontDescriptor.symbolicTraits)
         }
+
+        @Test(
+            "S2-03/T07 Monospaced role resolves a fixed-pitch font, keeps role size, and overrides rounded"
+        )
+        func monospacedRolePreservesSizeAndOverridesRounded() {
+            let theme = PKYThemeFallback.system
+            let plain = PKYTypographyRole.body.nsFont(in: theme)
+            let monospaced = PKYTypographyRole.body.monospaced.nsFont(in: theme)
+            #expect(monospaced.isFixedPitch)
+            #expect(monospaced.fontDescriptor.symbolicTraits.contains(.monoSpace))
+            #expect(monospaced.pointSize == plain.pointSize)
+            #expect(monospaced.fontName != plain.fontName)
+            #expect(
+                PKYTypographyRole.body.rounded.monospaced.nsFont(in: theme).fontName
+                    == monospaced.fontName
+            )
+            #expect(
+                PKYTypographyRole.body.monospaced.rounded.nsFont(in: theme).fontName
+                    == monospaced.fontName
+            )
+            let custom = PKYTypographyTheme(
+                family: .custom(regular: "HelveticaNeue"),
+                scaling: .fixed
+            )
+            #expect(custom.body.monospaced.nsFont.fontName == custom.body.nsFont.fontName)
+        }
     }
 #endif

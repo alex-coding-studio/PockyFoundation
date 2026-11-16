@@ -29,6 +29,7 @@ public struct PKYTypographyRole: Hashable, Sendable {
     private var weight: PKYFontWeight?
     private var isItalic = false
     private var isRounded = false
+    private var isMonospaced = false
     private var usesMonospacedDigits = false
     private var referenceSize: CGFloat?
 
@@ -63,6 +64,13 @@ public struct PKYTypographyRole: Hashable, Sendable {
     public var rounded: Self {
         var copy = self
         copy.isRounded = true
+        return copy
+    }
+
+    /// Uses the monospaced design while preserving the semantic size; overrides rounded if both are set.
+    public var monospaced: Self {
+        var copy = self
+        copy.isMonospaced = true
         return copy
     }
 
@@ -107,6 +115,9 @@ public struct PKYTypographyRole: Hashable, Sendable {
             if isRounded {
                 style = style.rounded
             }
+            if isMonospaced {
+                style = style.monospaced
+            }
             let font = (referenceSize ?? self.referenceSize).map {
                 style.uiFont(referenceSize: $0, compatibleWith: traits)
             }
@@ -134,6 +145,9 @@ public struct PKYTypographyRole: Hashable, Sendable {
             }
             if isRounded {
                 style = style.rounded
+            }
+            if isMonospaced {
+                style = style.monospaced
             }
             let font = (referenceSize ?? self.referenceSize).map {
                 style.nsFont(referenceSize: $0)

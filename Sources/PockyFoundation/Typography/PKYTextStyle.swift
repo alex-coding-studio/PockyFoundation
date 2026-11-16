@@ -6,7 +6,7 @@ import SwiftUI
     import AppKit
 #endif
 
-/// A semantic typography role with immutable weight, italic, and rounded-design modifiers.
+/// A semantic typography role with immutable weight, italic, rounded-design, and monospaced-design modifiers.
 ///
 /// Modifiers retain the role's size and scaling policy. SwiftUI uses ``font``, UIKit uses `uiFont`,
 /// and AppKit uses `nsFont`.
@@ -87,6 +87,7 @@ public struct PKYTextStyle: Sendable {
     var weight: PKYFontWeight
     var isItalic: Bool
     var isRounded: Bool
+    var isMonospaced: Bool
 
     /// A regular-weight variant preserving the current italic setting.
     public var regular: PKYTextStyle {
@@ -124,6 +125,13 @@ public struct PKYTextStyle: Sendable {
         return copy
     }
 
+    /// A system monospaced variant preserving size, scaling, weight, and italic; overrides rounded, keeping custom faces unchanged.
+    public var monospaced: PKYTextStyle {
+        var copy = self
+        copy.isMonospaced = true
+        return copy
+    }
+
     /// The SwiftUI font resolved for the current role and face.
     ///
     /// On iOS, use in a subtree injected with `pkyTheme(_:)` to follow fixed or capped scaling.
@@ -132,9 +140,10 @@ public struct PKYTextStyle: Sendable {
         #if os(iOS)
             switch family.resolvedFace(weight: weight, isItalic: isItalic, size: role.customSize) {
             case let .system(weight, isItalic):
+                let design: Font.Design? = isMonospaced ? .monospaced : (isRounded ? .rounded : nil)
                 var font = Font.system(
                     role.swiftUITextStyle,
-                    design: isRounded ? .rounded : nil,
+                    design: design,
                     weight: weight.swiftUIValue
                 )
                 if isItalic {
@@ -173,6 +182,7 @@ public struct PKYTextStyle: Sendable {
         weight = role.standardWeight
         isItalic = false
         isRounded = false
+        isMonospaced = false
     }
 
     #if os(iOS)
@@ -180,7 +190,8 @@ public struct PKYTextStyle: Sendable {
             size: CGFloat,
             weight: PKYFontWeight,
             isItalic: Bool,
-            isRounded: Bool
+            isRounded: Bool,
+            isMonospaced: Bool
         ) -> UIFont {
             var descriptor = UIFont.systemFont(
                 ofSize: size,
@@ -192,8 +203,11 @@ public struct PKYTextStyle: Sendable {
                ) {
                 descriptor = italic
             }
-            if isRounded, let rounded = descriptor.withDesign(.rounded) {
-                descriptor = rounded
+            let design: UIFontDescriptor.SystemDesign? = isMonospaced
+                ? .monospaced
+                : (isRounded ? .rounded : nil)
+            if let design, let designed = descriptor.withDesign(design) {
+                descriptor = designed
             }
             return UIFont(descriptor: descriptor, size: size)
         }
@@ -228,14 +242,16 @@ public struct PKYTextStyle: Sendable {
                     size: referenceSize,
                     weight: weight,
                     isItalic: isItalic,
-                    isRounded: isRounded
+                    isRounded: isRounded,
+                    isMonospaced: isMonospaced
                 )
             case let .custom(name):
                 UIFont(name: name, size: referenceSize) ?? Self.systemUIFont(
                     size: referenceSize,
                     weight: weight,
                     isItalic: isItalic,
-                    isRounded: isRounded
+                    isRounded: isRounded,
+                    isMonospaced: isMonospaced
                 )
             }
             switch scaling {
@@ -279,7 +295,8 @@ public struct PKYTextStyle: Sendable {
                     size: size,
                     weight: weight,
                     isItalic: isItalic,
-                    isRounded: isRounded
+                    isRounded: isRounded,
+                    isMonospaced: isMonospaced
                 )
             case let .custom(name):
                 guard let base = UIFont(name: name, size: role.customSize) else {
@@ -287,7 +304,8 @@ public struct PKYTextStyle: Sendable {
                         size: systemPointSize(compatibleWith: traits),
                         weight: weight,
                         isItalic: isItalic,
-                        isRounded: isRounded
+                        isRounded: isRounded,
+                        isMonospaced: isMonospaced
                     )
                 }
                 switch scaling {
@@ -394,7 +412,7 @@ enum PKYFontWeight: Int, Hashable, Sendable {
             ).pointSize)
         }
 
-        /// Resolves an explicit reference size, preserving face, weight, italic, and rounded design.
+        /// Resolves an explicit reference size, preserving face, weight, italic, and rounded or monospaced design.
         ///
         /// - Parameter referenceSize: The point size supplied by the caller; scaling is ignored.
         /// - Returns: A native font at the supplied reference size.
@@ -405,14 +423,16 @@ enum PKYFontWeight: Int, Hashable, Sendable {
                     size: referenceSize,
                     weight: weight,
                     isItalic: isItalic,
-                    isRounded: isRounded
+                    isRounded: isRounded,
+                    isMonospaced: isMonospaced
                 )
             case let .custom(name):
                 NSFont(name: name, size: referenceSize) ?? Self.systemNSFont(
                     size: referenceSize,
                     weight: weight,
                     isItalic: isItalic,
-                    isRounded: isRounded
+                    isRounded: isRounded,
+                    isMonospaced: isMonospaced
                 )
             }
         }
@@ -421,15 +441,19 @@ enum PKYFontWeight: Int, Hashable, Sendable {
             size: CGFloat,
             weight: PKYFontWeight,
             isItalic: Bool,
-            isRounded: Bool
+            isRounded: Bool,
+            isMonospaced: Bool
         ) -> NSFont {
             let base = NSFont.systemFont(ofSize: size, weight: weight.nsFontValue)
             var descriptor = base.fontDescriptor
             if isItalic {
                 descriptor = descriptor.withSymbolicTraits(descriptor.symbolicTraits.union(.italic))
             }
-            if isRounded, let rounded = descriptor.withDesign(.rounded) {
-                descriptor = rounded
+            let design: NSFontDescriptor.SystemDesign? = isMonospaced
+                ? .monospaced
+                : (isRounded ? .rounded : nil)
+            if let design, let designed = descriptor.withDesign(design) {
+                descriptor = designed
             }
             return NSFont(descriptor: descriptor, size: size) ?? base
         }
