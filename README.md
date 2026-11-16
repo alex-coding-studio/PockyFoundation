@@ -36,7 +36,7 @@ let placement = PKYMasonryPlacement.frames(
 | Motion | `PKYMotion.Duration`, `Spring` |
 | Opacity | `PKYOpacity.tint`, `dimmed`, `glassTint` |
 | Symbols | `PKYIcon.Size.pointSize`; iOS `symbolConfiguration`, `image`, and `font` adapters |
-| Geometry | `CGSize`, `CGPoint`, `CGRect`, `CGAffineTransform` arithmetic and `pky` helpers; iOS `UIEdgeInsets.pky` and `NSDirectionalEdgeInsets.pky` |
+| Geometry | `CGSize`, `CGPoint`, `CGRect`, `CGAffineTransform` arithmetic and `pky` helpers; `NSDirectionalEdgeInsets.pky` (iOS and macOS) and `UIEdgeInsets.pky` (iOS) |
 | Grid | `PKYGridPlacementInput`, `PKYGridPlacementOutput`, `PKYGridPlacementRole`, `PKYEdgeInsets` |
 | Masonry | `PKYMasonryPlacement.frames` and `.columns` |
 | Elevation | `PKYElevation.Style`, `.Appearance`, `.Recipe`, `CALayer.pkyApplyElevation`; iOS `UIView` and SwiftUI `View` elevation adapters |
