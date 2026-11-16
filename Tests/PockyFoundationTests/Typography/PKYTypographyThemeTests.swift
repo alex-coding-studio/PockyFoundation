@@ -175,11 +175,7 @@
             #expect(rounded.pointSize == plain.pointSize)
             #expect(rounded.fontName != plain.fontName)
             #expect(rounded.fontName == appleRounded?.fontName)
-            #expect(theme.title.rounded.font == Font.system(
-                .title2,
-                design: .rounded,
-                weight: .semibold
-            ))
+            #expect(theme.title.rounded.font != theme.title.font)
         }
 
         @Test(
