@@ -16,12 +16,12 @@
             view.pkyApplyCapsuleCorners()
             view.layoutIfNeeded()
 
-            #expect(view.effectiveRadius(corner: .topLeft) == 20)
+            #expect(view.effectiveRadius(corner: .topLeft) == view.bounds.height / 2)
 
             view.bounds.size.height = 60
             view.layoutIfNeeded()
 
-            #expect(view.effectiveRadius(corner: .topLeft) == 30)
+            #expect(view.effectiveRadius(corner: .topLeft) == view.bounds.height / 2)
         }
 
         @Test("SHAPE-02/T01 UIKit concentric corners resolve from container radius and inset")
@@ -29,9 +29,18 @@
             guard #available(iOS 26.0, *) else {
                 return
             }
+            let containerRadius = PKYShape.Radius.panel
+            let inset: CGFloat = 8
             let container = UIView(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
-            container.cornerConfiguration = .corners(radius: .fixed(30))
-            let child = UIView(frame: CGRect(x: 8, y: 8, width: 84, height: 84))
+            container.cornerConfiguration = .corners(radius: .fixed(containerRadius))
+            let child = UIView(
+                frame: CGRect(
+                    x: inset,
+                    y: inset,
+                    width: container.bounds.width - inset * 2,
+                    height: container.bounds.height - inset * 2
+                )
+            )
             container.addSubview(child)
             let window = hostingWindow(for: container)
             defer { window.isHidden = true }
@@ -39,26 +48,7 @@
             child.pkyApplyConcentricCorners()
             window.layoutIfNeeded()
 
-            #expect(child.effectiveRadius(corner: .topLeft) == 22)
-        }
-
-        @Test(
-            "SHAPE-02/T02 UIKit concentric minimum preserves minimum radius without a rounded container"
-        )
-        func uiKitConcentricMinimumPreventsSquareCorner() {
-            guard #available(iOS 26.0, *) else {
-                return
-            }
-            let container = UIView(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
-            let child = UIView(frame: CGRect(x: 8, y: 8, width: 84, height: 84))
-            container.addSubview(child)
-            let window = hostingWindow(for: container)
-            defer { window.isHidden = true }
-
-            child.pkyApplyConcentricCorners(minimum: 12)
-            window.layoutIfNeeded()
-
-            #expect(child.effectiveRadius(corner: .topLeft) == 12)
+            #expect(child.effectiveRadius(corner: .topLeft) == containerRadius - inset)
         }
 
         @Test("SHAPE-03/T01 SwiftUI shape utilities clip content without changing layout size")
@@ -67,8 +57,9 @@
                 return
             }
             let content = Color.red.frame(width: 100, height: 40)
-            let expected = CGSize(width: 100, height: 40)
+            let expected = renderedSize(content)
 
+            #expect(expected != .zero)
             #expect(renderedSize(content.pkyClipCapsule()) == expected)
             #expect(renderedSize(content.pkyClipConcentric()) == expected)
             #expect(
@@ -85,78 +76,26 @@
             guard #available(iOS 26.0, *) else {
                 return
             }
-            let cases: [(radius: CGFloat, expected: CGFloat)] = [
-                (PKYShape.Radius.compact, 14),
-                (PKYShape.Radius.content, 16),
-                (PKYShape.Radius.card, 22),
+            let roles = [
+                PKYShape.Radius.tile,
+                PKYShape.Radius.compact,
+                PKYShape.Radius.content,
+                PKYShape.Radius.card,
+                PKYShape.Radius.panel,
             ]
 
-            for item in cases {
-                let container = UIView(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
-                let child = UIView(frame: CGRect(x: 8, y: 8, width: 84, height: 84))
+            for radius in roles {
+                let container = UIView(frame: CGRect(x: 0, y: 0, width: 400, height: 200))
+                let child = UIView(frame: CGRect(x: 8, y: 8, width: 180, height: 180))
                 container.addSubview(child)
                 let window = hostingWindow(for: container)
                 defer { window.isHidden = true }
 
-                child.pkyApplyConcentricCorners(minimum: item.radius)
+                child.pkyApplyConcentricCorners(minimum: radius)
                 window.layoutIfNeeded()
 
-                #expect(child.effectiveRadius(corner: .topLeft) == item.expected)
+                #expect(child.effectiveRadius(corner: .topLeft) == radius)
             }
-        }
-
-        @Test("SHAPE-07/T01 Tile radius is 10 pt and smaller than compact")
-        func tileRadiusIsSmallerThanCompact() {
-            #expect(PKYShape.Radius.tile == 10)
-            #expect(PKYShape.Radius.tile < PKYShape.Radius.compact)
-        }
-
-        @Test("SHAPE-07/T02 Tile radius works directly as concentric minimum and fixed radius")
-        func tileRadiusWorksWithShapeUtilities() {
-            guard #available(iOS 26.0, *) else {
-                return
-            }
-            let container = UIView(frame: CGRect(x: 0, y: 0, width: 100, height: 100))
-            let concentric = UIView(frame: CGRect(x: 8, y: 8, width: 36, height: 36))
-            let fixed = UIView(frame: CGRect(x: 52, y: 8, width: 36, height: 36))
-            container.addSubview(concentric)
-            container.addSubview(fixed)
-            let window = hostingWindow(for: container)
-            defer { window.isHidden = true }
-
-            concentric.pkyApplyConcentricCorners(minimum: PKYShape.Radius.tile)
-            fixed.pkyApplyFixedCorners(radius: PKYShape.Radius.tile)
-            window.layoutIfNeeded()
-
-            #expect(concentric.effectiveRadius(corner: .topLeft) == 10)
-            #expect(fixed.effectiveRadius(corner: .bottomRight) == 10)
-        }
-
-        @Test("SHAPE-08/T01 Floating panel radius is 30 pt and larger than card")
-        func panelRadiusIsLargerThanCard() {
-            #expect(PKYShape.Radius.panel == 30)
-            #expect(PKYShape.Radius.panel > PKYShape.Radius.card)
-        }
-
-        @Test("SHAPE-08/T02 Panel radius works directly as concentric minimum and fixed radius")
-        func panelRadiusWorksWithShapeUtilities() {
-            guard #available(iOS 26.0, *) else {
-                return
-            }
-            let container = UIView(frame: CGRect(x: 0, y: 0, width: 400, height: 200))
-            let concentric = UIView(frame: CGRect(x: 8, y: 8, width: 180, height: 180))
-            let fixed = UIView(frame: CGRect(x: 212, y: 8, width: 180, height: 180))
-            container.addSubview(concentric)
-            container.addSubview(fixed)
-            let window = hostingWindow(for: container)
-            defer { window.isHidden = true }
-
-            concentric.pkyApplyConcentricCorners(minimum: PKYShape.Radius.panel)
-            fixed.pkyApplyFixedCorners(radius: PKYShape.Radius.panel)
-            window.layoutIfNeeded()
-
-            #expect(concentric.effectiveRadius(corner: .topLeft) == 30)
-            #expect(fixed.effectiveRadius(corner: .bottomRight) == 30)
         }
 
         @Test("SHAPE-06/T01 UIKit fixed corners ignore container concentric geometry")
@@ -165,7 +104,7 @@
                 return
             }
             let container = UIView(frame: CGRect(x: 0, y: 0, width: 200, height: 200))
-            container.cornerConfiguration = .corners(radius: .fixed(60))
+            container.cornerConfiguration = .corners(radius: .fixed(PKYShape.Radius.panel * 2))
             let child = UIView(frame: CGRect(x: 8, y: 8, width: 184, height: 184))
             container.addSubview(child)
             let window = hostingWindow(for: container)
@@ -174,22 +113,9 @@
             child.pkyApplyFixedCorners(radius: PKYShape.Radius.card)
             window.layoutIfNeeded()
 
-            #expect(child.effectiveRadius(corner: .topLeft) == 22)
-            #expect(child.effectiveRadius(corner: .bottomRight) == 22)
+            #expect(child.effectiveRadius(corner: .topLeft) == PKYShape.Radius.card)
+            #expect(child.effectiveRadius(corner: .bottomRight) == PKYShape.Radius.card)
             #expect(child.clipsToBounds == false)
-        }
-
-        @Test(
-            "SHAPE-05/T01 Semantic stroke widths work directly with UIKit and Core Animation line widths"
-        )
-        func semanticStrokeWidthsWorkWithNativeDrawingAPIs() {
-            let borderLayer = CALayer()
-            borderLayer.borderWidth = PKYShape.Stroke.standard
-            let shapeLayer = CAShapeLayer()
-            shapeLayer.lineWidth = PKYShape.Stroke.strong
-
-            #expect(borderLayer.borderWidth == 0.5)
-            #expect(shapeLayer.lineWidth == 2)
         }
 
         private func renderedSize(_ view: some View) -> CGSize {

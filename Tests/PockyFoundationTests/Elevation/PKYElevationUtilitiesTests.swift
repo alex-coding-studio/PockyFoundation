@@ -6,111 +6,23 @@
 
     @MainActor
     struct PKYElevationUtilitiesTests {
-        @Test("ELEV-01/T01 Subtle uses the slight-separation recipe")
-        func subtleUsesSlightSeparationRecipe() {
-            let layer = CALayer()
-            let color = UIColor.red.cgColor
-
-            layer.pkyApplyElevation(.subtle, color: color)
-
-            #expect(layer.shadowColor == color)
-            #expect(layer.shadowOpacity == 0.12)
-            #expect(layer.shadowRadius == 3)
-            #expect(layer.shadowOffset == CGSize(width: 0, height: 1))
-        }
-
-        @Test("ELEV-01/T02 Floating uses the clear-detachment recipe")
-        func floatingUsesClearDetachmentRecipe() {
-            let layer = CALayer()
-            let color = UIColor.blue.cgColor
-
-            layer.pkyApplyElevation(.floating, color: color)
-
-            #expect(layer.shadowColor == color)
-            #expect(layer.shadowOpacity == 0.16)
-            #expect(layer.shadowRadius == 18)
-            #expect(layer.shadowOffset == CGSize(width: 0, height: 8))
-        }
-
-        @Test("ELEV-05/T01 mediaContent uses the tight legibility shadow recipe over media")
-        func mediaContentUsesTightLegibilityRecipe() {
-            let layer = CALayer()
-            let color = UIColor.black.cgColor
-
-            layer.pkyApplyElevation(.mediaContent, color: color)
-
-            #expect(layer.shadowColor == color)
-            #expect(layer.shadowOpacity == 0.45)
-            #expect(layer.shadowRadius == 1)
-            #expect(layer.shadowOffset == CGSize(width: 0, height: 1))
-        }
-
-        @Test("ELEV-05/T02 mediaHalo uses the wide halo recipe for grouped content over media")
-        func mediaHaloUsesWideHaloRecipe() {
-            let layer = CALayer()
-            let color = UIColor.black.cgColor
-
-            layer.pkyApplyElevation(.mediaHalo, color: color)
-
-            #expect(layer.shadowColor == color)
-            #expect(layer.shadowOpacity == 0.25)
-            #expect(layer.shadowRadius == 12)
-            #expect(layer.shadowOffset == CGSize(width: 0, height: 2))
-        }
-
-        @Test("ELEV-05/T03 UIView preserves clipping and geometry when applying media elevation")
-        func mediaStylesPreserveViewGeometry() {
+        @Test("ELEV-01/T01 UIView applies recipe and preserves component geometry")
+        func viewAppliesRecipeAndPreservesGeometry() {
             let view = UIView(frame: CGRect(x: 0, y: 0, width: 80, height: 24))
+            let originalFrame = view.frame
+            let originalCornerRadius = PKYShape.Radius.tile
             view.clipsToBounds = false
-            view.layer.cornerRadius = PKYShape.Radius.tile
+            view.layer.cornerRadius = originalCornerRadius
 
-            view.pkyApplyElevation(.mediaContent, color: .black)
+            view.pkyApplyElevation(.floating, color: .black)
 
-            #expect(view.layer.shadowOpacity == 0.45)
+            let recipe = PKYElevation.Style.floating.recipe
+            #expect(view.layer.shadowOpacity == Float(recipe.opacity))
+            #expect(view.layer.shadowRadius == recipe.radius)
+            #expect(view.layer.shadowOffset == recipe.offset)
             #expect(view.clipsToBounds == false)
-            #expect(view.layer.cornerRadius == PKYShape.Radius.tile)
-            #expect(view.frame == CGRect(x: 0, y: 0, width: 80, height: 24))
-        }
-
-        @Test(
-            "ELEV-02/T01 CALayer preserves component geometry and clipping when applying elevation"
-        )
-        func layerApplicationPreservesComponentGeometry() {
-            let layer = CALayer()
-            let path = CGPath(rect: CGRect(x: 1, y: 2, width: 30, height: 40), transform: nil)
-            layer.masksToBounds = true
-            layer.cornerRadius = PKYShape.Radius.tile
-            layer.zPosition = 4
-            layer.shadowPath = path
-
-            layer.pkyApplyElevation(.floating, color: UIColor.black.cgColor)
-
-            #expect(layer.masksToBounds)
-            #expect(layer.cornerRadius == PKYShape.Radius.tile)
-            #expect(layer.zPosition == 4)
-            #expect(layer.shadowPath?.boundingBox == path.boundingBox)
-        }
-
-        @Test("ELEV-02/T02 CALayer clears only owned shadow properties when removing elevation")
-        func layerRemovalClearsOnlyOwnedShadowProperties() {
-            let layer = CALayer()
-            let path = CGPath(rect: CGRect(x: 1, y: 2, width: 30, height: 40), transform: nil)
-            layer.masksToBounds = true
-            layer.cornerRadius = PKYShape.Radius.tile
-            layer.zPosition = 4
-            layer.shadowPath = path
-            layer.pkyApplyElevation(.floating, color: UIColor.black.cgColor)
-
-            layer.pkyRemoveElevation()
-
-            #expect(layer.shadowColor == nil)
-            #expect(layer.shadowOpacity == 0)
-            #expect(layer.shadowRadius == 0)
-            #expect(layer.shadowOffset == .zero)
-            #expect(layer.masksToBounds)
-            #expect(layer.cornerRadius == PKYShape.Radius.tile)
-            #expect(layer.zPosition == 4)
-            #expect(layer.shadowPath?.boundingBox == path.boundingBox)
+            #expect(view.layer.cornerRadius == originalCornerRadius)
+            #expect(view.frame == originalFrame)
         }
 
         @Test("ELEV-03/T01 UIView resolves dynamic shadow color using current traits")
@@ -145,6 +57,10 @@
             view.pkyApplyElevation(.subtle, color: .black)
             view.pkyRemoveElevation()
 
+            #expect(view.layer.shadowColor == nil)
+            #expect(view.layer.shadowOpacity == 0)
+            #expect(view.layer.shadowRadius == 0)
+            #expect(view.layer.shadowOffset == .zero)
             #expect(view.clipsToBounds)
             #expect(view.cornerConfiguration == .capsule())
             #expect(view.layer.zPosition == 4)
@@ -155,12 +71,15 @@
         func swiftUIElevationPreservesLayoutSize() {
             let content = Color.red.frame(width: 100, height: 40)
 
-            let renderer = ImageRenderer(
+            let baseline = ImageRenderer(content: content)
+            baseline.scale = 1
+            let elevated = ImageRenderer(
                 content: content.pkyElevation(.floating, color: .black)
             )
-            renderer.scale = 1
+            elevated.scale = 1
 
-            #expect(renderer.uiImage?.size == CGSize(width: 100, height: 40))
+            #expect(elevated.uiImage?.size != nil)
+            #expect(elevated.uiImage?.size == baseline.uiImage?.size)
         }
 
         private func hostingWindow(

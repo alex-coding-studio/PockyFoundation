@@ -8,36 +8,45 @@
             "Symmetric physical insets preserve horizontal/vertical axes and allow negative values"
         )
         func symmetricInsetsPreserveAxes() {
-            #expect(UIEdgeInsets.pky(horizontal: 7, vertical: -3) == UIEdgeInsets(
-                top: -3,
-                left: 7,
-                bottom: -3,
-                right: 7
-            ))
-            #expect(UIEdgeInsets.pky(horizontal: 7) == UIEdgeInsets(
-                top: 0,
-                left: 7,
-                bottom: 0,
-                right: 7
-            ))
-            #expect(UIEdgeInsets.pky(vertical: 3) == UIEdgeInsets(
-                top: 3,
-                left: 0,
-                bottom: 3,
-                right: 0
-            ))
+            let horizontal: CGFloat = 7
+            let vertical: CGFloat = -3
+            let insets = UIEdgeInsets.pky(horizontal: horizontal, vertical: vertical)
+            #expect(insets.left == horizontal)
+            #expect(insets.right == insets.left)
+            #expect(insets.top == vertical)
+            #expect(insets.bottom == insets.top)
+
+            let horizontalOnly = UIEdgeInsets.pky(horizontal: horizontal)
+            #expect(horizontalOnly.left == horizontal)
+            #expect(horizontalOnly.right == horizontal)
+            #expect(horizontalOnly.top == 0)
+            #expect(horizontalOnly.bottom == 0)
+
+            let verticalOnly = UIEdgeInsets.pky(vertical: vertical)
+            #expect(verticalOnly.top == vertical)
+            #expect(verticalOnly.bottom == vertical)
+            #expect(verticalOnly.left == 0)
+            #expect(verticalOnly.right == 0)
+
             #expect(UIEdgeInsets.pky() == .zero)
         }
 
-        @Test("Symmetric directional insets preserve leading/trailing and vertical axes")
+        @Test("Symmetric directional insets match PKYEdgeInsets and preserve axes")
         func symmetricDirectionalInsetsPreserveAxes() {
             let horizontal: CGFloat = 16
             let vertical: CGFloat = 8
             let insets = NSDirectionalEdgeInsets.pky(horizontal: horizontal, vertical: vertical)
-            #expect(insets.leading == horizontal)
-            #expect(insets.trailing == insets.leading)
-            #expect(insets.top == vertical)
-            #expect(insets.bottom == insets.top)
+            let foundation = PKYEdgeInsets(
+                top: vertical,
+                leading: horizontal,
+                bottom: vertical,
+                trailing: horizontal
+            )
+            #expect(insets.leading == foundation.leading)
+            #expect(insets.trailing == foundation.trailing)
+            #expect(insets.top == foundation.top)
+            #expect(insets.bottom == foundation.bottom)
+            #expect(NSDirectionalEdgeInsets.pky() == .zero)
         }
     }
 #endif
