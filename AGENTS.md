@@ -9,7 +9,7 @@ Read ProjectContext.md and docs/PROJECT.md before changing the package.
 - Import AppKit or UIKit only inside `#if os(macOS)` / `#if os(iOS)` blocks. Shared roles stay
   platform-neutral; each platform mapping sits beside them. Never import private packages.
 - Foundation code moved from Pocky keeps its public API and behaviour; translate its documentation
-  to English and move its tests with it. Pocky's PockyComponents stays iOS-only.
+  to English and move its tests with it. Pocky remains the iOS-only component library.
 - Keep role values shared across platforms; branch only for native API or coordinate differences.
 - Preserve native floating-point geometry semantics except documented placement input guards.
 - Use repository lint, test, and build entry points. Tests assert relationships for visual roles,

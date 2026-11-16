@@ -35,17 +35,17 @@ public enum PKYThemeFallback {
 
 #if os(iOS)
     /// Thread-safe diagnostics for missing iOS theme injection.
-    @_spi(PockyComponents) public enum PKYThemeDiagnostics {
+    @_spi(Pocky) public enum PKYThemeDiagnostics {
         private static let logger = Logger(subsystem: "Pocky", category: "ThemeInjection")
         private static let reports = Mutex(0)
 
         /// The number of missing-injection reports observed by this process.
-        @_spi(PockyComponents) public static var reportCount: Int {
+        @_spi(Pocky) public static var reportCount: Int {
             reports.withLock { $0 }
         }
 
         /// Records a missing injection and logs only the first report.
-        @_spi(PockyComponents) public static func reportMissingInjection() {
+        @_spi(Pocky) public static func reportMissingInjection() {
             let isFirst = reports.withLock { count in
                 count += 1
                 return count == 1

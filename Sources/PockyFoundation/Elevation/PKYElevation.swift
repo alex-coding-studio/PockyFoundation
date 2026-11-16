@@ -14,7 +14,7 @@ public enum PKYElevation {
     public enum Style: Sendable {
         /// No separation shadow.
         case none
-        /// Slight separation near a container; with a stronger dark recipe.
+        /// Slight separation near a container, with a stronger dark recipe.
         case subtle
         /// A small inset selection indicator; dark indicators have no shadow.
         case insetIndicator

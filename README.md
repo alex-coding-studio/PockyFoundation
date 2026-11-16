@@ -157,8 +157,8 @@ on-accent is white, and typography is `.system(scaling: .fixed)`. `NSColor.pkyCo
 roles from that default theme. The native colors retain system appearance behavior; app-supplied
 macOS theme switching is deferred.
 
-Binding and diagnostic implementation access for PockyComponents is exposed only through
-`@_spi(PockyComponents) import PockyFoundation`. It is not part of the ordinary consumer API.
+Binding and diagnostic implementation access for the iOS Pocky component library is exposed only through
+`@_spi(Pocky) import PockyFoundation`. It is not part of the ordinary consumer API.
 Typography control adapters, sheet styling, and the theme-dependent list section remain outside
 this step.
 

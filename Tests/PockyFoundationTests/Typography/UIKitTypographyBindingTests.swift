@@ -1,5 +1,5 @@
 #if os(iOS)
-    @_spi(PockyComponents) import PockyFoundation
+    @_spi(Pocky) import PockyFoundation
     import Testing
     import UIKit
 
