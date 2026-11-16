@@ -32,14 +32,14 @@ let placement = PKYMasonryPlacement.frames(
 | Domain | Public API |
 | --- | --- |
 | Layout | `PKYLayout.Space`, `Gap`, `Inset`, `Size`, `Split`, `Target`, `Variant`, `WidthClass` |
-| Shape | `PKYShape.Radius`, `RadiusRole`, `Stroke`, `StrokeRole` |
+| Shape | `PKYShape.Radius`, `RadiusRole`, `Stroke`, `StrokeRole`; iOS `UIView` and SwiftUI `View` corner/clipping adapters |
 | Motion | `PKYMotion.Duration`, `Spring` |
 | Opacity | `PKYOpacity.tint`, `dimmed`, `glassTint` |
-| Symbols | `PKYIcon.Size.pointSize`; native symbol configuration belongs to the caller |
-| Geometry | `CGSize`, `CGPoint`, `CGRect`, `CGAffineTransform` arithmetic and `pky` helpers |
+| Symbols | `PKYIcon.Size.pointSize`; iOS `symbolConfiguration`, `image`, and `font` adapters |
+| Geometry | `CGSize`, `CGPoint`, `CGRect`, `CGAffineTransform` arithmetic and `pky` helpers; iOS `UIEdgeInsets.pky` and `NSDirectionalEdgeInsets.pky` |
 | Grid | `PKYGridPlacementInput`, `PKYGridPlacementOutput`, `PKYGridPlacementRole`, `PKYEdgeInsets` |
 | Masonry | `PKYMasonryPlacement.frames` and `.columns` |
-| Elevation | `PKYElevation.Style`, `.Appearance`, `.Recipe`, `CALayer.pkyApplyElevation` |
+| Elevation | `PKYElevation.Style`, `.Appearance`, `.Recipe`, `CALayer.pkyApplyElevation`; iOS `UIView` and SwiftUI `View` elevation adapters |
 | Appearance | `PKYAppearance` storage, `.Mode`; `userInterfaceStyle` on iOS, `nsAppearance` on macOS |
 
 ### Platform values

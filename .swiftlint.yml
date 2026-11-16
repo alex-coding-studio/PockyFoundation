@@ -73,7 +73,7 @@ custom_rules:
     message: "Use a local Metrics role"
     severity: error
   magic_shadow_param:
-    excluded: "(Sources/PockyFoundation/Elevation/PKYElevation\\+CALayer\\.swift|Tests/PockyFoundationTests/Elevation/PKYElevationTests\\.swift)"
+    excluded: "(Sources/PockyFoundation/Elevation/PKYElevation\\+CALayer\\.swift|Tests/PockyFoundationTests/Elevation/PKYElevationTests\\.swift|Tests/PockyFoundationTests/Elevation/PKYElevationUtilitiesTests\\.swift)"
     name: "Literal shadow parameter"
     regex: 'shadow(Opacity|Radius|Offset)\s*='
     message: "Use a local Metrics role"
