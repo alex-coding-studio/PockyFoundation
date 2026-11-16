@@ -18,8 +18,9 @@ step is one PockyFoundation PR plus release, one Pocky PR, and GalleryX and Lumi
 | SRC-1 | Owner brief relayed by the AnyDock architect (goal, settled and open decisions, required contract content) | Section 9 quotes the normative parts |
 | SRC-2 | Architect follow-up: macOS accent decision | Section 9 |
 | SRC-3 | Pocky sources and tests to move | `alex-coding-studio/Pocky` at `6dfa22d4a4e19f1e4a89ec2b37f53aefd42e7ee2` |
-| SRC-4 | PockyFoundation baseline and contributor rules | this repository at `19638e09a00a7eb1761d11099d74acc34183fbfb` (tag 0.3.0) |
-| SRC-5 | Reference deliveries | PockyFoundation #2, #4, #5 (closed), #6; Pocky #194, #195; GalleryX #3212 |
+| SRC-4 | PockyFoundation baseline and contributor rules | this repository at `6f5c40e5324636886e98ae280a7757a881d09463` (tag 0.4.0, #7) |
+| SRC-5 | Reference deliveries | PockyFoundation #2, #4, #5 (closed), #6, #7; Pocky #194, #195; GalleryX #3212 |
+| SRC-6 | Architect follow-up: versions start at 0.5.0; move the `pkyInsetGroupedList` left by #7 in step 3 or 4 | Section 9 |
 
 Source-to-clause mapping:
 
@@ -36,7 +37,8 @@ Source-to-clause mapping:
 | Smallest safe steps, each PockyFoundation + Pocky + pin PRs | C-08, section 4 |
 | Which internal members become public | section 6 |
 | macOS accent is a theme parameter; default is `controlAccentColor`; `.pkyAccent` call sites unchanged | S1-03, S3-04 |
-| Pocky ends with only PockyComponents | Exclusion X-1 (later delivery) |
+| Pocky ends with only PockyComponents | S4-03; X-1 |
+| Versions 0.5.0 to 0.8.0; `pkyInsetGroupedList` moves | section 4 headings, S4-01 |
 
 ## 3. Common rules (every step)
 
@@ -68,7 +70,8 @@ Source-to-clause mapping:
 - **C-08 Delivery triplet.** Per step, in order: (a) PockyFoundation PR, reviewed, merged, then a
   minor release tag; (b) Pocky PR that bumps `upToNextMinor` to that release, updates
   `Package.resolved`, deletes the moved files and tests in the same commit (no duplicate
-  definitions ever coexist); (c) GalleryX and Lumi PRs that change only lockfile pins. The next
+  definitions ever coexist); (c) GalleryX and Lumi PRs that change only lockfile pins. Step 1's
+  Pocky PR starts from a Pocky that already depends on 0.4.0 (the #7 follow-up). The next
   step's PockyFoundation PR may open before (b) and (c) merge, but its release waits until the
   previous step's Pocky PR has merged.
 - **C-09 Consumers.** GalleryX and Lumi build and pass their tests with pin-only changes. If a
@@ -80,7 +83,7 @@ Source-to-clause mapping:
 
 ## 4. Steps
 
-### Step 1: Color values (PockyFoundation 0.4.0)
+### Step 1: Color values (PockyFoundation 0.5.0)
 
 Inventory: all of `Sources/Pocky/Color/` (`PKYBackgroundRole`, `PKYColorTheme` and its
 `Accent`, `Background`, `Content`, `Filled`, `Media`, `Separator`, `Status` extensions,
@@ -111,13 +114,13 @@ Inventory: all of `Sources/Pocky/Color/` (`PKYBackgroundRole`, `PKYColorTheme` a
 - **S1-05** Pocky deletes `Sources/Pocky/Color/` and the moved test; Pocky's Theme code and
   PockyComponents compile unchanged.
 
-### Step 2: Typography values and `PKYTheme` (PockyFoundation 0.5.0)
+### Step 2: Typography values and `PKYTheme` (PockyFoundation 0.6.0)
 
 Inventory: `Typography/PKYFontFamily`, `PKYSectionHeaderRole`, `PKYTextStyle` (with internal
 `PKYFontWeight`), `PKYTypographyRole`, `PKYTypographyTheme`, `PKYTypographyTheme+System`;
-`Theme/PKYTheme.swift`; `UIKitExtensions/UIFont+PKYMonospacedDigits.swift`. Tests:
-`Typography/PKYTypographyThemeTests.swift`, `UIKitExtensions/UIFontMonospacedDigitsTests.swift`.
-`UIKit+PKYTypography.swift` stays for step 4.
+`Theme/PKYTheme.swift`. Tests: `Typography/PKYTypographyThemeTests.swift`.
+`UIFont.pkyMonospacedDigits` already ships in PockyFoundation 0.4.0 (#7) and is reused, not
+moved again. `UIKit+PKYTypography.swift` stays for step 4.
 
 - **S2-01** Shared on both platforms: `PKYTypographyRole` and its modifiers (`regular` ...
   `bold`, `italic`, `rounded`, `monospacedDigits`, `withReferenceSize`), `PKYSectionHeaderRole`,
@@ -134,7 +137,7 @@ Inventory: `Typography/PKYFontFamily`, `PKYSectionHeaderRole`, `PKYTextStyle` (w
 - **S2-04** Pocky deletes the moved files and tests; `UIKit+PKYTypography`, Theme code and
   PockyComponents compile unchanged.
 
-### Step 3: Theme core (PockyFoundation 0.6.0)
+### Step 3: Theme core (PockyFoundation 0.7.0)
 
 Inventory: `Theme/PKYThemeTrait`, `PKYThemeEnvironmentKey`, `PKYThemeContext`,
 `PKYThemeFallback` (with `PKYThemeDiagnostics`), `PKYThemeBinding`, `UIColor+PKYTheme`,
@@ -159,21 +162,25 @@ remaining cases and is deleted).
   types, resolving from that default theme under decision D-6. iOS-only types (trait, context,
   binding, environment key) do not exist on macOS in this delivery.
 
-### Step 4: UIKit typography bindings and sheet style (PockyFoundation 0.7.0)
+### Step 4: UIKit typography bindings and sheet style (PockyFoundation 0.8.0)
 
 Inventory: `Typography/UIKit+PKYTypography.swift`,
-`UIKitExtensions/UISheetPresentationController+PKY.swift`; tests
+`UIKitExtensions/UISheetPresentationController+PKY.swift`, and
+`NSCollectionLayoutSection.pkyInsetGroupedList(_:)`, which #7 left in Pocky's
+`Layout/NSCollectionLayoutSection+PKY.swift` because it reads `UIColor.pkySeparator`; it joins
+`pkyFullWidth(height:)` in PockyFoundation's existing file of that name. Tests:
 `UIKitExtensions/UISheetPresentationControllerTests.swift` and any PockyTests case that only
-exercises these two files.
+exercises these files.
 
 - **S4-01** `UILabel`, `UITextField`, `UITextView` `.pkyTypography`, `UIButton.pkyTitleTypography`,
   `UILabel`/`UITextView` `.pkyAttributedText(observing:_:)`, `pkyApplyStandardStyle` and
   `pkyUsePaperBackground` move iOS-only with C-03 behaviour, including selection clamping and the
-  iOS 26.1 paper background guard.
+  iOS 26.1 paper background guard. `pkyInsetGroupedList(_:)` keeps its clear background and
+  standard separator color.
 - **S4-02** `pkyTypographyRegistration`, `pkyTitleTypographyRegistration` and
   `pkyAttributedTextRegistration` follow section 6.
 - **S4-03** After the Pocky PR, `Sources/Pocky` contains no Color, Typography or Theme directory,
-  and no file in this inventory.
+  and no file or declaration in this inventory.
 
 ## 5. Verification
 
@@ -230,7 +237,7 @@ Members only used inside the moved files (`PKYFontWeight`, `PKYFontFaceKey`,
   none. `underPageBackgroundColor` is documented by AppKit as not meant for drawing; the mapping
   is the owner's settled choice and is recorded, not reopened.
 - **Duplicate definitions.** Pocky must delete moved files in the same PR as the bump; otherwise
-  duplicate extension members (for example `UIFont.pkyMonospacedDigits`) make calls ambiguous.
+  duplicate extension members (for example `UIColor.pkyContent(_:)`) make calls ambiguous.
 - **Implicit transitive import.** PockyComponents depends only on Pocky; importing PockyFoundation
   SPI there needs an explicit product dependency in Pocky's manifest, which belongs in the step 3
   Pocky Setup PR.
@@ -245,8 +252,9 @@ Members only used inside the moved files (`PKYFontWeight`, `PKYFontFaceKey`,
 
 ## 8. Exclusions and change protocol
 
-- **X-1** Accessibility, Haptics, Layout adapters, the remaining `UIKitExtensions` files, and
-  removing the Pocky target are a later delivery.
+- **X-1** Accessibility, Haptics, Layout and the other `UIKitExtensions` belong to #7. Removing
+  the then-empty Pocky target and pointing PockyComponents at PockyFoundation directly is a later
+  delivery.
 - **X-2** No macOS theme switching, trait propagation, `NSView` bindings or `NSTextField`
   typography conveniences in this delivery (see D-6).
 - **X-3** No AnyDock adoption; no new roles, values or API renames.
@@ -276,6 +284,11 @@ SRC-2 (owner-confirmed): the macOS accent is a theme parameter, isomorphic with 
 `PKYColorTheme.system(accent:)`; the macOS default theme's accent is `NSColor.controlAccentColor`
 and follows the system setting; a custom app theme passes a brand color later, and `.pkyAccent`
 call sites do not change.
+
+SRC-6 (architect): PockyFoundation 0.4.0 is taken by #7 (Haptics, Accessibility, Layout,
+UIKitExtensions); the four steps become 0.5.0, 0.6.0, 0.7.0 and 0.8.0, and
+`pkyInsetGroupedList` (Pocky `Layout/NSCollectionLayoutSection+PKY.swift`, which depends on
+`UIColor.pkySeparator`) joins step 3 or 4.
 
 ## 10. Pending owner decisions
 
