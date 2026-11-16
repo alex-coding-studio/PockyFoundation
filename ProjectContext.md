@@ -9,7 +9,10 @@ and one test target, PockyFoundationTests. The official SwiftPM library generato
 the directory layout; Package.swift is the source of truth. There are no package dependencies.
 
 CoreGraphics and Foundation supply value types; QuartzCore supplies the thin CALayer adapter.
-No colors, themes, typography, haptics, UIKit/AppKit views, device queries, resources, storage,
+UIKit and AppKit are imported only under platform conditional compilation for native mappings.
+The package is the target home for all of Pocky's foundation (appearance, colors, typography,
+themes); it moves here area by area while PockyComponents stays an iOS-only package. Localized
+strings ship as an English and Simplified Chinese string catalog. No views, device queries,
 services, ports, credentials, or database migrations belong to this package.
 
 ## Structure and policy
@@ -17,7 +20,7 @@ services, ports, credentials, or database migrations belong to this package.
 Sources/PockyFoundation is grouped by semantic domain, with matching test directories.
 README.md documents the role catalogue and platform values. docs/PROJECT.md owns verification.
 Public types use the PKY prefix. Public API has English DocC comments; internal implementation
-has no explanatory comments. Native adapters outside CALayer remain in consuming packages.
+has no explanatory comments. Native mappings live beside their roles under platform conditions.
 The formatter and linter configurations are ordinary committed files, never external links.
 
 ## Commands and evidence
