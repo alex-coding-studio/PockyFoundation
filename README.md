@@ -3,7 +3,7 @@
 Semantic design values and pure layout geometry for **iOS 26+ and macOS 14+**.
 Built with Swift 6 and Swift Package Manager, with no package dependencies.
 
-Use shared role names while allowing desktop and touch interfaces to use appropriate values.
+Use shared role names and values on every platform.
 Platform mappings use UIKit on iOS and AppKit on macOS under conditional compilation.
 The package contains no views or device queries. A thin QuartzCore adapter applies
 caller-colored elevation to CALayer.
@@ -50,31 +50,33 @@ let placement = PKYMasonryPlacement.frames(
 
 ### Platform values
 
-Measurements are in points, durations in seconds. Values not listed as different are shared.
+Measurements are in points, durations in seconds. These values are shared by iOS and macOS;
+only native API mappings and coordinate conversion differ by platform.
 App-owned roles do not override native control sizing or system presentation corners.
 
-| Role | iOS | macOS |
-| --- | --- | --- |
-| Space | 4 / 8 / 12 / 16 / 24 / 32 | Same |
-| Gap content; group; section (compact / standard / wide) | 4/8/12; 12/16/24; 16/24/32 | Same |
-| Inset page/container; control vertical/horizontal; row vertical/horizontal | 8/16/24; 4/8/12 + 8/12/16; 4/8/12 + 12/16/24 | Same |
-| Size button; row; dot; auxiliary; minimum target | 36/44/52; 44/52/64; 6/7/8; 32; 44 | Same; native controls keep system sizing |
-| Radius tile / compact / content / card / panel | 10 / 14 / 16 / 22 / 30 | 4 / 6 / 4 / 6 / 30 |
-| Stroke standard / strong / heavy / display | 0.5 / 2 / 3 / 12 | Same |
-| Duration quick / standard / slow / long / extended | .15 / .25 / .35 / .45 / .6 | Same |
-| Spring smooth / snappy / bouncy / pop (bounce) | 0 / .15 / .3 / .45 | Same |
-| Opacity tint / focusScrim / dimmed / glassTint | .16 / .28 / .5 / .85 | Same |
-| Icon accessory / badge / control / item / feature | 12 / 16 / 18 / 20 / 24 | Same |
-| Grid tile reference columns (ordinary / large) | 3 / 5 | 4 / 4 |
-| Grid page margin; card minimum width | 16; 300 | 24; 96 |
-| Grid tile gaps without / with caption | 8 / 12 horizontal, 8 / 16 vertical | 12 / 12 on both axes |
-| Elevation subtle light/dark (opacity, radius, visual y) | (.12, 3, 1) / same | (.14, 4, 1) / (.35, 4, 1) |
-| Elevation insetIndicator light/dark | (.08, 2, 0) / same | (.08, 2, 0) / none |
-| Elevation floating; mediaContent; mediaHalo | (.16,18,8); (.45,1,1); (.25,12,2) | Same |
+| Role | Value |
+| --- | --- |
+| Space | 4 / 8 / 12 / 16 / 24 / 32 |
+| Gap content; group; section (compact / standard / wide) | 4/8/12; 12/16/24; 16/24/32 |
+| Inset page/container; control vertical/horizontal; row vertical/horizontal | 8/16/24; 4/8/12 + 8/12/16; 4/8/12 + 12/16/24 |
+| Size button; row; dot; auxiliary; minimum target | 36/44/52; 44/52/64; 6/7/8; 32; 44; native controls keep system sizing |
+| Radius tile / compact / content / card / panel | 10 / 14 / 16 / 22 / 30 |
+| Stroke standard / strong / heavy / display | 0.5 / 2 / 3 / 12 |
+| Duration quick / standard / slow / long / extended | .15 / .25 / .35 / .45 / .6 |
+| Spring smooth / snappy / bouncy / pop (bounce) | 0 / .15 / .3 / .45 |
+| Opacity tint / focusScrim / dimmed / glassTint | .16 / .28 / .5 / .85 |
+| Icon accessory / badge / control / item / feature | 12 / 16 / 18 / 20 / 24 |
+| Grid tile reference columns (ordinary / large) | 3 / 5 |
+| Grid page margin; card minimum width | 16; 300 |
+| Grid tile gaps without / with caption | 8 / 12 horizontal, 8 / 16 vertical |
+| Elevation subtle light / dark (opacity, radius, visual y) | (.12, 3, 1) / (.35, 3, 1) |
+| Elevation insetIndicator light / dark | (.08, 2, 0) / none |
+| Elevation floating; mediaContent; mediaHalo | (.16,18,8); (.45,1,1); (.25,12,2) |
 
-Desktop card and nested radii, grid density, and light/dark separation follow AnyDock's
-accepted tray geometry. Roles without a distinct desktop use retain their existing shared values.
-The desktop grid is a window-based policy; callers can supply an explicit column policy instead.
+Elevation recipes depend on the caller's resolved appearance; the UIKit view adapter applies the
+light recipe. Grid column policy depends on the caller-supplied window geometry, and callers can
+supply an explicit column policy instead. Products that need denser surfaces choose a smaller role
+or keep a product-owned metric rather than adding a platform branch.
 
 ### Color mappings
 

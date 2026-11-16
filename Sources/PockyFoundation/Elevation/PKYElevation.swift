@@ -10,13 +10,13 @@ public enum PKYElevation {
         case dark
     }
 
-    /// A semantic shadow relationship. Existing iOS styles retain their original recipes.
+    /// A semantic shadow relationship. Recipes depend on appearance, not platform.
     public enum Style: Sendable {
         /// No separation shadow.
         case none
-        /// Slight separation near a container; desktop cards use a stronger dark recipe.
+        /// Slight separation near a container; with a stronger dark recipe.
         case subtle
-        /// A small inset selection indicator; desktop dark indicators have no shadow.
+        /// A small inset selection indicator; dark indicators have no shadow.
         case insetIndicator
         /// Detached overlays, floating controls, and previews.
         case floating
@@ -36,25 +36,17 @@ public enum PKYElevation {
             case .none:
                 Recipe(opacity: 0, radius: 0, offset: .zero)
             case .subtle:
-                #if os(macOS)
-                    Recipe(
-                        opacity: appearance == .dark ? 0.35 : 0.14,
-                        radius: 4,
-                        offset: CGSize(width: 0, height: 1)
-                    )
-                #else
-                    Recipe(opacity: 0.12, radius: 3, offset: CGSize(width: 0, height: 1))
-                #endif
+                Recipe(
+                    opacity: appearance == .dark ? 0.35 : 0.12,
+                    radius: 3,
+                    offset: CGSize(width: 0, height: 1)
+                )
             case .insetIndicator:
-                #if os(macOS)
-                    Recipe(
-                        opacity: appearance == .dark ? 0 : 0.08,
-                        radius: appearance == .dark ? 0 : 2,
-                        offset: .zero
-                    )
-                #else
-                    Recipe(opacity: 0.08, radius: 2, offset: .zero)
-                #endif
+                Recipe(
+                    opacity: appearance == .dark ? 0 : 0.08,
+                    radius: appearance == .dark ? 0 : 2,
+                    offset: .zero
+                )
             case .floating:
                 Recipe(opacity: 0.16, radius: 18, offset: CGSize(width: 0, height: 8))
             case .mediaContent:
