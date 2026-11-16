@@ -49,6 +49,23 @@ private context, and non-English source documentation. Lint has no inherited sup
 baseline. The shadow-assignment rule is excluded only for the dedicated CALayer adapter and its property assertions,
 which must assign the native shadow properties. No machine-specific tooling provider is required.
 
+## Color-value migration
+
+`Color/` contains platform-neutral role enums and palettes storing the native `PKYColor` alias.
+System palettes preserve UIKit behavior and provide AppKit mappings documented in README.md.
+The macOS standard/grouped hierarchy uses windowBackgroundColor, controlBackgroundColor, and
+underPageBackgroundColor; opaque separator, secondary prominent fill, and media placeholder use
+gridColor, secondaryLabelColor, and quaternarySystemFill. Accent colors remain caller-owned.
+The shared focus scrim role preserves the migrated iOS opacity without a private constant or
+lint suppression. No theme context, bindings, switching, or consumer changes are included here.
+
+Color tests compare supplied colors and native system mappings, preserve iOS contrast and
+opposite-appearance behavior, and verify macOS content distinctions, grouped/standard equality,
+background appearance changes, and inverse luminance reversal under aqua/darkAqua. They do not
+assert fixed visual components; opacity-role tests assert ranges and relative emphasis. The
+macOS cases cover new mapping mistakes that the compiler cannot detect. CI's Xcode 26.6 remains
+the compatibility gate; a newer local SDK passing does not establish that compatibility.
+
 ## Delivery
 
 The pre-commit hook checks lint and refuses commits on main after its initial commit.
