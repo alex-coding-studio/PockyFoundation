@@ -31,7 +31,7 @@ let placement = PKYMasonryPlacement.frames(
 
 | Domain | Public API |
 | --- | --- |
-| Layout | `PKYLayout.Space`, `Gap`, `Inset`, `Size`, `Split`, `Target`, `Variant`, `WidthClass` |
+| Layout | `PKYLayout.Space`, `Gap`, `Inset`, `Size`, `Split`, `Target`, `Variant`, `WidthClass`, `ContentWidth.maximum`; iOS content-width guides, `pin`/`lane`, full-width collection sections, and arranged stack initialization |
 | Shape | `PKYShape.Radius`, `RadiusRole`, `Stroke`, `StrokeRole`; iOS `UIView` and SwiftUI `View` corner/clipping adapters |
 | Motion | `PKYMotion.Duration`, `Spring` |
 | Opacity | `PKYOpacity.tint`, `dimmed`, `glassTint` |
@@ -40,6 +40,9 @@ let placement = PKYMasonryPlacement.frames(
 | Grid | `PKYGridPlacementInput`, `PKYGridPlacementOutput`, `PKYGridPlacementRole`, `PKYEdgeInsets` |
 | Masonry | `PKYMasonryPlacement.frames` and `.columns` |
 | Elevation | `PKYElevation.Style`, `.Appearance`, `.Recipe`, `CALayer.pkyApplyElevation`; iOS `UIView` and SwiftUI `View` elevation adapters |
+| Accessibility | `PKYAccessibilityIdentifier`; iOS `PKYAccessibility`, `pkyA11y`, and `pkyA11yID` adapters |
+| Haptics | iOS `PKYHaptics` interaction feedback |
+| UIKit helpers | iOS monospaced-digit fonts, multiline labels, and minimum interaction-target bounds |
 | Appearance | `PKYAppearance` storage, `.Mode`; `userInterfaceStyle` on iOS, `nsAppearance` on macOS |
 
 ### Platform values
