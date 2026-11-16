@@ -36,7 +36,10 @@ Passing package tests do not prove application UI or minimum-OS runtime acceptan
 Use a clean initial history, MIT licensing, and no private development context. An initial
 default-branch publication requires a separately authorized complete baseline after gates
 and independent review of its exact commit. Later changes require work branches and ready
-pull requests. Do not publish tags, releases, or alter consumers without explicit scope.
+pull requests. The auto-merge workflow squash-merges only the approved current head after CI
+passes and the needs-acceptance label is absent; a CI completion or label removal retries it.
+Repository interactions are limited to collaborators, and external issues and pull requests
+are not accepted. Do not publish tags, releases, or alter consumers without explicit scope.
 All direct dependency, toolchain, CI, or foundation changes belong to Setup and update this
 context when its stable facts change. Public API evolution preserves source compatibility
 within a declared release policy. Version tagging policy remains owner-controlled.

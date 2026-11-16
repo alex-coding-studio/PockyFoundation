@@ -1,0 +1,103 @@
+name: Auto-merge on approval
+
+on:
+  pull_request_review:
+    types: [submitted]
+  pull_request:
+    types: [unlabeled]
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+
+permissions:
+  actions: write
+  checks: read
+  contents: write
+  pull-requests: write
+  statuses: read
+
+concurrency:
+  group: auto-merge-${{ github.event.review.commit_id || github.event.workflow_run.head_sha || github.event.pull_request.head.sha }}
+
+jobs:
+  merge:
+    if: >-
+      (github.event_name == 'pull_request_review' && github.event.review.state == 'approved' && !github.event.pull_request.draft
+          && github.event.pull_request.head.repo.full_name == github.repository)
+      || (github.event_name == 'pull_request' && github.event.label.name == 'needs-acceptance' && !github.event.pull_request.draft
+          && github.event.pull_request.head.repo.full_name == github.repository)
+      || (github.event_name == 'workflow_run' && github.event.workflow_run.event == 'pull_request'
+          && !contains(fromJSON('["cancelled", "skipped"]'), github.event.workflow_run.conclusion)
+          && github.event.workflow_run.head_repository.full_name == github.repository)
+    runs-on: ubuntu-latest
+    steps:
+      - env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR: ${{ github.event.pull_request.html_url }}
+          HEAD_SHA: ${{ github.event.review.commit_id || github.event.workflow_run.head_sha || github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          if [[ -z "$PR" ]]; then
+            PR="$(gh api "repos/$GITHUB_REPOSITORY/commits/$HEAD_SHA/pulls" \
+              --jq 'map(select(.state == "open" and (.draft | not)))[0].html_url // ""')"
+            [[ -n "$PR" ]] || { echo "No open PR has $HEAD_SHA as a commit."; exit 0; }
+          fi
+          REVIEWS="$(gh pr view "$PR" --json reviews)"
+          WRITERS=()
+          for LOGIN in $(jq -r '[.reviews[].author.login] | unique[]' <<< "$REVIEWS"); do
+            PERMISSION="$(gh api "repos/$GITHUB_REPOSITORY/collaborators/$LOGIN/permission" --jq .permission 2>/dev/null || true)"
+            if [[ "$PERMISSION" =~ ^(admin|maintain|write)$ ]]; then
+              WRITERS+=("$LOGIN")
+            fi
+          done
+          if [[ "$(jq --args "[.reviews[]
+              | select(.author.login as \$login | \$ARGS.positional | index(\$login))
+              | select(.state | IN(\"APPROVED\", \"CHANGES_REQUESTED\", \"DISMISSED\"))]
+              | group_by(.author.login) | map(max_by(.submittedAt))
+              | any(.state == \"APPROVED\" and .commit.oid == \"$HEAD_SHA\") and all(.state != \"CHANGES_REQUESTED\")" \
+              ${WRITERS[@]+"${WRITERS[@]}"} <<< "$REVIEWS")" != true ]]; then
+            echo "$HEAD_SHA is not approved by every reviewer with write access; a later review will retry."
+            exit 0
+          fi
+          if [[ "$(gh pr view "$PR" --json headRefOid --jq .headRefOid)" != "$HEAD_SHA" ]]; then
+            echo "The approved commit is no longer the PR head; nothing to merge."
+            exit 0
+          fi
+          if [[ "$(gh pr view "$PR" --json labels --jq 'any(.labels[]; .name == "needs-acceptance")')" == true ]]; then
+            echo "The PR is waiting for user acceptance (needs-acceptance label); removing the label will retry."
+            exit 0
+          fi
+          ROLLUP="$(gh pr view "$PR" --json statusCheckRollup)"
+          PENDING="$(jq -r "[.statusCheckRollup[]
+              | select((.workflowName // \"\") != \"$GITHUB_WORKFLOW\")
+              | select(if .__typename == \"StatusContext\" then (.state | IN(\"PENDING\", \"EXPECTED\"))
+                       else .status != \"COMPLETED\" end)] | length" <<< "$ROLLUP")"
+          if (( PENDING > 0 )); then
+            echo "$PENDING checks still running; their workflow_run event will retry."
+            exit 0
+          fi
+          if ! jq -e '.statusCheckRollup | any(.__typename == "CheckRun" and .workflowName == "CI")' <<< "$ROLLUP" > /dev/null; then
+            echo "CI has not started on $HEAD_SHA; its workflow_run event will retry."
+            exit 0
+          fi
+          FAILED="$(jq -r "
+            .statusCheckRollup
+            | map(select((.workflowName // \"\") != \"$GITHUB_WORKFLOW\"))
+            | group_by([.__typename, (.workflowName // \"\"), (.name // .context)])
+            | map(max_by(.startedAt // \"\"))[]
+            | select(if .__typename == \"StatusContext\" then .state != \"SUCCESS\"
+                     else .status != \"COMPLETED\" or (.conclusion | IN(\"SUCCESS\", \"NEUTRAL\", \"SKIPPED\") | not) end)
+            | \"- \(.name // .context)：\(if .__typename == \"StatusContext\" then .state
+                                         elif .status == \"COMPLETED\" then .conclusion else .status end)\"" <<< "$ROLLUP")"
+          if [[ -n "$FAILED" ]]; then
+            printf '%s\n' "$FAILED"
+            if [[ "$(gh pr view "$PR" --json comments \
+                --jq ".comments | any(.body | contains(\"获批提交 $HEAD_SHA \"))")" == true ]]; then
+              exit 1
+            fi
+            gh pr comment "$PR" --body "$(printf '未自动合并：获批提交 %s 上有检查未成功。\n\n%s\n\n修复后推送新提交并重新获批。' "$HEAD_SHA" "$FAILED")"
+            exit 1
+          fi
+          SUBJECT="$(gh pr view "$PR" --json title,number --jq '"\(.title) (#\(.number))"')"
+          gh pr merge "$PR" --squash --subject "$SUBJECT" --delete-branch --match-head-commit "$HEAD_SHA"
+          gh workflow run ci.yml --repo "$GITHUB_REPOSITORY" --ref main

@@ -47,12 +47,22 @@ consumers must remove their original role definitions before re-exporting this m
 The public-content gate rejects nonportable paths, personal email addresses, symbolic links,
 private context, and non-English source documentation. Lint has no inherited suppression
 baseline. The shadow-assignment rule is excluded only for the dedicated CALayer adapter and its property assertions,
-which must assign the native shadow properties. No repository-local auto-merge workflow
-or machine-specific tooling provider is required.
+which must assign the native shadow properties. No machine-specific tooling provider is required.
 
 ## Delivery
 
 The pre-commit hook checks lint and refuses commits on main after its initial commit.
 Publish the complete initial baseline only after independent exact-commit approval and
-explicit initial-push authorization. Later fixes use pull requests. CI availability is
-separate from branch-protection configuration. No tags or releases are produced implicitly.
+explicit initial-push authorization. Later fixes use pull requests. The auto-merge workflow
+squash-merges the approved current head only after CI succeeds and needs-acceptance is absent.
+Only reviewers with write, maintain, or admin permission count; stale approvals and current
+change requests prevent merging. CI completion and removing needs-acceptance retry the merge.
+After a workflow merge, CI is dispatched on main because the workflow token does not trigger
+push workflows. PR and approval requirements, required CI, administrator enforcement, and
+conversation resolution are enabled on main. No tags or releases are produced implicitly.
+
+External issues and pull requests are not accepted; forks remain welcome under MIT. GitHub
+interactions are restricted to collaborators for the maximum supported duration; that limit
+expires and must be renewed by the owner. Configuration follows the reference app's workflow
+trigger, runner, concurrency, permissions, and pinned-tool installation, with dual-platform
+package build/test entry points as the intentional difference.
