@@ -25,6 +25,13 @@ foreground/background values with native appearance. `PKYOpacity.focusScrim` sup
 focus scrim opacity. README.md records the complete platform mapping. Theme propagation remains
 outside this color-value slice.
 
+Typography values live in `Typography/`: families, text styles, semantic roles, section-header
+pairs, and complete typography palettes. iOS retains UIKit text-style sizes, custom reference
+sizes, and Dynamic Type ceilings. macOS uses native preferred text-style sizes for both families,
+ignores Scaling, and provides nsFont and monospaced-digit APIs. Explicit reference sizes retain
+the caller's value. `Theme/PKYTheme` is the immutable color/typography value; runtime theme
+contexts, propagation, and control bindings remain outside this step. README.md owns mappings.
+
 ## Structure and policy
 
 Sources/PockyFoundation is grouped by semantic domain, with matching test directories.

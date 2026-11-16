@@ -43,6 +43,8 @@ let placement = PKYMasonryPlacement.frames(
 | Accessibility | `PKYAccessibilityIdentifier`; iOS `PKYAccessibility`, `pkyA11y`, and `pkyA11yID` adapters |
 | Haptics | iOS `PKYHaptics` interaction feedback |
 | UIKit helpers | iOS monospaced-digit fonts, multiline labels, and minimum interaction-target bounds |
+| Typography | `PKYFontFamily`, `PKYTextStyle`, `PKYTypographyRole`, `PKYSectionHeaderRole`, `PKYTypographyTheme`; SwiftUI `font`, iOS `uiFont`, macOS `nsFont` and monospaced digits |
+| Theme value | `PKYTheme` immutable color and typography palettes |
 | Color | `PKYColor` (`UIColor` on iOS, `NSColor` on macOS), `PKYBackgroundRole`, `PKYColorTheme`, `PKYStandardInverse` |
 | Appearance | `PKYAppearance` storage, `.Mode`; `userInterfaceStyle` on iOS, `nsAppearance` on macOS |
 
@@ -99,6 +101,36 @@ AppKit has no `systemGray2` through `systemGray6` ramp, so none is introduced.
 not recommend it for drawing. Both inverse colors use custom dynamic providers. The focus
 scrim opacity is shared across platforms; adopting its semantic role preserves the iOS value.
 Theme propagation and semantic `NSColor.pky*` conveniences belong to a later delivery.
+
+### Typography mappings
+
+`PKYTypographyTheme` builds eight roles from a system or custom PostScript font family.
+`PKYTextStyle` preserves role size and policy while composing weight, italic, and rounded design.
+`PKYTypographyRole` keeps those modifiers plus monospaced digits and optional reference sizes
+independent of the selected theme. `PKYTheme` combines complete color and typography values;
+context switching and control bindings belong to later steps.
+
+| Role | Native text style | Standard weight |
+| --- | --- | --- |
+| display | largeTitle | bold |
+| pageTitle | title1 (`title` in SwiftUI) | bold |
+| title | title2 | semibold |
+| heading | headline | semibold |
+| body | body | regular |
+| supporting | subheadline | regular |
+| caption | footnote | regular |
+| action | body | semibold |
+
+On iOS, fixed system fonts use the large content-size category; custom families use their
+existing reference sizes. Dynamic scaling follows UIKit metrics up to the supplied maximum.
+On macOS, both families use `NSFont.preferredFont(forTextStyle:options:)` sizes by default and
+ignore `Scaling`. Explicit reference sizes override those defaults on both platforms. SwiftUI
+`font` uses the resolved native font on macOS; iOS keeps its original text-style behavior.
+
+Custom lookup tries the requested face, then the same-weight upright face for missing italics,
+then the nearest loadable upright weight, breaking ties toward the lighter weight, and finally
+the equivalent system font. Rounded design changes system faces only. The native monospaced-digit
+adapters preserve family, size, and existing traits while adding the number-spacing feature.
 
 ### Placement behavior
 

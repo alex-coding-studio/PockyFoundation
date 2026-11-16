@@ -66,6 +66,25 @@ assert fixed visual components; opacity-role tests assert ranges and relative em
 macOS cases cover new mapping mistakes that the compiler cannot detect. CI's Xcode 26.6 remains
 the compatibility gate; a newer local SDK passing does not establish that compatibility.
 
+## Typography-value migration
+
+`Typography/` and `Theme/PKYTheme` provide shared font roles and an immutable color/typography
+palette. iOS public font APIs retain the original custom-face fallback order, native text styles,
+fixed scaling, Dynamic Type ceilings, and reference-size handling. UIKit control bindings remain
+outside the package until their delivery step. The existing UIFont monospaced-digit adapter is
+reused; AppKit receives its own native adapter.
+
+macOS maps roles to the same native text-style names, using NSFont preferred sizes for both
+system and custom families. Scaling compiles but is ignored; explicit reference sizes are used
+as supplied. Weight, italic, rounded system design, and monospaced digits preserve their native
+traits. Custom faces keep the requested/upright/nearest/system fallback order.
+
+Migrated iOS tests retain mapping, fallback, composition, scaling, and state checks while removing
+fixed visual-size assertions. New macOS cases cover native size ordering, ignored scaling,
+modifier descriptors, number-spacing features, reference-size precedence, and unavailable-face
+fallback. These scenarios protect platform transformations that compilation alone cannot verify.
+The older CI toolchain remains the compatibility gate; package tests do not prove app rendering.
+
 ## Delivery
 
 The pre-commit hook checks lint and refuses commits on main after its initial commit.
