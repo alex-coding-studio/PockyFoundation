@@ -23,7 +23,10 @@ struct RoleRelationshipsTests {
             )
             #expect(abs(native.dampingRatio - spring.dampingRatio) < 0.000_1)
         }
-        #expect(PKYOpacity.tint < PKYOpacity.dimmed)
+        #expect(PKYOpacity.focusScrim > 0)
+        #expect(PKYOpacity.focusScrim < 1)
+        #expect(PKYOpacity.tint < PKYOpacity.focusScrim)
+        #expect(PKYOpacity.focusScrim < PKYOpacity.dimmed)
         #expect(PKYOpacity.dimmed < PKYOpacity.glassTint)
         #expect(PKYShape.Stroke.standard < PKYShape.Stroke.strong)
         #expect(PKYShape.Stroke.strong < PKYShape.Stroke.heavy)

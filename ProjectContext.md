@@ -16,6 +16,15 @@ strings ship as English and Simplified Chinese `.lproj` string files, which ever
 SwiftPM toolchain bundles; string catalogs are not used. No views, device queries,
 services, ports, credentials, or database migrations belong to this package.
 
+Color values live in `Color/`: `PKYColor` aliases UIColor on iOS and NSColor on macOS;
+`PKYColorTheme` stores complete app-supplied role palettes, and `system(accent:)` uses native
+system mappings while keeping the supplied accent. macOS grouped backgrounds match standard
+backgrounds; opaque separators use gridColor, secondary prominent fills use secondaryLabelColor,
+and media placeholders use quaternarySystemFill. `PKYStandardInverse` switches concrete
+foreground/background values with native appearance. `PKYOpacity.focusScrim` supplies the shared
+focus scrim opacity. README.md records the complete platform mapping. Theme propagation remains
+outside this color-value slice.
+
 ## Structure and policy
 
 Sources/PockyFoundation is grouped by semantic domain, with matching test directories.

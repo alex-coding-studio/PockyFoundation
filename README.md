@@ -34,7 +34,7 @@ let placement = PKYMasonryPlacement.frames(
 | Layout | `PKYLayout.Space`, `Gap`, `Inset`, `Size`, `Split`, `Target`, `Variant`, `WidthClass`, `ContentWidth.maximum`; iOS content-width guides, `pin`/`lane`, full-width collection sections, and arranged stack initialization |
 | Shape | `PKYShape.Radius`, `RadiusRole`, `Stroke`, `StrokeRole`; iOS `UIView` and SwiftUI `View` corner/clipping adapters |
 | Motion | `PKYMotion.Duration`, `Spring` |
-| Opacity | `PKYOpacity.tint`, `dimmed`, `glassTint` |
+| Opacity | `PKYOpacity.tint`, `focusScrim`, `dimmed`, `glassTint` |
 | Symbols | `PKYIcon.Size.pointSize`; iOS `symbolConfiguration`, `image`, and `font` adapters |
 | Geometry | `CGSize`, `CGPoint`, `CGRect`, `CGAffineTransform` arithmetic and `pky` helpers; `NSDirectionalEdgeInsets.pky` (iOS and macOS) and `UIEdgeInsets.pky` (iOS) |
 | Grid | `PKYGridPlacementInput`, `PKYGridPlacementOutput`, `PKYGridPlacementRole`, `PKYEdgeInsets` |
@@ -43,6 +43,7 @@ let placement = PKYMasonryPlacement.frames(
 | Accessibility | `PKYAccessibilityIdentifier`; iOS `PKYAccessibility`, `pkyA11y`, and `pkyA11yID` adapters |
 | Haptics | iOS `PKYHaptics` interaction feedback |
 | UIKit helpers | iOS monospaced-digit fonts, multiline labels, and minimum interaction-target bounds |
+| Color | `PKYColor` (`UIColor` on iOS, `NSColor` on macOS), `PKYBackgroundRole`, `PKYColorTheme`, `PKYStandardInverse` |
 | Appearance | `PKYAppearance` storage, `.Mode`; `userInterfaceStyle` on iOS, `nsAppearance` on macOS |
 
 ### Platform values
@@ -60,7 +61,7 @@ App-owned roles do not override native control sizing or system presentation cor
 | Stroke standard / strong / heavy / display | 0.5 / 2 / 3 / 12 | Same |
 | Duration quick / standard / slow / long / extended | .15 / .25 / .35 / .45 / .6 | Same |
 | Spring smooth / snappy / bouncy / pop (bounce) | 0 / .15 / .3 / .45 | Same |
-| Opacity tint / dimmed / glassTint | .16 / .5 / .85 | Same |
+| Opacity tint / focusScrim / dimmed / glassTint | .16 / .28 / .5 / .85 | Same |
 | Icon accessory / badge / control / item / feature | 12 / 16 / 18 / 20 / 24 | Same |
 | Grid tile reference columns (ordinary / large) | 3 / 5 | 4 / 4 |
 | Grid page margin; card minimum width | 16; 300 | 24; 96 |
@@ -72,6 +73,32 @@ App-owned roles do not override native control sizing or system presentation cor
 Desktop card and nested radii, grid density, and light/dark separation follow AnyDock's
 accepted tray geometry. Roles without a distinct desktop use retain their existing shared values.
 The desktop grid is a window-based policy; callers can supply an explicit column policy instead.
+
+### Color mappings
+
+`PKYColorTheme.system(accent:)` keeps app-provided primary, secondary, and on-accent colors.
+Color families store and return `PKYColor`, a native platform alias, preserving iOS signatures.
+
+| Role | iOS | macOS |
+| --- | --- | --- |
+| Standard background primary / secondary / tertiary | `systemBackground` / `secondarySystemBackground` / `tertiarySystemBackground` | `windowBackgroundColor` / `controlBackgroundColor` / `underPageBackgroundColor` |
+| Grouped background primary / secondary / tertiary | `systemGroupedBackground` / `secondarySystemGroupedBackground` / `tertiarySystemGroupedBackground` | Same as standard backgrounds |
+| Content primary / secondary / tertiary / quaternary / placeholder | `label` / `secondaryLabel` / `tertiaryLabel` / `quaternaryLabel` / `placeholderText` | `labelColor` / `secondaryLabelColor` / `tertiaryLabelColor` / `quaternaryLabelColor` / `placeholderTextColor` |
+| Quiet fills primary through quaternary | UIKit `systemFill` through `quaternarySystemFill` | AppKit `systemFill` through `quaternarySystemFill` |
+| Prominent primary / paired foreground | `label` / `systemBackground` | `labelColor` / `windowBackgroundColor` |
+| Prominent secondary / paired foreground | Opposite-appearance `systemGray3` / `systemBackground` | `secondaryLabelColor` / `windowBackgroundColor` |
+| Separator standard / opaque | `separator` / `opaqueSeparator` | `separatorColor` / `gridColor` |
+| Accent primary / secondary / paired foreground | Supplied `accent` palette | Supplied `accent` palette |
+| Status destructive / warning / success; paired foreground | `systemRed` / `systemOrange` / `systemGreen`; white | Same native AppKit colors |
+| Media placeholder | `systemGray5` | `quaternarySystemFill` |
+| Media content / content shadow / scrim / focus scrim; shadow | White / black / black / black at `PKYOpacity.focusScrim`; black | Same |
+| Inverse / on inverse | Black / white in light appearance, reversed in dark | Black / white in aqua, reversed in darkAqua |
+
+AppKit has no `systemGray2` through `systemGray6` ramp, so none is introduced.
+`underPageBackgroundColor` is retained as the selected tertiary mapping, although AppKit does
+not recommend it for drawing. Both inverse colors use custom dynamic providers. The focus
+scrim opacity is shared across platforms; adopting its semantic role preserves the iOS value.
+Theme propagation and semantic `NSColor.pky*` conveniences belong to a later delivery.
 
 ### Placement behavior
 
