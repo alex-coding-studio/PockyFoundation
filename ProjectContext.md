@@ -12,8 +12,8 @@ CoreGraphics and Foundation supply value types; QuartzCore supplies the thin CAL
 UIKit and AppKit are imported only under platform conditional compilation for native mappings.
 The package is the target home for all of Pocky's foundation (appearance, colors, typography,
 themes); it moves here area by area while PockyComponents stays an iOS-only package. Localized
-strings ship as English and Simplified Chinese `.lproj` string files, which every supported
-SwiftPM toolchain bundles; string catalogs are not used. No views, device queries,
+strings ship as an English and Simplified Chinese string catalog. SwiftPM may lowercase the
+compiled `.lproj` names, so tests match localizations case-insensitively. No views, device queries,
 services, ports, credentials, or database migrations belong to this package.
 
 ## Structure and policy
