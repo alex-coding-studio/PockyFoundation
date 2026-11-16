@@ -26,7 +26,7 @@ is inherited unchanged from the reference rules; Package.swift owns compiler lan
 ## Acceptance and test value
 
 The initial acceptance is: complete platform-neutral role/geometry coverage; documented
-platform values; no UIKit/AppKit in the public target; deterministic width/height masonry,
+platform values; UIKit/AppKit only under platform conditions; deterministic width/height masonry,
 grid input safety, optional rounding/capping, and caller-owned appearance/coordinate handling;
 portable tooling and a clean, independently reviewed initial commit with MIT licensing.
 

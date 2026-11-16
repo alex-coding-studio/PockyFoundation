@@ -6,7 +6,10 @@ Read ProjectContext.md and docs/PROJECT.md before changing the package.
 - Keep public type identifiers prefixed with PKY and source identifiers in English.
 - Write meaningful English DocC comments for public API; internal implementation has no comments.
 - Prefer semantic roles, platform-specific values, and pure geometry over views or theme systems.
-- Do not import AppKit, UIKit, or private packages into the library.
+- Import AppKit or UIKit only inside `#if os(macOS)` / `#if os(iOS)` blocks. Shared roles stay
+  platform-neutral; each platform mapping sits beside them. Never import private packages.
+- Foundation code moved from Pocky keeps its public API and behaviour; translate its documentation
+  to English and move its tests with it. Pocky's PockyComponents stays iOS-only.
 - Keep platform values in conditional compilation; preserve iOS values and documented desktop roles.
 - Preserve native floating-point geometry semantics except documented placement input guards.
 - Use repository lint, test, and build entry points. Tests assert relationships for visual roles,

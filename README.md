@@ -4,8 +4,9 @@ Semantic design values and pure layout geometry for **iOS 17+ and macOS 14+**.
 Built with Swift 6 and Swift Package Manager, with no package dependencies.
 
 Use shared role names while allowing desktop and touch interfaces to use appropriate values.
-The package contains no colors, themes, typography, haptics, views, UIKit/AppKit extensions,
-or device queries. A thin QuartzCore adapter applies caller-colored elevation to CALayer.
+Platform mappings use UIKit on iOS and AppKit on macOS under conditional compilation.
+The package contains no views or device queries. A thin QuartzCore adapter applies
+caller-colored elevation to CALayer.
 
 ## Installation
 
@@ -39,6 +40,7 @@ let placement = PKYMasonryPlacement.frames(
 | Grid | `PKYGridPlacementInput`, `PKYGridPlacementOutput`, `PKYGridPlacementRole`, `PKYEdgeInsets` |
 | Masonry | `PKYMasonryPlacement.frames` and `.columns` |
 | Elevation | `PKYElevation.Style`, `.Appearance`, `.Recipe`, `CALayer.pkyApplyElevation` |
+| Appearance | `PKYAppearance` storage, `.Mode`; `userInterfaceStyle` on iOS, `nsAppearance` on macOS |
 
 ### Platform values
 
