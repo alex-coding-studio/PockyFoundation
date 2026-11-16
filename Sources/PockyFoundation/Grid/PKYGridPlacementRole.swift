@@ -31,58 +31,33 @@ public enum PKYGridPlacementRole: Sendable {
 
     private enum Metrics {
         static let folderMinimumWidth: CGFloat = 137
-        #if os(macOS)
-            static let phonePortraitColumns = 4
-            static let largePortraitColumns = 4
-            static let phoneReferenceWidth: CGFloat = 480
-            static let cardMinimumWidth: CGFloat = 96
-        #else
-            static let phonePortraitColumns = 3
-            static let largePortraitColumns = 5
-            static let phoneReferenceWidth: CGFloat = 375
-            static let cardMinimumWidth: CGFloat = 300
-        #endif
+        static let phonePortraitColumns = 3
+        static let largePortraitColumns = 5
+        static let phoneReferenceWidth: CGFloat = 375
+        static let cardMinimumWidth: CGFloat = 300
     }
 
     /// Horizontal page margin for this grid role.
     public var margin: CGFloat {
-        #if os(macOS)
-            PKYLayout.Inset.page(.wide)
-        #else
-            PKYLayout.Inset.page()
-        #endif
+        PKYLayout.Inset.page()
     }
 
     /// Horizontal gap selected for the content role.
     public var columnSpacing: CGFloat {
-        #if os(macOS)
-            if case .folder = self {
-                return PKYLayout.Gap.group()
-            }
-            return PKYLayout.Gap.group(.compact)
-        #else
-            switch self {
-            case .tile(captioned: false): PKYLayout.Gap.content()
-            case .tile(captioned: true), .card: PKYLayout.Gap.group(.compact)
-            case .folder: PKYLayout.Gap.group()
-            }
-        #endif
+        switch self {
+        case .tile(captioned: false): PKYLayout.Gap.content()
+        case .tile(captioned: true), .card: PKYLayout.Gap.group(.compact)
+        case .folder: PKYLayout.Gap.group()
+        }
     }
 
     /// Vertical gap selected for the content role.
     public var rowSpacing: CGFloat {
-        #if os(macOS)
-            if case .folder = self {
-                return PKYLayout.Gap.group()
-            }
-            return PKYLayout.Gap.group(.compact)
-        #else
-            switch self {
-            case .tile(captioned: false): PKYLayout.Gap.content()
-            case .tile(captioned: true), .folder: PKYLayout.Gap.group()
-            case .card: PKYLayout.Gap.group(.compact)
-            }
-        #endif
+        switch self {
+        case .tile(captioned: false): PKYLayout.Gap.content()
+        case .tile(captioned: true), .folder: PKYLayout.Gap.group()
+        case .card: PKYLayout.Gap.group(.compact)
+        }
     }
 
     /// Resolves column geometry; content height, safe areas, and scrolling remain caller-owned.

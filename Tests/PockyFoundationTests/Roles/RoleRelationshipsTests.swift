@@ -49,16 +49,4 @@ struct RoleRelationshipsTests {
         #expect(PKYLayout.Size.auxiliaryButton < PKYLayout.Size.button(.compact))
         #expect(PKYLayout.Target.minimum >= PKYLayout.Size.button(.compact))
     }
-
-    @Test("Desktop grids use the accepted tray density without a device lookup")
-    func desktopGridUsesWindowGeometry() {
-        #if os(macOS)
-            let role = PKYGridPlacementRole.tile(captioned: false)
-            let output = role.resolve(width: 480, device: .unknown)
-            #expect(output.columns == 4)
-            #expect(output.width(spanning: output.columns) == output.contentWidth)
-            #expect(role.rowSpacing == role.columnSpacing)
-            #expect(PKYShape.Radius.content < PKYShape.Radius.card)
-        #endif
-    }
 }

@@ -42,18 +42,15 @@ struct PKYElevationTests {
         #expect(layer.cornerRadius == originalRadius)
     }
 
-    @Test("Resolved appearance changes only the platform's accepted shadow roles")
+    @Test("Appearance selects the shadow recipe on every platform")
     func appearanceResolvesRecipes() {
         let light = PKYElevation.Style.subtle.recipe(for: .light)
         let dark = PKYElevation.Style.subtle.recipe(for: .dark)
         #expect(light.radius == dark.radius)
         #expect(light.offset == dark.offset)
-        #if os(macOS)
-            #expect(light.opacity < dark.opacity)
-            #expect(PKYElevation.Style.insetIndicator.recipe(for: .dark).opacity == 0)
-        #else
-            #expect(light.opacity == dark.opacity)
-        #endif
+        #expect(light.opacity < dark.opacity)
+        #expect(PKYElevation.Style.insetIndicator.recipe(for: .light).opacity > 0)
+        #expect(PKYElevation.Style.insetIndicator.recipe(for: .dark).opacity == 0)
         for style in [PKYElevation.Style.floating, .mediaContent, .mediaHalo] {
             let layer = CALayer()
             layer.pkyApplyElevation(style, color: CGColor(gray: 0, alpha: 1))
