@@ -44,7 +44,7 @@ let placement = PKYMasonryPlacement.frames(
 | Haptics | iOS `PKYHaptics` interaction feedback |
 | UIKit helpers | iOS monospaced-digit fonts, multiline labels, and minimum interaction-target bounds |
 | Typography | `PKYFontFamily`, `PKYTextStyle`, `PKYTypographyRole`, `PKYSectionHeaderRole`, `PKYTypographyTheme`; SwiftUI `font`, iOS `uiFont`, macOS `nsFont` and monospaced digits |
-| Theme value | `PKYTheme` immutable color and typography palettes |
+| Theme | `PKYTheme`, shared `PKYThemeFallback.system`; iOS Context, traits, SwiftUI environment and view/layer update bindings; macOS default-theme `NSColor.pky*` getters |
 | Color | `PKYColor` (`UIColor` on iOS, `NSColor` on macOS), `PKYBackgroundRole`, `PKYColorTheme`, `PKYStandardInverse` |
 | Appearance | `PKYAppearance` storage, `.Mode`; `userInterfaceStyle` on iOS, `nsAppearance` on macOS |
 
@@ -100,15 +100,15 @@ AppKit has no `systemGray2` through `systemGray6` ramp, so none is introduced.
 `underPageBackgroundColor` is retained as the selected tertiary mapping, although AppKit does
 not recommend it for drawing. Both inverse colors use custom dynamic providers. The focus
 scrim opacity is shared across platforms; adopting its semantic role preserves the iOS value.
-Theme propagation and semantic `NSColor.pky*` conveniences belong to a later delivery.
+iOS propagates injected themes through traits; macOS `NSColor.pky*` conveniences use the static default theme described below.
 
 ### Typography mappings
 
 `PKYTypographyTheme` builds eight roles from a system or custom PostScript font family.
 `PKYTextStyle` preserves role size and policy while composing weight, italic, and rounded design.
 `PKYTypographyRole` keeps those modifiers plus monospaced digits and optional reference sizes
-independent of the selected theme. `PKYTheme` combines complete color and typography values;
-context switching and control bindings belong to later steps.
+independent of the selected theme. `PKYTheme` combines complete color and typography values. iOS context switching is described
+below; typography-specific control bindings belong to the next step.
 
 | Role | Native text style | Standard weight |
 | --- | --- | --- |
@@ -131,6 +131,34 @@ Custom lookup tries the requested face, then the same-weight upright face for mi
 then the nearest loadable upright weight, breaking ties toward the lighter weight, and finally
 the equivalent system font. Rounded design changes system faces only. The native monospaced-digit
 adapters preserve family, size, and existing traits while adding the number-spacing feature.
+
+### Theme runtime and platform boundary
+
+On iOS, the app owns `PKYThemeContext`. Theme activation replaces an immutable identity snapshot,
+notifies UIKit observers through `.pkyThemeDidChange`, and invalidates Swift Observation readers.
+Appearance selection is stored through `PKYAppearance`, applied to connected scene windows, and
+notified separately through `.pkyAppearanceDidChange`. `View.pkyTheme(_:)` shares the context and
+snapshot with SwiftUI and bridges that snapshot to UIKit traits. Local trait or environment
+overrides keep the root selection unchanged.
+
+`UIColor.pkyTheme` and semantic color getters resolve at use time from the requesting traits.
+Missing injection remains nil: Debug diagnoses direct theme resolution and returns magenta for
+dynamic colors; Release reports a fault once and uses the explicit emergency recipe. That iOS
+recipe uses system blue accents, white on-accent, native system colors, and fixed typography.
+View and layer update bindings reuse registrations, hold owners weakly, and defer detached or
+not-yet-inherited theme work to a visible UI update. Cancelling preserves the last rendering.
+
+macOS has no Context, trait propagation, diagnostic machinery, or NSView binding in this step.
+`PKYThemeFallback.system` is its default recipe: both accent levels are `NSColor.controlAccentColor`,
+on-accent is white, and typography is `.system(scaling: .fixed)`. `NSColor.pkyContent`,
+`pkyBackground`, `pkyAccent`, `pkySeparator`, `pkyOnAccent`, `pkyStatus`, and `pkyOnStatus` return
+roles from that default theme. The native colors retain system appearance behavior; app-supplied
+macOS theme switching is deferred.
+
+Binding and diagnostic implementation access for PockyComponents is exposed only through
+`@_spi(PockyComponents) import PockyFoundation`. It is not part of the ordinary consumer API.
+Typography control adapters, sheet styling, and the theme-dependent list section remain outside
+this step.
 
 ### Placement behavior
 

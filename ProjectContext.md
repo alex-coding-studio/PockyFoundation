@@ -13,8 +13,9 @@ UIKit and AppKit are imported only under platform conditional compilation for na
 The package is the target home for all of Pocky's foundation (appearance, colors, typography,
 themes); it moves here area by area while PockyComponents stays an iOS-only package. Localized
 strings ship as English and Simplified Chinese `.lproj` string files, which every supported
-SwiftPM toolchain bundles; string catalogs are not used. No views, device queries,
-services, ports, credentials, or database migrations belong to this package.
+SwiftPM toolchain bundles; string catalogs are not used. The iOS theme environment root and
+window-appearance integration are infrastructure adapters, not product views. Device geometry
+queries, services, ports, credentials, and database migrations remain outside the package.
 
 Color values live in `Color/`: `PKYColor` aliases UIColor on iOS and NSColor on macOS;
 `PKYColorTheme` stores complete app-supplied role palettes, and `system(accent:)` uses native
@@ -22,15 +23,26 @@ system mappings while keeping the supplied accent. macOS grouped backgrounds mat
 backgrounds; opaque separators use gridColor, secondary prominent fills use secondaryLabelColor,
 and media placeholders use quaternarySystemFill. `PKYStandardInverse` switches concrete
 foreground/background values with native appearance. `PKYOpacity.focusScrim` supplies the shared
-focus scrim opacity. README.md records the complete platform mapping. Theme propagation remains
-outside this color-value slice.
+focus scrim opacity. README.md records the complete platform mapping. iOS theme propagation and macOS static semantic getters are described below.
 
 Typography values live in `Typography/`: families, text styles, semantic roles, section-header
 pairs, and complete typography palettes. iOS retains UIKit text-style sizes, custom reference
 sizes, and Dynamic Type ceilings. macOS uses native preferred text-style sizes for both families,
 ignores Scaling, and provides nsFont and monospaced-digit APIs. Explicit reference sizes retain
-the caller's value. `Theme/PKYTheme` is the immutable color/typography value; runtime theme
-contexts, propagation, and control bindings remain outside this step. README.md owns mappings.
+the caller's value. `Theme/PKYTheme` is the immutable color/typography value. README.md owns platform mappings.
+
+Theme core is iOS-only except the shared `PKYThemeFallback.system` recipe and macOS NSColor
+semantic getters. iOS retains app-owned Observation contexts, typed notifications, window
+appearance, trait/SwiftUI snapshot bridging, dynamic semantic colors, and weak update bindings
+with UIUpdateLink deferral. Missing injection remains nil; Debug diagnoses it, while Release
+uses the explicit system-blue emergency recipe and logs the first fault. Diagnostics and Mutex
+are compiled only for iOS. Contract-listed component implementation APIs use PockyComponents
+SPI; all other internal/private boundaries are retained.
+
+macOS static getters use the default theme with controlAccentColor for both accent levels,
+white on-accent, and fixed system typography. They add no Context, trait, diagnostics, NSView
+binding, or app-theme propagation. Typography control adapters and sheet styling remain for
+the next step. No consumer or dependency changes are part of this theme-core slice.
 
 ## Structure and policy
 

@@ -57,7 +57,7 @@ The macOS standard/grouped hierarchy uses windowBackgroundColor, controlBackgrou
 underPageBackgroundColor; opaque separator, secondary prominent fill, and media placeholder use
 gridColor, secondaryLabelColor, and quaternarySystemFill. Accent colors remain caller-owned.
 The shared focus scrim role preserves the migrated iOS opacity without a private constant or
-lint suppression. No theme context, bindings, switching, or consumer changes are included here.
+lint suppression. Theme core is described below; consumer adoption remains a separate delivery.
 
 Color tests compare supplied colors and native system mappings, preserve iOS contrast and
 opposite-appearance behavior, and verify macOS content distinctions, grouped/standard equality,
@@ -84,6 +84,28 @@ fixed visual-size assertions. New macOS cases cover native size ordering, ignore
 modifier descriptors, number-spacing features, reference-size precedence, and unavailable-face
 fallback. These scenarios protect platform transformations that compilation alone cannot verify.
 The older CI toolchain remains the compatibility gate; package tests do not prove app rendering.
+
+## Theme-core migration
+
+`Theme/` now contains iOS Context, trait snapshots, typed notifications, SwiftUI bridging,
+dynamic colors, and view/layer update bindings. Public iOS logic is preserved from the frozen
+source, including DEBUG diagnostics, Release fallback/logging, Observation invalidation,
+window appearance, registration reuse, and one-shot visible-update deferral. The contract's
+former package members become PockyComponents SPI, with private setters and internal helpers
+remaining constrained. No ordinary public wrapper exposes those implementation APIs.
+
+The fallback recipe compiles on both platforms. Its macOS variant uses native controlAccentColor
+for both accent levels, white foreground, and fixed system typography. `NSColor.pky*` maps every
+semantic color getter to that default theme. Runtime contexts, bindings, and diagnostics are
+excluded from macOS; native dynamic colors retain their platform appearance behavior.
+
+Migrated tests cover notifications, Observation, snapshots, trait/environment bridging, context
+appearance persistence, and window overrides. Context appearance cases use a separate suite from
+the existing storage-value tests. An SPI binding scenario reuses the original pending-visible-update
+state checks without importing components. New macOS cases protect default accent/policy and
+complete semantic getter routing. Debug tests do not execute Release diagnostic branches; the
+Release build and source comparison establish the corresponding compile and preservation evidence.
+App rendering, Pocky integration, and consumer SPI/dependency changes remain separate deliveries.
 
 ## Delivery
 
