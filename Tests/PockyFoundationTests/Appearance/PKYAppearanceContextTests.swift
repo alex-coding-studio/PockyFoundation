@@ -1,0 +1,157 @@
+#if os(iOS)
+    import Foundation
+    import Testing
+    import UIKit
+    @testable import PockyFoundation
+
+    @MainActor
+    struct PKYAppearanceContextTests {
+        static func isolatedStore() throws -> UserDefaults {
+            let suiteName = "PKYAppearanceContextTests.\(UUID().uuidString)"
+            let store = try #require(UserDefaults(suiteName: suiteName))
+            store.removePersistentDomain(forName: suiteName)
+            return store
+        }
+
+        static func makeContext(appearance: PKYAppearance) -> PKYThemeContext {
+            PKYThemeContext(
+                theme: PKYThemeContextTests.makeTheme(contentPrimary: .label),
+                appearance: appearance
+            )
+        }
+
+        @Test("S3-01/T13 Context appearance defaults are configurable when no selection is stored")
+        func missingValueUsesDefaultMode() throws {
+            let store = try Self.isolatedStore()
+
+            #expect(Self.makeContext(appearance: PKYAppearance(store: store)).appearance == .system)
+            #expect(
+                Self.makeContext(appearance: PKYAppearance(store: store, defaultMode: .dark))
+                    .appearance == .dark
+            )
+        }
+
+        @Test("S3-01/T14 Context restores a saved appearance from the injected store and key")
+        func contextRestoresStoredModeFromCustomKey() throws {
+            let store = try Self.isolatedStore()
+            store.set("light", forKey: "pref.appearance")
+
+            let context = Self.makeContext(
+                appearance: PKYAppearance(store: store, key: "pref.appearance")
+            )
+
+            #expect(context.appearance == .light)
+        }
+
+        @Test("S3-01/T15 Unrecognized stored appearance falls back to the configured default")
+        func unrecognizedStoredValueFallsBackToDefault() throws {
+            let store = try Self.isolatedStore()
+            store.set("sepia", forKey: "Pocky.appearance")
+
+            let context = Self.makeContext(
+                appearance: PKYAppearance(store: store, defaultMode: .light)
+            )
+
+            #expect(context.appearance == .light)
+        }
+
+        @Test(
+            "S3-01/T16 Appearance activation persists the selected mode itself for the next context"
+        )
+        func activationPersistsSelection() throws {
+            let store = try Self.isolatedStore()
+            let appearance = PKYAppearance(store: store, key: "pref.appearance", defaultMode: .dark)
+            let context = Self.makeContext(appearance: appearance)
+
+            context.activate(appearance: .system)
+
+            #expect(context.appearance == .system)
+            #expect(store.string(forKey: "pref.appearance") == "system")
+            #expect(Self.makeContext(appearance: appearance).appearance == .system)
+        }
+
+        @Test("S3-01/T17 Appearance activation posts only the appearance notification")
+        func appearanceActivationPostsOnlyAppearanceMessage() async throws {
+            let context = try Self.makeContext(
+                appearance: PKYAppearance(store: Self.isolatedStore())
+            )
+
+            await confirmation(expectedCount: 1) { appearanceChanged in
+                await confirmation(expectedCount: 0) { themeChanged in
+                    let appearanceToken = NotificationCenter.default.addObserver(
+                        of: context,
+                        for: .pkyAppearanceDidChange
+                    ) { _ in
+                        #expect(context.appearance == .dark)
+                        appearanceChanged()
+                    }
+                    let themeToken = NotificationCenter.default.addObserver(
+                        of: context,
+                        for: .pkyThemeDidChange
+                    ) { _ in
+                        themeChanged()
+                    }
+
+                    context.activate(appearance: .dark)
+                    withExtendedLifetime((appearanceToken, themeToken)) {}
+                }
+            }
+        }
+
+        @Test("S3-01/T18 Theme activation posts only the theme notification")
+        func themeActivationPostsOnlyThemeMessage() async throws {
+            let context = try Self.makeContext(
+                appearance: PKYAppearance(store: Self.isolatedStore())
+            )
+
+            await confirmation(expectedCount: 1) { themeChanged in
+                await confirmation(expectedCount: 0) { appearanceChanged in
+                    let themeToken = NotificationCenter.default.addObserver(
+                        of: context,
+                        for: .pkyThemeDidChange
+                    ) { _ in
+                        themeChanged()
+                    }
+                    let appearanceToken = NotificationCenter.default.addObserver(
+                        of: context,
+                        for: .pkyAppearanceDidChange
+                    ) { _ in
+                        appearanceChanged()
+                    }
+
+                    context.activate(theme: PKYThemeContextTests.makeTheme(contentPrimary: .blue))
+                    withExtendedLifetime((themeToken, appearanceToken)) {}
+                }
+            }
+        }
+
+        @Test("S3-01/T19 Appearance activation invalidates Swift Observation dependencies")
+        func appearanceActivationInvalidatesObservation() async throws {
+            let context = try Self.makeContext(
+                appearance: PKYAppearance(store: Self.isolatedStore())
+            )
+
+            await confirmation(expectedCount: 1) { changed in
+                withObservationTracking {
+                    _ = context.appearance
+                } onChange: {
+                    changed()
+                }
+
+                context.activate(appearance: .light)
+            }
+        }
+
+        @Test("S3-01/T20 New windows receive the current appearance override")
+        func applyingAppearanceToWindowUsesCurrentMode() throws {
+            let store = try Self.isolatedStore()
+            store.set("dark", forKey: "Pocky.appearance")
+            let context = Self.makeContext(appearance: PKYAppearance(store: store))
+            let window = UIWindow(frame: CGRect(x: 0, y: 0, width: 320, height: 640))
+
+            context.applyAppearance(to: window)
+
+            #expect(window.overrideUserInterfaceStyle == .dark)
+        }
+    }
+#endif
