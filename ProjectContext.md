@@ -3,7 +3,7 @@
 ## Purpose and foundation
 
 PockyFoundation is a standalone, public Swift package for semantic design values and pure
-layout computation on iOS 17+ and macOS 14+. SwiftPM tools version 6.0 and Swift 6 language
+layout computation on iOS 26+ and macOS 14+. SwiftPM tools version 6.2 and Swift 6 language
 mode are defined in Package.swift. There is one library product/target, PockyFoundation,
 and one test target, PockyFoundationTests. The official SwiftPM library generator establishes
 the directory layout; Package.swift is the source of truth. There are no package dependencies.

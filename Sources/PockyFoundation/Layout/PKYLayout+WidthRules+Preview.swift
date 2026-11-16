@@ -1,7 +1,6 @@
 #if os(iOS) && DEBUG
     import UIKit
 
-    @available(iOS 26.0, *)
     private final class PKYLayoutWidthRulesPreviewController: UIViewController {
         private let card = UIView()
         private let caption = UILabel()
@@ -54,7 +53,6 @@
         }
     }
 
-    @available(iOS 26.0, *)
     #Preview("Width Rules") {
         PKYLayoutWidthRulesPreviewController()
     }

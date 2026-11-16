@@ -16,7 +16,6 @@
         /// Use the minimum-radius overload when corners must remain rounded.
         ///
         /// - Returns: A view clipped by its container relationship.
-        @available(iOS 26.0, *)
         func pkyClipConcentric() -> some View {
             clipShape(ConcentricRectangle())
         }
@@ -27,7 +26,6 @@
         /// - Parameter minimum: A `PKYShape.Radius` role matching the surface purpose, or a local
         ///   minimum for a dedicated component.
         /// - Returns: A concentrically clipped view that preserves the minimum corner radius.
-        @available(iOS 26.0, *)
         func pkyClipConcentric(minimum: CGFloat) -> some View {
             clipShape(
                 ConcentricRectangle(
