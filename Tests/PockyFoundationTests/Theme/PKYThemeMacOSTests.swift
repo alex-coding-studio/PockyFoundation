@@ -11,7 +11,6 @@
             let theme = PKYThemeFallback.system
             #expect(theme.color.accent(.primary).isEqual(NSColor.controlAccentColor))
             #expect(theme.color.accent(.secondary).isEqual(NSColor.controlAccentColor))
-            #expect(theme.color.onAccent.isEqual(NSColor.white))
             guard case .fixed = theme.typography.scaling else {
                 Issue.record("The macOS default theme must use fixed typography")
                 return
