@@ -42,8 +42,8 @@ let placement = PKYMasonryPlacement.frames(
 | Elevation | `PKYElevation.Style`, `.Appearance`, `.Recipe`, `CALayer.pkyApplyElevation`; iOS `UIView` and SwiftUI `View` elevation adapters |
 | Accessibility | `PKYAccessibilityIdentifier`; iOS `PKYAccessibility`, `pkyA11y`, and `pkyA11yID` adapters |
 | Haptics | iOS `PKYHaptics` interaction feedback |
-| UIKit helpers | iOS monospaced-digit fonts, multiline labels, and minimum interaction-target bounds |
-| Typography | `PKYFontFamily`, `PKYTextStyle`, `PKYTypographyRole`, `PKYSectionHeaderRole`, `PKYTypographyTheme`; SwiftUI `font`, iOS `uiFont`, macOS `nsFont` and monospaced digits |
+| UIKit helpers | iOS monospaced-digit fonts, multiline labels, minimum interaction-target bounds, standard sheet style and paper background, `NSCollectionLayoutSection.pkyFullWidth` and `pkyInsetGroupedList` |
+| Typography | `PKYFontFamily`, `PKYTextStyle`, `PKYTypographyRole`, `PKYSectionHeaderRole`, `PKYTypographyTheme`; SwiftUI `font`, iOS `uiFont`, macOS `nsFont` and monospaced digits; iOS `pkyTypography` on labels, text fields and text views, `UIButton.pkyTitleTypography`, and theme-driven `pkyAttributedText` |
 | Theme | `PKYTheme`, shared `PKYThemeFallback.system`; iOS Context, traits, SwiftUI environment and view/layer update bindings; macOS default-theme `NSColor.pky*` getters |
 | Color | `PKYColor` (`UIColor` on iOS, `NSColor` on macOS), `PKYBackgroundRole`, `PKYColorTheme`, `PKYStandardInverse` |
 | Appearance | `PKYAppearance` storage, `.Mode`; `userInterfaceStyle` on iOS, `nsAppearance` on macOS |

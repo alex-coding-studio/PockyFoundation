@@ -107,6 +107,15 @@ complete semantic getter routing. Debug tests do not execute Release diagnostic 
 Release build and source comparison establish the corresponding compile and preservation evidence.
 App rendering, Pocky integration, and consumer SPI/dependency changes remain separate deliveries.
 
+## UIKit typography and sheet migration
+
+iOS label, text-field, and text-view typography roles, button title typography, attributed-text
+rebuilding, the standard sheet style with its iOS 26.1 paper background, and the inset-grouped
+list section move unchanged onto the theme-core bindings. Their registration probes become
+PockyComponents SPI. Migrated sheet cases check detents, grabber, edge attachment, and background
+reapplication on theme change; one SPI case checks registration reuse and release across modules.
+Font, selection, and component behavior remains covered by the Pocky component suites.
+
 ## Delivery
 
 The pre-commit hook checks lint and refuses commits on main after its initial commit.

@@ -16,5 +16,19 @@
                 subitems: [NSCollectionLayoutItem(layoutSize: size)]
             ))
         }
+
+        /// An inset-grouped list section with a clear background and the standard separator color, so the
+        /// page supplies its own background.
+        ///
+        /// Use `UICollectionLayoutListConfiguration` directly for headers, hidden separators, or other
+        /// configuration.
+        static func pkyInsetGroupedList(
+            _ environment: any NSCollectionLayoutEnvironment
+        ) -> NSCollectionLayoutSection {
+            var configuration = UICollectionLayoutListConfiguration(appearance: .insetGrouped)
+            configuration.backgroundColor = .clear
+            configuration.separatorConfiguration.color = .pkySeparator(.standard)
+            return .list(using: configuration, layoutEnvironment: environment)
+        }
     }
 #endif

@@ -41,8 +41,9 @@ SPI; all other internal/private boundaries are retained.
 
 macOS static getters use the default theme with controlAccentColor for both accent levels,
 white on-accent, and fixed system typography. They add no Context, trait, diagnostics, NSView
-binding, or app-theme propagation. Typography control adapters and sheet styling remain for
-the next step. No consumer or dependency changes are part of this theme-core slice.
+binding, or app-theme propagation. iOS typography control bindings, attributed-text updates,
+sheet styling, and the inset-grouped list section reuse those bindings; their registration
+probes are PockyComponents SPI.
 
 ## Structure and policy
 
