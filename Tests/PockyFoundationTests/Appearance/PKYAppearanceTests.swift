@@ -16,7 +16,10 @@ struct PKYAppearanceTests {
     }
 
     static func localizedTitles(localization: String) throws -> [String] {
-        let path = try #require(Bundle.module.path(forResource: localization, ofType: "lproj"))
+        let available = Bundle.module.localizations
+        let matches = available.filter { $0.caseInsensitiveCompare(localization) == .orderedSame }
+        let directory = try #require(matches.first, "Bundled localizations: \(available)")
+        let path = try #require(Bundle.module.path(forResource: directory, ofType: "lproj"))
         let bundle = try #require(Bundle(path: path))
         let keys = [PKYAppearance.titleKey] + PKYAppearance.Mode.allCases.map(\.titleKey)
         return keys.map { bundle.localizedString(forKey: $0, value: nil, table: nil) }
