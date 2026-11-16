@@ -11,7 +11,7 @@ the directory layout; Package.swift is the source of truth. There are no package
 CoreGraphics and Foundation supply value types; QuartzCore supplies the thin CALayer adapter.
 UIKit and AppKit are imported only under platform conditional compilation for native mappings.
 The package is the target home for all of Pocky's foundation (appearance, colors, typography,
-themes); it moves here area by area while PockyComponents stays an iOS-only package. Localized
+themes), while Pocky is the iOS-only component library. Localized
 strings ship as English and Simplified Chinese `.lproj` string files, which every supported
 SwiftPM toolchain bundles; string catalogs are not used. The iOS theme environment root and
 window-appearance integration are infrastructure adapters, not product views. Device geometry
@@ -36,14 +36,14 @@ semantic getters. iOS retains app-owned Observation contexts, typed notification
 appearance, trait/SwiftUI snapshot bridging, dynamic semantic colors, and weak update bindings
 with UIUpdateLink deferral. Missing injection remains nil; Debug diagnoses it, while Release
 uses the explicit system-blue emergency recipe and logs the first fault. Diagnostics and Mutex
-are compiled only for iOS. Contract-listed component implementation APIs use PockyComponents
+are compiled only for iOS. Component implementation APIs use Pocky
 SPI; all other internal/private boundaries are retained.
 
 macOS static getters use the default theme with controlAccentColor for both accent levels,
 white on-accent, and fixed system typography. They add no Context, trait, diagnostics, NSView
 binding, or app-theme propagation. iOS typography control bindings, attributed-text updates,
 sheet styling, and the inset-grouped list section reuse those bindings; their registration
-probes are PockyComponents SPI.
+probes are Pocky SPI.
 
 ## Structure and policy
 

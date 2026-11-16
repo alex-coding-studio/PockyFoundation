@@ -8,7 +8,7 @@
 
     /// Installs, replaces, or removes an associated theme update, reusing unchanged trait registrations.
     @MainActor
-    @_spi(PockyComponents) public func pkyInstallThemeUpdate(
+    @_spi(Pocky) public func pkyInstallThemeUpdate(
         on view: UIView,
         key: UnsafeRawPointer,
         observing traits: [UITrait] = [],
@@ -38,7 +38,7 @@
 
     /// Returns the active trait registration associated with the supplied owner and key.
     @MainActor
-    @_spi(PockyComponents) public func pkyThemeUpdateRegistration(
+    @_spi(Pocky) public func pkyThemeUpdateRegistration(
         on view: UIView,
         key: UnsafeRawPointer
     ) -> (any UITraitChangeRegistration)? {
@@ -47,7 +47,7 @@
 
     /// Returns the view's active one-line theme-change registration.
     @MainActor
-    @_spi(PockyComponents) public func pkyThemeChangeRegistration(
+    @_spi(Pocky) public func pkyThemeChangeRegistration(
         on view: UIView
     ) -> (any UITraitChangeRegistration)? {
         pkyThemeUpdateRegistration(on: view, key: &pkyThemeChangeKey)
@@ -55,7 +55,7 @@
 
     /// Returns the view's active layer-color registration.
     @MainActor
-    @_spi(PockyComponents) public func pkyLayerColorRegistration(
+    @_spi(Pocky) public func pkyLayerColorRegistration(
         on view: UIView
     ) -> (any UITraitChangeRegistration)? {
         pkyThemeUpdateRegistration(on: view, key: &pkyLayerColorBindingKey)

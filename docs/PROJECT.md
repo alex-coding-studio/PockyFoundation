@@ -90,8 +90,8 @@ The older CI toolchain remains the compatibility gate; package tests do not prov
 `Theme/` now contains iOS Context, trait snapshots, typed notifications, SwiftUI bridging,
 dynamic colors, and view/layer update bindings. Public iOS logic is preserved from the frozen
 source, including DEBUG diagnostics, Release fallback/logging, Observation invalidation,
-window appearance, registration reuse, and one-shot visible-update deferral. The contract's
-former package members become PockyComponents SPI, with private setters and internal helpers
+window appearance, registration reuse, and one-shot visible-update deferral. Theme binding and diagnostic
+implementation APIs use Pocky SPI, with private setters and internal helpers
 remaining constrained. No ordinary public wrapper exposes those implementation APIs.
 
 The fallback recipe compiles on both platforms. Its macOS variant uses native controlAccentColor
@@ -112,7 +112,7 @@ App rendering, Pocky integration, and consumer SPI/dependency changes remain sep
 iOS label, text-field, and text-view typography roles, button title typography, attributed-text
 rebuilding, the standard sheet style with its iOS 26.1 paper background, and the inset-grouped
 list section move unchanged onto the theme-core bindings. Their registration probes become
-PockyComponents SPI. Migrated sheet cases check detents, grabber, edge attachment, and background
+Pocky SPI. Migrated sheet cases check detents, grabber, edge attachment, and background
 reapplication on theme change; one SPI case checks registration reuse and release across modules.
 Font, selection, and component behavior remains covered by the Pocky component suites.
 
