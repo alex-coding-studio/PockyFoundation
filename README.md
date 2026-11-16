@@ -92,4 +92,5 @@ Run `./scripts/lint.sh`, `./scripts/test.sh macos`, `./scripts/test.sh ios`, and
 `./scripts/build.sh macos|ios`. Xcode must include an available iOS Simulator runtime.
 Formatter/linter versions and binary checksums are pinned in CI. No private tooling is needed.
 
+Personally maintained; external issues and pull requests are not accepted; forks are welcome.
 MIT License. Copyright (c) 2026 Cunqi.
