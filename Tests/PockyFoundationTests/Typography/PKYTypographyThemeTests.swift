@@ -267,6 +267,47 @@
             #expect(Set([small, large]).count == 2)
         }
 
+        @Test(
+            "S2-02/T15 Monospaced role resolves a monospaced descriptor, keeps role size, and overrides rounded"
+        )
+        func monospacedRolePreservesSizeAndOverridesRounded() {
+            let theme = PKYThemeFallback.system
+            let traits = UITraitCollection(preferredContentSizeCategory: .large)
+            let plain = PKYTypographyRole.body.uiFont(in: theme, compatibleWith: traits)
+            let monospaced = PKYTypographyRole.body.monospaced.uiFont(
+                in: theme,
+                compatibleWith: traits
+            )
+            let appleMonospaced = UIFont.systemFont(ofSize: plain.pointSize, weight: .regular)
+                .fontDescriptor
+                .withDesign(.monospaced)
+                .map { UIFont(descriptor: $0, size: plain.pointSize) }
+
+            #expect(monospaced.pointSize == plain.pointSize)
+            #expect(monospaced.fontName != plain.fontName)
+            #expect(monospaced.fontName == appleMonospaced?.fontName)
+            #expect(monospaced.fontDescriptor.symbolicTraits.contains(.traitMonoSpace))
+            #expect(
+                PKYTypographyRole.body.rounded.monospaced.uiFont(
+                    in: theme,
+                    compatibleWith: traits
+                ).fontName == monospaced.fontName
+            )
+            #expect(
+                PKYTypographyRole.body.monospaced.rounded.uiFont(
+                    in: theme,
+                    compatibleWith: traits
+                ).fontName == monospaced.fontName
+            )
+            #expect(theme.typography.body.monospaced.font != theme.typography.body.font)
+            #expect(
+                theme.typography.body.rounded.monospaced.font
+                    == theme.typography.body.monospaced.font
+            )
+            let custom = PKYTypographyTheme(family: Self.customFamily, scaling: .fixed)
+            #expect(custom.body.monospaced.uiFont.fontName == custom.body.uiFont.fontName)
+        }
+
         private func preferredSize(
             _ style: UIFont.TextStyle,
             traits: UITraitCollection

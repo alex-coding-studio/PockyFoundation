@@ -107,7 +107,7 @@ iOS propagates injected themes through traits; macOS `NSColor.pky*` conveniences
 ### Typography mappings
 
 `PKYTypographyTheme` builds eight roles from a system or custom PostScript font family.
-`PKYTextStyle` preserves role size and policy while composing weight, italic, and rounded design.
+`PKYTextStyle` preserves role size and policy while composing weight, italic, rounded, and monospaced design.
 `PKYTypographyRole` keeps those modifiers plus monospaced digits and optional reference sizes
 independent of the selected theme. `PKYTheme` combines complete color and typography values. iOS context switching is described
 below; typography-specific control bindings belong to the next step.
@@ -131,7 +131,7 @@ ignore `Scaling`. Explicit reference sizes override those defaults on both platf
 
 Custom lookup tries the requested face, then the same-weight upright face for missing italics,
 then the nearest loadable upright weight, breaking ties toward the lighter weight, and finally
-the equivalent system font. Rounded design changes system faces only. The native monospaced-digit
+the equivalent system font. Rounded and monospaced designs change system faces only (monospaced overrides rounded if both are set). The native monospaced-digit
 adapters preserve family, size, and existing traits while adding the number-spacing feature.
 
 ### Theme runtime and platform boundary
