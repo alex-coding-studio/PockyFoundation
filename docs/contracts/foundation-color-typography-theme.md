@@ -23,6 +23,7 @@ step is one PockyFoundation PR plus release, one Pocky PR, and one GalleryX pin 
 | SRC-7 | Owner decision D-2: iOS minimum 26 via separate Setup PR | Section 9 |
 | SRC-8 | Owner decision D-5: platform color alias `PKYColor` | Section 9 |
 | SRC-9 | Owner decision: Lumi out of scope; GalleryX pins only | Section 9 |
+| SRC-10 | Owner decisions D-1, D-3, D-4, D-6: accept recommendations | Section 9 |
 | SRC-6 | Architect follow-up: versions start at 0.5.0; move the `pkyInsetGroupedList` left by #7 in step 3 or 4 | Section 9 |
 
 Source-to-clause mapping:
@@ -113,11 +114,11 @@ Inventory: all of `Sources/Pocky/Color/` (`PKYBackgroundRole`, `PKYColorTheme` a
   | content primary / secondary / tertiary / quaternary / placeholder | `labelColor` / `secondaryLabelColor` / `tertiaryLabelColor` / `quaternaryLabelColor` / `placeholderTextColor` |
   | quiet fill primary ... quaternary | `systemFillColor` ... `quaternarySystemFillColor` (macOS 14) |
   | prominent primary / on primary | `labelColor` / `windowBackgroundColor` |
-  | prominent secondary / on secondary | decision D-3 / `windowBackgroundColor` |
-  | separator standard / opaque | `separatorColor` / decision D-3 |
+  | prominent secondary / on secondary | settled decision D-3 / `windowBackgroundColor` |
+  | separator standard / opaque | `separatorColor` / settled decision D-3 |
   | accent primary / secondary / on accent | the matching member of the `accent` argument, as on iOS |
   | status destructive / warning / success; on status | `systemRed` / `systemOrange` / `systemGreen`; white |
-  | media placeholder | decision D-3 |
+  | media placeholder | settled decision D-3 |
   | media content / content shadow / scrim / focus scrim; shadow | white / black / black / black at the iOS focus opacity; black |
 
 - **S1-04** `PKYStandardInverse.inverse` and `onInverse` exist on macOS and resolve opposite
@@ -142,7 +143,7 @@ moved again. `UIKit+PKYTypography.swift` stays for step 4.
   behave as in SRC-3, including custom-face fallback order and Dynamic Type ceilings.
 - **S2-03** macOS adds `PKYTextStyle.nsFont`, `PKYTextStyle.nsFont(referenceSize:)`,
   `PKYTypographyRole.nsFont(in:referenceSize:)` and `NSFont.pkyMonospacedDigits`. Without a
-  reference size the point size follows decision D-4. Weight, italic, rounded design and
+  reference size the point size follows settled decision D-4. Weight, italic, rounded design and
   monospaced digits apply as on iOS. Custom faces load through `NSFont(name:size:)` with the same
   fallback order. `Scaling` compiles on macOS and is ignored there.
 - **S2-04** Pocky deletes the moved files and tests; `UIKit+PKYTypography`, Theme code and
@@ -165,7 +166,7 @@ remaining cases and is deleted).
   Observation invalidation, window appearance, trait-bridged SwiftUI environment, cell-reuse
   binding reuse and `UIUpdateLink` deferral.
 - **S3-02** Former `package` members used by PockyComponents and its tests become reachable from
-  the Pocky package per section 6 and decision D-1, without entering GalleryX's normal
+  the Pocky package per section 6 and settled decision D-1, without entering GalleryX's normal
   API surface.
 - **S3-03** Pocky gives its own `UIKit+PKYTypography.swift`, PockyComponents and
   PockyComponentsTests the access section 6 requires, deletes the moved files and tests, and its
@@ -174,7 +175,7 @@ remaining cases and is deleted).
   secondary `NSColor.controlAccentColor`, on accent white, and `.system(scaling: .fixed)`
   typography. `NSColor.pkyContent(_:)`, `pkyBackground(_:)`, `pkyAccent(_:)`, `pkySeparator(_:)`,
   `pkyOnAccent`, `pkyStatus(_:)` and `pkyOnStatus(_:)` exist with the iOS names and argument
-  types, resolving from that default theme under decision D-6; they live in a new
+  types, resolving from that default theme under settled decision D-6; they live in a new
   `Theme/NSColor+PKYSemantic.swift` under `#if os(macOS)`. The trait, trait value, context,
   binding, diagnostics, environment key, `UIColor`/`UIView` extensions and SwiftUI root do not
   exist on macOS in this delivery.
@@ -231,7 +232,7 @@ Checked against SRC-3. No internal member needs extra access: internal Color and
 members (`PKYFontWeight`, `PKYFontFaceKey`, `PKYResolvedFontFace`, `PKYTextStyle.Role`,
 `customSize`, `uiKitTextStyle`, `resolvedFace`, `Accent.onAccent`, the `resolve` helpers) are
 only used inside files that move in the same step. The former `package` members below are used
-from another package after step 3, so they need cross-package access (form per decision D-1).
+from another package after step 3, so they need cross-package access (`@_spi(PockyComponents) public`, settled decision D-1).
 The only interim user is Pocky's own `Typography/UIKit+PKYTypography.swift` between the step 3
 and step 4 Pocky PRs; it imports the same access and loses it when it moves in step 4. The Pocky
 target already depends on the PockyFoundation product, so that needs no manifest change.
@@ -323,21 +324,30 @@ PockyFoundation, GalleryX or Lumi.
 SRC-9 (owner, relayed by the architect): Lumi is not part of this plan ("不用管, 不是主力项目,
 之后单独处理"); consumer pin updates cover GalleryX only.
 
-## 10. Pending owner decisions
+SRC-10 (owner, relayed by the architect): "同意" to the remaining recommendations: D-1
+`@_spi(PockyComponents) public`; D-3 `gridColor`, `secondaryLabelColor`,
+`quaternarySystemFillColor`, no `systemGray2` ... `systemGray6`; D-4
+`NSFont.preferredFont(forTextStyle:)` sizes with `Scaling` ignored; D-6 static mapping only.
 
-Each has a recommendation; the contract text above assumes it until the owner answers. D-2 is
-settled (SRC-7, C-04) and D-5 is settled (SRC-8, S1-01).
+## 10. Settled decisions
 
-- **D-1 Cross-package access form.** Recommended: `@_spi(PockyComponents) public`, imported by
-  PockyComponents and its tests with `@_spi(PockyComponents) import PockyFoundation`, so GalleryX
-  does not see binding internals. Alternative: plain `public`.
-- **D-3 macOS colors without an AppKit equivalent.** Recommended: opaque separator `gridColor`;
+All decisions are settled by the owner (SRC-2, SRC-7 to SRC-10). None is pending.
+
+- **Accent (SRC-2).** The macOS accent is a theme parameter, as in iOS `system(accent:)`; the
+  macOS default theme uses `NSColor.controlAccentColor`; `.pkyAccent` call sites do not change.
+- **D-1 Cross-package access (SRC-10).** `@_spi(PockyComponents) public`, imported with
+  `@_spi(PockyComponents) import PockyFoundation` by PockyComponents, its tests, and Pocky's
+  interim `UIKit+PKYTypography.swift`, so GalleryX does not see binding internals.
+- **D-2 iOS minimum (SRC-7).** iOS 26 through the separate Setup PR P-1 before step 1 (C-04).
+- **D-3 macOS colors without an AppKit equivalent (SRC-10).** Opaque separator `gridColor`;
   prominent secondary `secondaryLabelColor`; media placeholder `quaternarySystemFillColor`.
   AppKit has no `systemGray2` ... `systemGray6`, so no gray ramp is added.
-- **D-4 macOS sizes and Dynamic Type.** Recommended: without a reference size, use
+- **D-4 macOS sizes and Dynamic Type (SRC-10).** Without a reference size, use
   `NSFont.preferredFont(forTextStyle:)` point sizes for the same text style mapping as iOS, for
   both system and custom families; `Scaling` is ignored on macOS because it has no Dynamic Type.
-- **D-6 macOS theme propagation.** Recommended: static mapping only in this delivery; the
+- **D-5 Platform color alias (SRC-8).** `PKYColor`.
+- **D-6 macOS theme propagation (SRC-10).** Static mapping only in this delivery; the
   `NSColor.pky*` getters resolve from the macOS default theme. A later delivery can add an
-  app-supplied macOS theme (for example a settable current theme read by those getters) without
-  changing call sites, which SRC-2 requires.
+  app-supplied macOS theme without changing call sites.
+- **Scope (SRC-6, SRC-9).** Releases 0.5.0 to 0.8.0; Lumi is out of scope; consumer pins cover
+  GalleryX only.
