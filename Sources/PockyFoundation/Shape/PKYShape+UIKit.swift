@@ -1,7 +1,6 @@
 #if os(iOS)
     import UIKit
 
-    @available(iOS 26.0, *)
     public extension UIView {
         /// Applies native capsule corners that update with the view's size, suitable for elongated
         /// custom controls; resolves to a circle when width equals height.

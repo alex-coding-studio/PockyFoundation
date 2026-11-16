@@ -1,6 +1,6 @@
 # PockyFoundation
 
-Semantic design values and pure layout geometry for **iOS 17+ and macOS 14+**.
+Semantic design values and pure layout geometry for **iOS 26+ and macOS 14+**.
 Built with Swift 6 and Swift Package Manager, with no package dependencies.
 
 Use shared role names while allowing desktop and touch interfaces to use appropriate values.

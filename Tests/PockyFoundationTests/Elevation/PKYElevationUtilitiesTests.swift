@@ -44,9 +44,6 @@
             "ELEV-03/T02 UIView preserves component geometry and clipping across apply and remove"
         )
         func viewApplicationAndRemovalPreserveComponentGeometry() {
-            guard #available(iOS 26.0, *) else {
-                return
-            }
             let view = UIView()
             let path = CGPath(rect: CGRect(x: 1, y: 2, width: 30, height: 40), transform: nil)
             view.clipsToBounds = true

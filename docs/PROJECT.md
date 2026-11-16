@@ -3,7 +3,7 @@
 ## Environment and commands
 
 Use a Swift 6-capable Xcode with iOS Simulator and macOS SDKs. The package deployment
-targets are iOS 17 and macOS 14; deployment targets and test-runtime versions are distinct.
+targets are iOS 26 and macOS 14; deployment targets and test-runtime versions are distinct.
 Open Package.swift in Xcode to debug tests. The package starts no app or network service.
 Swift Testing is bundled with the toolchain; no test dependency installation is required.
 
