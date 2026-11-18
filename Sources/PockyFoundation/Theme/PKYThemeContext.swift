@@ -57,11 +57,18 @@
             appearanceStorage = appearance
         }
 
-        /// Replaces the complete product theme and then notifies UIKit observers.
+        /// Updates connected window scenes with no theme or this context’s previous snapshot, then notifies observers.
         ///
         /// - Parameter theme: The next complete theme.
         public func activate(theme: PKYTheme) {
+            let previous = themeTraitValue
             themeTraitValue = PKYThemeTraitValue(theme: theme)
+            for case let scene as UIWindowScene in UIApplication.shared.connectedScenes {
+                let installed = scene.traitOverrides.pkyTheme
+                if installed == nil || installed == previous {
+                    scene.traitOverrides.pkyTheme = themeTraitValue
+                }
+            }
             NotificationCenter.default.post(ThemeDidChangeMessage(), subject: self)
         }
 

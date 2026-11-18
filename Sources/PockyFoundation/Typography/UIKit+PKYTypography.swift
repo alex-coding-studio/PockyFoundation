@@ -77,13 +77,19 @@
     }
 
     public extension UILabel {
-        /// The typography role the label resolves when mounted and on theme, content size, or Bold Text changes.
+        /// Setting a role replaces any attributed-text binding. The label resolves the role when mounted and on theme, content size, or
+        /// Bold Text changes.
         ///
         /// Set `nil` to stop managing the font and keep the current one. If the theme is missing on the
         /// first mount, the established diagnostic or fallback runs at the first visible UI update.
         var pkyTypography: PKYTypographyRole? {
             get { pkyReadTypography(on: self) }
-            set { pkySetTypography(newValue, on: self) }
+            set {
+                if newValue != nil {
+                    pkyAttributedText(nil)
+                }
+                pkySetTypography(newValue, on: self)
+            }
         }
     }
 
@@ -206,7 +212,8 @@
         /// Builds attributed text from the effective traits: once when mounted, then whenever the theme,
         /// content size, legibility weight, color appearance, or a trait in `observing` changes.
         ///
-        /// Read the theme (`traits.pkyResolvedTheme`) and fonts from the supplied traits rather than
+        /// Installing a builder replaces any typography role. Read the theme (`traits.pkyResolvedTheme`) and fonts from the supplied traits
+        /// rather than
         /// capturing the label. A later call replaces the closure; pass `nil` to stop managing and keep
         /// the current text. `observing` adds host traits that affect the attributed text.
         func pkyAttributedText(
@@ -217,6 +224,7 @@
                 pkyInstallThemeUpdate(on: self, key: &pkyAttributedTextKey, update: nil)
                 return
             }
+            pkyTypography = nil
             pkyInstallThemeUpdate(
                 on: self,
                 key: &pkyAttributedTextKey,

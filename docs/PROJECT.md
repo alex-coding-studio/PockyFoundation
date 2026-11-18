@@ -103,8 +103,8 @@ Migrated tests cover notifications, Observation, snapshots, trait/environment br
 appearance persistence, and window overrides. Context appearance cases use a separate suite from
 the existing storage-value tests. An SPI binding scenario reuses the original pending-visible-update
 state checks without importing components. New macOS cases protect default accent/policy and
-complete semantic getter routing. Debug tests do not execute Release diagnostic branches; the
-Release build and source comparison establish the corresponding compile and preservation evidence.
+complete semantic getter routing. The iOS test entry point also runs the theme trait suite in Release to exercise
+missing-injection color and typography fallback through the public APIs.
 App rendering, Pocky integration, and consumer SPI/dependency changes remain separate deliveries.
 
 ## UIKit typography and sheet migration

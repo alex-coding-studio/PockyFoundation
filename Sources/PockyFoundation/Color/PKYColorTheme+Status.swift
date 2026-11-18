@@ -2,7 +2,8 @@ public extension PKYColorTheme {
     /// Destructive, warning, and success colors with stable meanings for text, symbols, or solid fills.
     ///
     /// Status meaning is independent of brand colors. Use `onStatus(_:)` at the same role for content
-    /// on a solid status surface.
+    /// on a solid status surface. Following Apple's convention, all three system tints use white
+    /// foregrounds. The 4.5:1 pairing rule excludes Status. Use short, bold labels on solid fills.
     struct Status: Sendable {
         private let destructive: PKYColor
         private let onDestructive: PKYColor

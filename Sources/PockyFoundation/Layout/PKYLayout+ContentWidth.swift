@@ -7,11 +7,11 @@ import Foundation
 public extension PKYLayout {
     /// A maximum width and centering tools for content that should not stretch indefinitely.
     ///
-    /// Narrow regions use the available inset width; wide regions expand up to ``maximum``.
+    /// The host guide fills its layout margins up to ``maximum``. Lanes use relative insets.
     /// Callers choose the content or components to constrain; backgrounds and full-width media
     /// retain their own layout.
     enum ContentWidth {
-        /// The maximum width, in points, allowed for the selected content.
+        /// The maximum width, in points, of the host’s `pkyContentWidthGuide`.
         public static let maximum: CGFloat = 560
 
         #if os(iOS)
@@ -46,6 +46,9 @@ public extension PKYLayout {
 
             /// Creates a constrained content lane for views that share boundaries or align to either side.
             ///
+            /// Each edge moves inward from its supplied boundary by the inset plus the gap between
+            /// the corresponding layout margin and content guide edge. With host-edge boundaries,
+            /// insets smaller than the layout margins can produce a lane wider than ``maximum``.
             /// Each call creates a guide; retain and reuse the returned guide for a shared lane.
             ///
             /// - Parameters:
