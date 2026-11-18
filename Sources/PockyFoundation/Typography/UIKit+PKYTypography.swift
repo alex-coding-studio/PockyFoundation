@@ -77,7 +77,7 @@
     }
 
     public extension UILabel {
-        /// The typography role the label resolves when mounted and whenever its effective theme changes.
+        /// The typography role the label resolves when mounted and on theme, content size, or Bold Text changes.
         ///
         /// Set `nil` to stop managing the font and keep the current one. If the theme is missing on the
         /// first mount, the established diagnostic or fallback runs at the first visible UI update.
@@ -88,8 +88,8 @@
     }
 
     public extension UITextField {
-        /// The typography role that updates the field's font with its effective theme, without replacing
-        /// text or selection.
+        /// The typography role that updates the field's font on theme, content size, or Bold Text changes,
+        /// preserving text and selection.
         ///
         /// Set `nil` to stop managing the font and keep the current one. If the theme is missing on the
         /// first mount, the established diagnostic or fallback runs at the first visible UI update.
@@ -100,8 +100,8 @@
     }
 
     public extension UITextView {
-        /// The typography role that updates the view's uniform font with its effective theme, keeping text
-        /// and selection.
+        /// The typography role that updates the view's uniform font on theme, content size,
+        /// or Bold Text changes, preserving text and selection.
         ///
         /// Set `nil` to stop managing the font and keep the current one. If the theme is missing on the
         /// first mount, the established diagnostic or fallback runs at the first visible UI update.
@@ -159,7 +159,7 @@
 
     public extension UIButton {
         /// The title typography role of a configuration-based button, resolved when mounted and whenever
-        /// the effective theme or content size changes; it persists when the title text changes.
+        /// the effective theme, content size, or Bold Text changes. The role persists when the title changes.
         ///
         /// It applies through `titleTextAttributesTransformer` and keeps any transformer present when the
         /// role is set, such as a foreground color. Other configuration, loading, disabled and selected
@@ -204,7 +204,7 @@
 
     public extension UILabel {
         /// Builds attributed text from the effective traits: once when mounted, then whenever the theme,
-        /// content size, color appearance, or a trait in `observing` changes.
+        /// content size, legibility weight, color appearance, or a trait in `observing` changes.
         ///
         /// Read the theme (`traits.pkyResolvedTheme`) and fonts from the supplied traits rather than
         /// capturing the label. A later call replaces the closure; pass `nil` to stop managing and keep

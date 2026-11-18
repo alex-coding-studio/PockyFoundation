@@ -20,7 +20,7 @@
         private weak var owner: UIView?
         private let observedTraits: [ObjectIdentifier]
 
-        /// Registers theme, content-size, and supplied traits for a weakly held owner.
+        /// Registers theme, content-size, legibility-weight, and supplied traits for a weakly held owner.
         @_spi(Pocky) public init(
             owner: UIView,
             traits: [UITrait] = [],
@@ -32,6 +32,7 @@
             registration = owner.registerForTraitChanges([
                 PKYThemeTrait.self,
                 UITraitPreferredContentSizeCategory.self,
+                UITraitLegibilityWeight.self,
             ] + traits) { [weak self] (_: UIView, _) in
                 self?.refresh(fromTraitChange: true)
             }

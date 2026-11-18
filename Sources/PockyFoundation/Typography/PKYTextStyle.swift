@@ -135,45 +135,15 @@ public struct PKYTextStyle: Sendable {
     /// The SwiftUI font resolved for the current role and face.
     ///
     /// On iOS, use in a subtree injected with `pkyTheme(_:)` to follow fixed or capped scaling.
+    /// Use `View.pkyFont(_:)` to adapt custom faces to the Bold Text environment.
     /// On macOS, uses the native font and ignores scaling.
     public var font: Font {
         #if os(iOS)
-            switch family.resolvedFace(weight: weight, isItalic: isItalic, size: role.customSize) {
-            case let .system(weight, isItalic):
-                let design: Font.Design? = isMonospaced ? .monospaced : (isRounded ? .rounded : nil)
-                var font = Font.system(
-                    role.swiftUITextStyle,
-                    design: design,
-                    weight: weight.swiftUIValue
-                )
-                if isItalic {
-                    font = font.italic()
-                }
-                return font
-            case let .custom(name):
-                switch scaling {
-                case .fixed:
-                    return Font.custom(name, fixedSize: role.customSize)
-                case .dynamic:
-                    return Font.custom(
-                        name,
-                        size: role.customSize,
-                        relativeTo: role.swiftUITextStyle
-                    )
-                }
-            }
+            swiftUIFont(boldText: false)
         #elseif os(macOS)
             Font(nsFont)
         #endif
     }
-
-    #if os(iOS)
-        /// The font resolved for the current UIKit environment.
-        public var uiFont: UIFont {
-            resolveUIFont(compatibleWith: nil)
-        }
-
-    #endif
 
     init(role: Role, family: PKYFontFamily, scaling: PKYTypographyTheme.Scaling) {
         self.role = role
@@ -215,7 +185,7 @@ public struct PKYTextStyle: Sendable {
         /// Resolves a font for a specific UIKit environment when a component updates its typography.
         ///
         /// - Parameter traits: The target view's trait environment.
-        /// - Returns: A role font following the theme's scaling policy.
+        /// - Returns: A role font following the theme's scaling policy and the Bold Text trait.
         public func uiFont(compatibleWith traits: UITraitCollection) -> UIFont {
             resolveUIFont(compatibleWith: traits)
         }
@@ -227,15 +197,17 @@ public struct PKYTextStyle: Sendable {
         /// - Parameters:
         ///   - referenceSize: The size used directly for fixed scaling or as the Dynamic Type baseline.
         ///   - traits: The target view's traits, or the current environment when omitted.
-        /// - Returns: A font preserving face, weight, and design with the theme's scaling ceiling.
+        /// - Returns: A role font following the theme's scaling ceiling and the Bold Text trait.
         public func uiFont(
             referenceSize: CGFloat,
             compatibleWith traits: UITraitCollection? = nil
         ) -> UIFont {
+            let boldText = Self.usesBoldText(compatibleWith: traits)
             let base: UIFont = switch family.resolvedFace(
                 weight: weight,
                 isItalic: isItalic,
-                size: referenceSize
+                size: referenceSize,
+                boldText: boldText
             ) {
             case let .system(weight, isItalic):
                 Self.systemUIFont(
@@ -248,7 +220,7 @@ public struct PKYTextStyle: Sendable {
             case let .custom(name):
                 UIFont(name: name, size: referenceSize) ?? Self.systemUIFont(
                     size: referenceSize,
-                    weight: weight,
+                    weight: boldText ? weight.nextHeavier : weight,
                     isItalic: isItalic,
                     isRounded: isRounded,
                     isMonospaced: isMonospaced
@@ -275,6 +247,46 @@ public struct PKYTextStyle: Sendable {
 
     #endif
 
+    #if os(iOS)
+        fileprivate func swiftUIFont(boldText: Bool) -> Font {
+            switch family.resolvedFace(
+                weight: weight,
+                isItalic: isItalic,
+                size: role.customSize,
+                boldText: boldText
+            ) {
+            case let .system(_, isItalic):
+                let design: Font.Design? = isMonospaced ? .monospaced : (isRounded ? .rounded : nil)
+                var font = Font.system(
+                    role.swiftUITextStyle,
+                    design: design,
+                    weight: weight.swiftUIValue
+                )
+                if isItalic {
+                    font = font.italic()
+                }
+                return font
+            case let .custom(name):
+                switch scaling {
+                case .fixed:
+                    return Font.custom(name, fixedSize: role.customSize)
+                case .dynamic:
+                    return Font.custom(
+                        name,
+                        size: role.customSize,
+                        relativeTo: role.swiftUITextStyle
+                    )
+                }
+            }
+        }
+
+        /// The font resolved for the current UIKit environment, including its Bold Text trait.
+        public var uiFont: UIFont {
+            resolveUIFont(compatibleWith: nil)
+        }
+
+    #endif
+
     private func withWeight(_ weight: PKYFontWeight) -> PKYTextStyle {
         var copy = self
         copy.weight = weight
@@ -283,10 +295,12 @@ public struct PKYTextStyle: Sendable {
 
     #if os(iOS)
         private func resolveUIFont(compatibleWith traits: UITraitCollection?) -> UIFont {
+            let boldText = Self.usesBoldText(compatibleWith: traits)
             let face = family.resolvedFace(
                 weight: weight,
                 isItalic: isItalic,
-                size: role.customSize
+                size: role.customSize,
+                boldText: boldText
             )
             switch face {
             case let .system(weight, isItalic):
@@ -302,7 +316,7 @@ public struct PKYTextStyle: Sendable {
                 guard let base = UIFont(name: name, size: role.customSize) else {
                     return Self.systemUIFont(
                         size: systemPointSize(compatibleWith: traits),
-                        weight: weight,
+                        weight: boldText ? weight.nextHeavier : weight,
                         isItalic: isItalic,
                         isRounded: isRounded,
                         isMonospaced: isMonospaced
@@ -320,6 +334,13 @@ public struct PKYTextStyle: Sendable {
                     )
                 }
             }
+        }
+
+        private static func usesBoldText(compatibleWith traits: UITraitCollection?) -> Bool {
+            let legibilityWeight = traits?.legibilityWeight ?? .unspecified
+            return (legibilityWeight == .unspecified
+                ? UITraitCollection.current.legibilityWeight
+                : legibilityWeight) == .bold
         }
 
         private func systemPointSize(compatibleWith traits: UITraitCollection?) -> CGFloat {
@@ -372,6 +393,14 @@ enum PKYFontWeight: Int, Hashable, Sendable {
         rawValue
     }
 
+    var nextHeavier: Self {
+        switch self {
+        case .regular: .medium
+        case .medium: .semibold
+        case .semibold, .bold: .bold
+        }
+    }
+
     var swiftUIValue: Font.Weight {
         switch self {
         case .regular: .regular
@@ -402,7 +431,27 @@ enum PKYFontWeight: Int, Hashable, Sendable {
     #endif
 }
 
-#if os(macOS)
+#if os(iOS)
+    public extension View {
+        /// Applies a semantic font that follows the SwiftUI Bold Text environment.
+        ///
+        /// System fonts follow SwiftUI's native behavior. Custom fonts request one heavier weight,
+        /// up to bold, with the existing scaling policy.
+        func pkyFont(_ style: PKYTextStyle) -> some View {
+            modifier(PKYFontModifier(style: style))
+        }
+    }
+
+    private struct PKYFontModifier: ViewModifier {
+        @Environment(\.legibilityWeight) private var legibilityWeight
+
+        let style: PKYTextStyle
+
+        func body(content: Content) -> some View {
+            content.font(style.swiftUIFont(boldText: legibilityWeight == .bold))
+        }
+    }
+#elseif os(macOS)
     public extension PKYTextStyle {
         /// Resolves the native preferred text-style size for either family, ignoring scaling.
         var nsFont: NSFont {

@@ -5,6 +5,29 @@
 
     @MainActor
     struct UIKitTypographyBindingTests {
+        @Test("Mounted typography updates when Bold Text is enabled and disabled")
+        func labelReappliesFontOnLegibilityChange() throws {
+            let window = UIWindow(frame: CGRect(x: 0, y: 0, width: 200, height: 200))
+            window.traitOverrides.pkyTheme = PKYThemeTraitValue(theme: PKYThemeFallback.system)
+            window.traitOverrides.legibilityWeight = .regular
+            window.isHidden = false
+            defer { window.isHidden = true }
+
+            let label = UILabel()
+            window.addSubview(label)
+            window.updateTraitsIfNeeded()
+            label.pkyTypography = .body
+            let regularFont = try #require(label.font)
+
+            window.traitOverrides.legibilityWeight = .bold
+            window.updateTraitsIfNeeded()
+            #expect(label.font != regularFont)
+
+            window.traitOverrides.legibilityWeight = .regular
+            window.updateTraitsIfNeeded()
+            #expect(label.font == regularFont)
+        }
+
         @Test(
             "S4-02/T01 SPI registrations reuse one binding per control and clear when the role is removed"
         )

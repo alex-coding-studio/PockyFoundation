@@ -28,7 +28,8 @@ public struct PKYFontFamily: Sendable {
     /// Creates a custom family from PostScript names registered by the app.
     ///
     /// A missing italic face falls back to the upright face at the same weight, then the nearest
-    /// upright weight, then the system font.
+    /// upright weight, then the system font. With Bold Text, the nearest loadable upright face
+    /// at or above the requested weight is preferred.
     ///
     /// - Parameters:
     ///   - regular: The required regular upright face.
@@ -61,7 +62,13 @@ public struct PKYFontFamily: Sendable {
         return PKYFontFamily(storage: .custom(faces))
     }
 
-    func resolvedFace(weight: PKYFontWeight, isItalic: Bool, size: CGFloat) -> PKYResolvedFontFace {
+    func resolvedFace(
+        weight: PKYFontWeight,
+        isItalic: Bool,
+        size: CGFloat,
+        boldText: Bool = false
+    ) -> PKYResolvedFontFace {
+        let weight = boldText ? weight.nextHeavier : weight
         switch storage {
         case .system:
             return .system(weight: weight, isItalic: isItalic)
@@ -81,11 +88,16 @@ public struct PKYFontFamily: Sendable {
             let nearestUpright = faces.keys
                 .filter { !$0.isItalic }
                 .sorted {
-                    let leftDistance = abs($0.weight.rank - weight.rank)
-                    let rightDistance = abs($1.weight.rank - weight.rank)
-                    return leftDistance == rightDistance
-                        ? $0.weight.rank < $1.weight.rank
-                        : leftDistance < rightDistance
+                    let leftWeight = $0.weight.rank
+                    let rightWeight = $1.weight.rank
+                    let leftMeetsWeight = leftWeight >= weight.rank
+                    let rightMeetsWeight = rightWeight >= weight.rank
+                    if boldText, leftMeetsWeight != rightMeetsWeight {
+                        return leftMeetsWeight
+                    }
+                    let leftDistance = abs(leftWeight - weight.rank)
+                    let rightDistance = abs(rightWeight - weight.rank)
+                    return (leftDistance, leftWeight) < (rightDistance, rightWeight)
                 }
             for candidate in nearestUpright {
                 if let name = loadableName(for: candidate, in: faces, size: size) {
