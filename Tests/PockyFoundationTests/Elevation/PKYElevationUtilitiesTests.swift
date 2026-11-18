@@ -25,7 +25,9 @@
             #expect(view.frame == originalFrame)
         }
 
-        @Test("ELEV-03/T01 UIView resolves dynamic shadow color using current traits")
+        @Test(
+            "ELEV-03/T01 UIView resolves dynamic shadow color and recipe using current traits"
+        )
         func viewResolvesDynamicColorUsingCurrentTraits() {
             let view = UIView()
             let window = hostingWindow(for: view, interfaceStyle: .dark)
@@ -37,7 +39,30 @@
             #expect(view.traitCollection.userInterfaceStyle == .dark)
             view.pkyApplyElevation(.subtle, color: color)
 
+            let darkSubtle = PKYElevation.Style.subtle.recipe(for: .dark)
+            let lightSubtle = PKYElevation.Style.subtle.recipe(for: .light)
             #expect(view.layer.shadowColor == UIColor.blue.cgColor)
+            #expect(view.layer.shadowOpacity == Float(darkSubtle.opacity))
+            #expect(view.layer.shadowOpacity > Float(lightSubtle.opacity))
+
+            view.pkyApplyElevation(.insetIndicator, color: color)
+            #expect(view.layer.shadowOpacity == 0)
+            #expect(view.layer.shadowRadius == 0)
+
+            let lightView = UIView()
+            let lightWindow = hostingWindow(for: lightView, interfaceStyle: .light)
+            defer { lightWindow.isHidden = true }
+            #expect(lightView.traitCollection.userInterfaceStyle == .light)
+
+            lightView.pkyApplyElevation(.subtle, color: color)
+            #expect(lightView.layer.shadowColor == UIColor.red.cgColor)
+            #expect(lightView.layer.shadowOpacity == Float(lightSubtle.opacity))
+
+            lightView.pkyApplyElevation(.insetIndicator, color: color)
+            let lightInset = PKYElevation.Style.insetIndicator.recipe(for: .light)
+            #expect(lightView.layer.shadowOpacity == Float(lightInset.opacity))
+            #expect(lightView.layer.shadowOpacity > 0)
+            #expect(lightView.layer.shadowRadius == lightInset.radius)
         }
 
         @Test(
@@ -77,6 +102,71 @@
 
             #expect(elevated.uiImage?.size != nil)
             #expect(elevated.uiImage?.size == baseline.uiImage?.size)
+        }
+
+        @Test("ELEV-04/T02 SwiftUI elevation resolves appearance recipe from colorScheme")
+        func swiftUIElevationResolvesAppearanceFromColorScheme() {
+            let lightSubtleShadow = outerShadowAlphaSum(style: .subtle, colorScheme: .light)
+            let darkSubtleShadow = outerShadowAlphaSum(style: .subtle, colorScheme: .dark)
+            #expect(lightSubtleShadow > 0)
+            #expect(darkSubtleShadow > lightSubtleShadow)
+
+            let lightInsetShadow = outerShadowAlphaSum(
+                style: .insetIndicator,
+                colorScheme: .light
+            )
+            let darkInsetShadow = outerShadowAlphaSum(
+                style: .insetIndicator,
+                colorScheme: .dark
+            )
+            #expect(lightInsetShadow > 0)
+            #expect(darkInsetShadow == 0)
+        }
+
+        private func outerShadowAlphaSum(
+            style: PKYElevation.Style,
+            colorScheme: ColorScheme
+        ) -> Int {
+            let content = Color.white
+                .frame(width: 40, height: 40)
+                .pkyElevation(style, color: .black)
+                .frame(width: 80, height: 80)
+                .environment(\.colorScheme, colorScheme)
+            let renderer = ImageRenderer(content: content)
+            renderer.scale = 1
+            renderer.isOpaque = false
+            guard let cgImage = renderer.cgImage else {
+                Issue.record("Failed to render SwiftUI elevation view")
+                return -1
+            }
+            let width = cgImage.width
+            let height = cgImage.height
+            var pixels = [UInt8](repeating: 0, count: width * height * 4)
+            guard
+                let context = CGContext(
+                    data: &pixels,
+                    width: width,
+                    height: height,
+                    bitsPerComponent: 8,
+                    bytesPerRow: width * 4,
+                    space: CGColorSpaceCreateDeviceRGB(),
+                    bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue
+                )
+            else {
+                Issue.record("Failed to create CGContext for shadow alpha inspection")
+                return -1
+            }
+            context.draw(cgImage, in: CGRect(x: 0, y: 0, width: width, height: height))
+            var alphaSum = 0
+            for y in 0 ..< height {
+                for x in 0 ..< width {
+                    let insideInnerBox = x >= 20 && x < 60 && y >= 20 && y < 60
+                    if !insideInnerBox {
+                        alphaSum += Int(pixels[(y * width + x) * 4 + 3])
+                    }
+                }
+            }
+            return alphaSum
         }
 
         private func hostingWindow(

@@ -73,8 +73,8 @@ App-owned roles do not override native control sizing or system presentation cor
 | Elevation insetIndicator light / dark | (.08, 2, 0) / none |
 | Elevation floating; mediaContent; mediaHalo | (.16,18,8); (.45,1,1); (.25,12,2) |
 
-Elevation recipes depend on the caller's resolved appearance; the UIKit view adapter applies the
-light recipe. Grid column policy depends on the caller-supplied window geometry, and callers can
+Elevation recipes depend on the caller's resolved appearance; UIKit and SwiftUI adapters derive it
+from traits and `colorScheme`. Grid column policy depends on the caller-supplied window geometry, and callers can
 supply an explicit column policy instead. Products that need denser surfaces choose a smaller role
 or keep a product-owned metric rather than adding a platform branch.
 
