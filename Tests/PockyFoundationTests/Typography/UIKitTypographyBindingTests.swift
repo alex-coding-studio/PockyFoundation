@@ -5,6 +5,26 @@
 
     @MainActor
     struct UIKitTypographyBindingTests {
+        @Test("The latest label binding owns subsequent typography updates")
+        func labelReplacesCompetingBinding() {
+            let label = UILabel()
+            label.traitOverrides.pkyTheme = PKYThemeTraitValue(theme: PKYThemeFallback.system)
+            label.pkyTypography = .body
+            var builds = 0
+            label.pkyAttributedText { _ in
+                builds += 1
+                return NSAttributedString(string: "Title")
+            }
+            #expect(label.text == "Title")
+            #expect(label.pkyTypography == nil)
+            label.pkyTypography = .caption
+            let count = builds
+            label.traitOverrides.legibilityWeight = .bold
+            label.updateTraitsIfNeeded()
+            #expect(builds == count)
+            #expect(pkyAttributedTextRegistration(on: label) == nil)
+        }
+
         @Test("Mounted typography updates when Bold Text is enabled and disabled")
         func labelReappliesFontOnLegibilityChange() throws {
             let window = UIWindow(frame: CGRect(x: 0, y: 0, width: 200, height: 200))
