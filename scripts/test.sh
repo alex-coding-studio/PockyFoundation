@@ -14,7 +14,7 @@ case "${1:-macos}" in
     trap 'rm -rf "$derived"' EXIT
     xcodebuild -scheme PockyFoundation -destination "$destination" -derivedDataPath "$derived" test
     xcodebuild -scheme PockyFoundation -destination "$destination" -derivedDataPath "$derived" \
-      -configuration Release -only-testing:PockyFoundationTests/PKYThemeTraitTests test
+      -configuration Release ENABLE_TESTABILITY=YES -only-testing:PockyFoundationTests/PKYThemeTraitTests test
     ;;
   *) echo "Usage: ./scripts/test.sh [macos|ios]" >&2; exit 2 ;;
 esac
