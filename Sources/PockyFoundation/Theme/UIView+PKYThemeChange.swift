@@ -70,8 +70,8 @@
     }
 
     public extension UIView {
-        /// Runs after mounting and again when the effective theme, content size, color-appearance traits,
-        /// or extra `observing` traits change. Use for baked images, trait-cached content, or font-dependent layout.
+        /// Runs after mounting and again when the effective theme, content size, legibility weight,
+        /// color appearance, or extra `observing` traits change. Use for trait-cached content or layout.
         ///
         /// Each view keeps one callback. Replacing it reuses the registration when possible; cancel with
         /// `pkyCancelThemeChange()`. The callback receives the view; do not capture it strongly. Detached
@@ -121,7 +121,8 @@
         }
 
         /// Extra host traits observed by layer-color bindings when colors depend on app-owned recipes.
-        /// Theme, content size, and color appearance are observed by default. Set before or after colors.
+        /// Theme, content size, legibility weight, and color appearance are observed by default.
+        /// Set before or after colors.
         var pkyLayerColorTraits: [UITrait] {
             get { pkyLayerColors?.traits ?? [] }
             set { pkyUpdateLayerColors { $0.traits = newValue } }

@@ -16,6 +16,40 @@
             boldItalic: "HelveticaNeue-BoldItalic"
         )
 
+        @Test("Bold Text increases UIKit weight for system and custom faces", arguments: [
+            PKYFontFamily.system,
+            PKYFontFamily.custom(regular: "HelveticaNeue", bold: "HelveticaNeue-Bold"),
+        ])
+        func boldTextIncreasesUIKitWeight(family: PKYFontFamily) throws {
+            let style = PKYTypographyTheme(
+                family: family,
+                scaling: .dynamic(maximum: .xxxLarge)
+            ).body
+            let regular = UITraitCollection { $0.legibilityWeight = .regular }
+            let bold = UITraitCollection { $0.legibilityWeight = .bold }
+
+            #expect(try fontWeight(style.uiFont(compatibleWith: bold))
+                > fontWeight(style.uiFont(compatibleWith: regular)))
+            #expect(try fontWeight(style.uiFont(referenceSize: 17, compatibleWith: bold))
+                > fontWeight(style.uiFont(referenceSize: 17, compatibleWith: regular)))
+        }
+
+        @Test("SwiftUI Bold Text selects a heavier custom face from the environment")
+        func swiftUIBoldTextChangesCustomFace() throws {
+            let family = PKYFontFamily.custom(regular: "HelveticaNeue", bold: "HelveticaNeue-Bold")
+            let style = PKYTypographyTheme(family: family, scaling: .fixed).body
+
+            func renderedText(_ weight: LegibilityWeight) throws -> Data {
+                let renderer = ImageRenderer(content: Text("Bold Text")
+                    .pkyFont(style)
+                    .environment(\.legibilityWeight, weight)
+                    .fixedSize())
+                return try #require(renderer.uiImage?.pngData())
+            }
+
+            #expect(try renderedText(.bold) != renderedText(.regular))
+        }
+
         @Test("S2-02/T01 System roles use their corresponding native Apple text styles")
         func systemRolesUseNativeTextStyles() {
             let theme = PKYTypographyTheme.system(scaling: .fixed)
@@ -306,6 +340,12 @@
             )
             let custom = PKYTypographyTheme(family: Self.customFamily, scaling: .fixed)
             #expect(custom.body.monospaced.uiFont.fontName == custom.body.uiFont.fontName)
+        }
+
+        private func fontWeight(_ font: UIFont) throws -> Double {
+            let traits = font.fontDescriptor.object(forKey: .traits) as? NSDictionary
+            return try #require(traits?[UIFontDescriptor.TraitKey.weight.rawValue] as? NSNumber)
+                .doubleValue
         }
 
         private func preferredSize(

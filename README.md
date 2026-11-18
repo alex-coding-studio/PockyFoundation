@@ -109,8 +109,7 @@ iOS propagates injected themes through traits; macOS `NSColor.pky*` conveniences
 `PKYTypographyTheme` builds eight roles from a system or custom PostScript font family.
 `PKYTextStyle` preserves role size and policy while composing weight, italic, rounded, and monospaced design.
 `PKYTypographyRole` keeps those modifiers plus monospaced digits and optional reference sizes
-independent of the selected theme. `PKYTheme` combines complete color and typography values. iOS context switching is described
-below; typography-specific control bindings belong to the next step.
+independent of the selected theme. `PKYTheme` combines complete color and typography values.
 
 | Role | Native text style | Standard weight |
 | --- | --- | --- |
@@ -125,13 +124,20 @@ below; typography-specific control bindings belong to the next step.
 
 On iOS, fixed system fonts use the large content-size category; custom families use their
 existing reference sizes. Dynamic scaling follows UIKit metrics up to the supplied maximum.
+When the UIKit legibility weight is bold, both families request one heavier role weight
+(regular → medium → semibold → bold), capped at bold, without changing the scaling policy.
+UIKit typography bindings reapply fonts when the legibility weight changes. In SwiftUI,
+`View.pkyFont(_:)` reads the legibility environment and applies the same rule to custom faces.
+SwiftUI system fonts respond to the environment through their native text styles.
+
 On macOS, both families use `NSFont.preferredFont(forTextStyle:options:)` sizes by default and
 ignore `Scaling`. Explicit reference sizes override those defaults on both platforms. SwiftUI
 `font` uses the resolved native font on macOS; iOS keeps its original text-style behavior.
 
 Custom lookup tries the requested face, then the same-weight upright face for missing italics,
-then the nearest loadable upright weight, breaking ties toward the lighter weight, and finally
-the equivalent system font. Rounded and monospaced designs change system faces only (monospaced overrides rounded if both are set). The native monospaced-digit
+then the nearest loadable upright weight, and finally the equivalent system font. Bold Text
+prefers an available upright weight at or above the request before considering lighter weights.
+Rounded and monospaced designs change system faces only (monospaced overrides rounded if both are set). The native monospaced-digit
 adapters preserve family, size, and existing traits while adding the number-spacing feature.
 
 ### Theme runtime and platform boundary
