@@ -142,21 +142,28 @@
             let width = cgImage.width
             let height = cgImage.height
             var pixels = [UInt8](repeating: 0, count: width * height * 4)
-            guard
-                let context = CGContext(
-                    data: &pixels,
-                    width: width,
-                    height: height,
-                    bitsPerComponent: 8,
-                    bytesPerRow: width * 4,
-                    space: CGColorSpaceCreateDeviceRGB(),
-                    bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue
-                )
-            else {
+            let createdContext = pixels.withUnsafeMutableBytes { buffer -> Bool in
+                guard
+                    let baseAddress = buffer.baseAddress,
+                    let context = CGContext(
+                        data: baseAddress,
+                        width: width,
+                        height: height,
+                        bitsPerComponent: 8,
+                        bytesPerRow: width * 4,
+                        space: CGColorSpaceCreateDeviceRGB(),
+                        bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue
+                    )
+                else {
+                    return false
+                }
+                context.draw(cgImage, in: CGRect(x: 0, y: 0, width: width, height: height))
+                return true
+            }
+            guard createdContext else {
                 Issue.record("Failed to create CGContext for shadow alpha inspection")
                 return -1
             }
-            context.draw(cgImage, in: CGRect(x: 0, y: 0, width: width, height: height))
             var alphaSum = 0
             for y in 0 ..< height {
                 for x in 0 ..< width {
