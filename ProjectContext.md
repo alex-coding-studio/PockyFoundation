@@ -25,10 +25,12 @@ and media placeholders use quaternarySystemFill. `PKYStandardInverse` switches c
 foreground/background values with native appearance. `PKYOpacity.focusScrim` supplies the shared
 focus scrim opacity. README.md records the complete platform mapping. iOS theme propagation and macOS static semantic getters are described below.
 
-Typography values live in `Typography/`: families, text styles, semantic roles, section-header
-pairs, and complete typography palettes. iOS retains UIKit text-style sizes, custom reference
-sizes, and Dynamic Type ceilings. macOS uses native preferred text-style sizes for both families,
-ignores Scaling, and provides nsFont and monospaced-digit APIs. Explicit reference sizes retain
+Typography values live in `Typography/`: families, semantic roles with their modifiers,
+section-header pairs, and typography themes holding a family and scaling policy. One resolver per
+platform turns a role into a font: iOS retains UIKit text-style sizes, custom reference sizes, and
+Dynamic Type ceilings, and SwiftUI uses the same UIKit resolution from environment-derived traits.
+macOS uses native preferred text-style sizes for both families, ignores Scaling, and provides
+nsFont and monospaced-digit APIs. Explicit reference sizes retain
 the caller's value. `Theme/PKYTheme` is the immutable color/typography value. README.md owns platform mappings.
 
 Theme core is iOS-only except the shared `PKYThemeFallback.system` recipe and macOS NSColor
