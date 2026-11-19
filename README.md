@@ -43,7 +43,7 @@ let placement = PKYMasonryPlacement.frames(
 | Accessibility | `PKYAccessibilityIdentifier`; iOS `PKYAccessibility`, `pkyA11y`, and `pkyA11yID` adapters |
 | Haptics | iOS `PKYHaptics` interaction feedback |
 | UIKit helpers | iOS monospaced-digit fonts, multiline labels, minimum interaction-target bounds, standard sheet style and paper background, `NSCollectionLayoutSection.pkyFullWidth` and `pkyInsetGroupedList` |
-| Typography | `PKYFontFamily`, `PKYTextStyle`, `PKYTypographyRole`, `PKYSectionHeaderRole`, `PKYTypographyTheme`; SwiftUI `font`, iOS `uiFont`, macOS `nsFont` and monospaced digits; iOS `pkyTypography` on labels, text fields and text views, `UIButton.pkyTitleTypography`, and theme-driven `pkyAttributedText` |
+| Typography | `PKYFontFamily`, `PKYTypographyRole`, `PKYSectionHeaderRole`, `PKYTypographyTheme`; iOS `uiFont(in:compatibleWith:)`, macOS `nsFont(in:)`, SwiftUI `View.pkyFont(_:)`, and monospaced digits; iOS `pkyTypography` on labels, text fields and text views, `UIButton.pkyTitleTypography`, and theme-driven `pkyAttributedText` |
 | Theme | `PKYTheme`, shared `PKYThemeFallback.system`; iOS Context, traits, SwiftUI environment and view/layer update bindings; macOS default-theme `NSColor.pky*` getters |
 | Color | `PKYColor` (`UIColor` on iOS, `NSColor` on macOS), `PKYBackgroundRole`, `PKYColorTheme`, `PKYStandardInverse` |
 | Appearance | `PKYAppearance` storage, `.Mode`; `userInterfaceStyle` on iOS, `nsAppearance` on macOS |
@@ -106,15 +106,17 @@ iOS propagates injected themes through traits; macOS `NSColor.pky*` conveniences
 
 ### Typography mappings
 
-`PKYTypographyTheme` builds eight roles from a system or custom PostScript font family.
-`PKYTextStyle` preserves role size and policy while composing weight, italic, rounded, and monospaced design.
-`PKYTypographyRole` keeps those modifiers plus monospaced digits and optional reference sizes
-independent of the selected theme. `PKYTheme` combines complete color and typography values.
+`PKYTypographyRole` is the only typography descriptor: eight roles composed with weight, italic,
+rounded and monospaced design, monospaced digits, and optional reference sizes, independent of
+any theme. `PKYTypographyTheme` supplies the system or custom PostScript font family and the
+Dynamic Type policy that resolve every role. `PKYTheme` combines complete color and typography values.
+UIKit resolves roles with `uiFont(in:compatibleWith:)`, AppKit with `nsFont(in:)`, and SwiftUI
+with `View.pkyFont(_:)`.
 
 | Role | Native text style | Standard weight |
 | --- | --- | --- |
 | display | largeTitle | bold |
-| pageTitle | title1 (`title` in SwiftUI) | bold |
+| pageTitle | title1 | bold |
 | title | title2 | semibold |
 | heading | headline | semibold |
 | body | body | regular |
@@ -127,12 +129,12 @@ existing reference sizes. Dynamic scaling follows UIKit metrics up to the suppli
 When the UIKit legibility weight is bold, both families request one heavier role weight
 (regular → medium → semibold → bold), capped at bold, without changing the scaling policy.
 UIKit typography bindings reapply fonts when the legibility weight changes. In SwiftUI,
-`View.pkyFont(_:)` reads the legibility environment and applies the same rule to custom faces.
-SwiftUI system fonts respond to the environment through their native text styles.
+`View.pkyFont(_:)` builds traits from the injected theme, Dynamic Type size, and legibility
+weight environment and uses the same UIKit resolution, so both frameworks render identical fonts.
 
 On macOS, both families use `NSFont.preferredFont(forTextStyle:options:)` sizes by default and
-ignore `Scaling`. Explicit reference sizes override those defaults on both platforms. SwiftUI
-`font` uses the resolved native font on macOS; iOS keeps its original text-style behavior.
+ignore `Scaling`. Explicit reference sizes override those defaults on both platforms. macOS
+`View.pkyFont(_:)` resolves against the default theme; use `Font(role.nsFont(in:))` for another theme.
 
 Custom lookup tries the requested face, then the same-weight upright face for missing italics,
 then the nearest loadable upright weight, and finally the equivalent system font. Bold Text

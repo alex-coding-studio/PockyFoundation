@@ -88,6 +88,12 @@ modifier descriptors, number-spacing features, reference-size precedence, and un
 fallback. These scenarios protect platform transformations that compilation alone cannot verify.
 CI's newest installed Xcode is the verification toolchain; package tests do not prove app rendering.
 
+`PKYTypographyRole` later became the only typography descriptor. `PKYTextStyle` and the eight
+per-role theme properties were removed; `PKYTypographyTheme` keeps only family and scaling, and
+reference sizes are set with `withReferenceSize(_:)`. SwiftUI `View.pkyFont(_:)` takes a role and
+renders the UIKit-resolved font, so a parity test compares it with direct UIKit resolution and
+rendering checks cover Dynamic Type ceilings and Bold Text.
+
 ## Theme-core migration
 
 `Theme/` now contains iOS Context, trait snapshots, typed notifications, SwiftUI bridging,
