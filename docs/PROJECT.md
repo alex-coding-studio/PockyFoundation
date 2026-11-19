@@ -2,8 +2,10 @@
 
 ## Environment and commands
 
-Use a Swift 6-capable Xcode with iOS Simulator and macOS SDKs. The package deployment
+Use Xcode 26 or later with iOS Simulator and macOS SDKs. The package deployment
 targets are iOS 26 and macOS 14; deployment targets and test-runtime versions are distinct.
+APIs from newer SDKs, such as the iOS 26.1 sheet paper background, are compiled conditionally
+so earlier Xcode 26 releases still build.
 Open Package.swift in Xcode to debug tests. The package starts no app or network service.
 Swift Testing is bundled with the toolchain; no test dependency installation is required.
 
@@ -14,13 +16,14 @@ Swift Testing is bundled with the toolchain; no test dependency installation is 
 | `./scripts/test.sh macos` | Executed host Swift Testing tests |
 | `./scripts/test.sh ios` | Executed package tests on an available iOS Simulator |
 | `./scripts/build.sh macos` | Release library build for macOS |
-| `./scripts/build.sh ios` | Release library build for generic iOS Simulator |
+| `./scripts/build.sh ios` | Release library builds for generic iOS Simulator, including app-extension-only API |
 
 POCKY_FOUNDATION_TEST_DESTINATION can select a specific Simulator destination. Without it,
 the test entry selects an available iPhone simulator. Build/test scripts never launch the
 Simulator UI or replace a running application. iOS DerivedData is temporary and cleaned
-on exit. CI runs lint and both platform build/test entry points on macos-26, installing
-pinned, checksum-verified formatter/linter binaries. The formatter language configuration
+on exit. CI runs lint and both platform build/test entry points on macos-26 with the newest
+installed Xcode, recording its version, and installs pinned, checksum-verified formatter/linter
+binaries. Older Xcode releases are not tested in CI. The formatter language configuration
 is inherited unchanged from the reference rules; Package.swift owns compiler language mode.
 
 ## Acceptance and test value
@@ -63,8 +66,8 @@ Color tests compare supplied colors and native system mappings, preserve iOS con
 opposite-appearance behavior, and verify macOS content distinctions, grouped/standard equality,
 background appearance changes, and inverse luminance reversal under aqua/darkAqua. They do not
 assert fixed visual components; opacity-role tests assert ranges and relative emphasis. The
-macOS cases cover new mapping mistakes that the compiler cannot detect. CI's Xcode 26.6 remains
-the compatibility gate; a newer local SDK passing does not establish that compatibility.
+macOS cases cover new mapping mistakes that the compiler cannot detect. CI's newest installed
+Xcode is the verification toolchain; local results with a different Xcode are not CI evidence.
 
 ## Typography-value migration
 
@@ -83,7 +86,7 @@ Migrated iOS tests retain mapping, fallback, composition, scaling, and state che
 fixed visual-size assertions. New macOS cases cover native size ordering, ignored scaling,
 modifier descriptors, number-spacing features, reference-size precedence, and unavailable-face
 fallback. These scenarios protect platform transformations that compilation alone cannot verify.
-The older CI toolchain remains the compatibility gate; package tests do not prove app rendering.
+CI's newest installed Xcode is the verification toolchain; package tests do not prove app rendering.
 
 ## Theme-core migration
 

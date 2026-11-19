@@ -60,7 +60,9 @@ Enable hooks once with `git config core.hooksPath .githooks`. Run `./scripts/lin
 macOS tests use Swift Testing through the selected Xcode toolchain. iOS tests use xcodebuild
 with an available iPhone simulator, overridable with POCKY_FOUNDATION_TEST_DESTINATION.
 CI runs these commands on a macOS runner, selecting its newest installed Xcode and recording
-the toolchain. SwiftFormat/SwiftLint versions and release checksums are pinned in CI.
+the toolchain; older Xcode releases are not tested. The iOS build entry also builds with
+app-extension-only API so extension consumers keep compiling.
+SwiftFormat/SwiftLint versions and release checksums are pinned in CI.
 Build caches are ignored; temporary iOS DerivedData is removed at command exit.
 Passing package tests do not prove application UI or minimum-OS runtime acceptance.
 

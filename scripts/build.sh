@@ -7,6 +7,8 @@ case "${1:-macos}" in
     derived="$(mktemp -d "${TMPDIR:-/tmp}/pocky-foundation-build.XXXXXX")"
     trap 'rm -rf "$derived"' EXIT
     xcodebuild -scheme PockyFoundation -destination 'generic/platform=iOS Simulator' -derivedDataPath "$derived" -configuration Release build
+    xcodebuild -scheme PockyFoundation -destination 'generic/platform=iOS Simulator' -derivedDataPath "$derived" -configuration Release \
+      APPLICATION_EXTENSION_API_ONLY=YES build
     ;;
   *) echo "Usage: ./scripts/build.sh [macos|ios]" >&2; exit 2 ;;
 esac

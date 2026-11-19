@@ -145,9 +145,10 @@ adapters preserve family, size, and existing traits while adding the number-spac
 On iOS, the app owns `PKYThemeContext`. Theme activation replaces an immutable identity snapshot,
 notifies UIKit observers through `.pkyThemeDidChange`, and invalidates Swift Observation readers.
 Appearance selection is stored through `PKYAppearance`, applied to connected scene windows, and
-notified separately through `.pkyAppearanceDidChange`. `View.pkyTheme(_:)` shares the context and
-snapshot with SwiftUI and bridges that snapshot to UIKit traits. Local trait or environment
-overrides keep the root selection unchanged.
+notified separately through `.pkyAppearanceDidChange`. App extensions cannot use the scene-free
+`activate` calls; they pass their own scenes to `activate(theme:in:)` and `activate(appearance:in:)`.
+`View.pkyTheme(_:)` shares the context and snapshot with SwiftUI and bridges that snapshot to
+UIKit traits. Local trait or environment overrides keep the root selection unchanged.
 
 `UIColor.pkyTheme` and semantic color getters resolve at use time from the requesting traits.
 Missing injection remains nil: Debug diagnoses direct theme resolution and returns magenta for
@@ -189,7 +190,9 @@ layout, and shadowPath remain caller-owned. `pkyRemoveElevation()` clears those 
 
 Read [ProjectContext.md](ProjectContext.md) and [the engineering guide](docs/PROJECT.md).
 Run `./scripts/lint.sh`, `./scripts/test.sh macos`, `./scripts/test.sh ios`, and
-`./scripts/build.sh macos|ios`. Xcode must include an available iOS Simulator runtime.
+`./scripts/build.sh macos|ios`. Use Xcode 26 or later with an available iOS Simulator runtime;
+CI verifies with the newest installed Xcode. The iOS 26.1 sheet paper background is compiled
+only with Xcode 26.1 or later; earlier toolchains keep the system sheet background.
 Formatter/linter versions and binary checksums are pinned in CI. No private tooling is needed.
 
 Personally maintained; external issues and pull requests are not accepted; forks are welcome.
