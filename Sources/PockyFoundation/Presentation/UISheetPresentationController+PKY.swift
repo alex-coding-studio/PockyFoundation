@@ -23,8 +23,11 @@
         /// Applies the supplied detents, a visible grabber, and the effective theme's grouped primary
         /// background, which follows theme and appearance changes.
         ///
-        /// In compact height the sheet attaches to the edge unless the caller keeps the system's
-        /// full-width presentation.
+        /// - Parameters:
+        ///   - detents: The heights the sheet can rest at.
+        ///   - fillsWidthInLandscape: When `false`, the sheet attaches to the bottom edge in compact
+        ///     height. When `true`, `prefersEdgeAttachedInCompactHeight` is left unchanged, so the
+        ///     system's full-width presentation, or the caller's own setting, applies.
         func pkyApplyStandardStyle(
             detents: [Detent],
             fillsWidthInLandscape: Bool = false
