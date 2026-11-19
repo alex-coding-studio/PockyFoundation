@@ -99,7 +99,7 @@ rendering checks cover Dynamic Type ceilings and Bold Text.
 `Theme/` now contains iOS Context, trait snapshots, typed notifications, SwiftUI bridging,
 dynamic colors, and view/layer update bindings. Public iOS logic is preserved from the frozen
 source, including DEBUG diagnostics, Release fallback/logging, Observation invalidation,
-window appearance, registration reuse, and one-shot visible-update deferral. Theme binding and diagnostic
+registration reuse, and one-shot visible-update deferral. Theme binding and diagnostic
 implementation APIs use Pocky SPI, with private setters and internal helpers
 remaining constrained. No ordinary public wrapper exposes those implementation APIs.
 
@@ -109,7 +109,9 @@ semantic color getter to that default theme. Runtime contexts, bindings, and dia
 excluded from macOS; native dynamic colors retain their platform appearance behavior.
 
 Migrated tests cover notifications, Observation, snapshots, trait/environment bridging, context
-appearance persistence, and window overrides. Context appearance cases use a separate suite from
+appearance persistence, and scene trait overrides. Package tests have no connected scene, so the
+scene theme and appearance overrides run against window and view trait overrides through the same
+internal helpers. Context appearance cases use a separate suite from
 the existing storage-value tests. An SPI binding scenario reuses the original pending-visible-update
 state checks without importing components. New macOS cases protect default accent/policy and
 complete semantic getter routing. The iOS test entry point also runs the theme trait suite in Release to exercise

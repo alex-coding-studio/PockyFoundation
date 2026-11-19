@@ -146,9 +146,12 @@ adapters preserve family, size, and existing traits while adding the number-spac
 
 On iOS, the app owns `PKYThemeContext`. Theme activation replaces an immutable identity snapshot,
 notifies UIKit observers through `.pkyThemeDidChange`, and invalidates Swift Observation readers.
-Appearance selection is stored through `PKYAppearance`, applied to connected scene windows, and
-notified separately through `.pkyAppearanceDidChange`. App extensions cannot use the scene-free
-`activate` calls; they pass their own scenes to `activate(theme:in:)` and `activate(appearance:in:)`.
+Appearance selection is stored through `PKYAppearance`, applied to connected scenes as a
+user-interface-style trait override that every window in the scene follows, and notified
+separately through `.pkyAppearanceDidChange`. UIKit apps call `apply(to:)` from
+`scene(_:willConnectTo:options:)` to install the current theme and appearance on each new scene.
+App extensions cannot use the scene-free `activate` calls; they pass their own scenes to
+`activate(theme:in:)` and `activate(appearance:in:)`.
 `View.pkyTheme(_:)` shares the context and snapshot with SwiftUI and bridges that snapshot to
 UIKit traits. Local trait or environment overrides keep the root selection unchanged.
 
@@ -168,8 +171,6 @@ macOS theme switching is deferred.
 
 Binding and diagnostic implementation access for the iOS Pocky component library is exposed only through
 `@_spi(Pocky) import PockyFoundation`. It is not part of the ordinary consumer API.
-Typography control adapters, sheet styling, and the theme-dependent list section remain outside
-this step.
 
 ### Placement behavior
 
