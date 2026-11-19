@@ -1,7 +1,7 @@
 import CoreGraphics
 
 /// Content roles that select grid spacing and column policy.
-public enum PKYGridPlacementRole: Sendable {
+public enum PKYGridPlacementRole: Hashable, Sendable {
     /// Thumbnail tiles, with extra spacing when accompanied by a caption.
     case tile(captioned: Bool)
     /// Folder cards containing a prominent readout.

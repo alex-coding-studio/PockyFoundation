@@ -1,7 +1,7 @@
 import CoreGraphics
 
 /// Resolved column geometry independent of native collection layouts.
-public struct PKYGridPlacementOutput {
+public struct PKYGridPlacementOutput: Equatable, Sendable {
     /// Directional padding; native layout adapters resolve its direction.
     public let padding: PKYEdgeInsets
     /// Nonnegative width remaining after horizontal padding.

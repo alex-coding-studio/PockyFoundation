@@ -2,7 +2,7 @@ import CoreGraphics
 
 public extension PKYMotion {
     /// A spring role exposing native bounce and damping-ratio representations.
-    struct Spring: Sendable {
+    struct Spring: Hashable, Sendable {
         /// A spring without bounce.
         public static let smooth = Spring(bounce: 0)
 

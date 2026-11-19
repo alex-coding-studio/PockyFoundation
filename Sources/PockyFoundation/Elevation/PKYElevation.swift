@@ -58,7 +58,7 @@ public enum PKYElevation {
     }
 
     /// Immutable shadow numbers; offset y is positive visually downward, before layer conversion.
-    public struct Recipe: Sendable {
+    public struct Recipe: Equatable, Sendable {
         /// Shadow opacity, independent of the supplied color's alpha.
         public let opacity: Double
         /// Shadow blur radius in points.

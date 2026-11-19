@@ -6,7 +6,7 @@ import SwiftUI
 /// uses native preferred text-style sizes for both families and ignores scaling.
 public struct PKYTypographyTheme: Sendable {
     /// The Dynamic Type policy shared by all typography roles; ignored on macOS.
-    public enum Scaling: Sendable {
+    public enum Scaling: Hashable, Sendable {
         /// Fixed sizes: the default large category for iOS system fonts, or reference sizes for custom fonts.
         case fixed
 

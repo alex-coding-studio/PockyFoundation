@@ -11,10 +11,7 @@
             let theme = PKYThemeFallback.system
             #expect(theme.color.accent(.primary).isEqual(NSColor.controlAccentColor))
             #expect(theme.color.accent(.secondary).isEqual(NSColor.controlAccentColor))
-            guard case .fixed = theme.typography.scaling else {
-                Issue.record("The macOS default theme must use fixed typography")
-                return
-            }
+            #expect(theme.typography.scaling == .fixed)
         }
 
         @Test("S3-04/T02 Every native semantic getter maps to the same macOS default-theme role")

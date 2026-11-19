@@ -31,13 +31,7 @@
             context.activate(theme: replacement)
 
             #expect(context.theme.color.content(.primary).isEqual(UIColor.blue))
-            guard case let .dynamic(maximum) = context.theme.typography.scaling else {
-                Issue.record(
-                    "Expected the complete replacement Theme to include dynamic Typography"
-                )
-                return
-            }
-            #expect(maximum == .xxxLarge)
+            #expect(context.theme.typography.scaling == .dynamic(maximum: .xxxLarge))
         }
 
         @Test("S3-01/T02 Theme activation sends a scoped type-safe main-actor notification")

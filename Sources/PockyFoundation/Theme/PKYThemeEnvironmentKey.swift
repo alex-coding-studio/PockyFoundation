@@ -4,12 +4,15 @@
 
     /// Bridges the same immutable snapshot between UIKit traits and a SwiftUI environment.
     public struct PKYThemeEnvironmentKey: UITraitBridgedEnvironmentKey {
+        /// No snapshot outside an injected hierarchy, matching ``PKYThemeTrait/defaultValue``.
         public static let defaultValue: PKYThemeTraitValue? = nil
 
+        /// Reads the snapshot injected into the hosting UIKit traits.
         public static func read(from traitCollection: UITraitCollection) -> PKYThemeTraitValue? {
             traitCollection.pkyTheme
         }
 
+        /// Writes a SwiftUI environment override into the bridged UIKit traits.
         public static func write(
             to mutableTraits: inout any UIMutableTraits,
             value: PKYThemeTraitValue?

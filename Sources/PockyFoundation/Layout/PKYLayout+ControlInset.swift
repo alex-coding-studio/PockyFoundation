@@ -1,6 +1,7 @@
 import CoreGraphics
 
 public extension PKYLayout.Inset {
+    /// Vertical and horizontal padding for content within app-owned controls.
     static let control = Control()
 
     /// Padding for content within app-owned controls.

@@ -1,6 +1,7 @@
 import CoreGraphics
 
 public extension PKYLayout.Inset {
+    /// Vertical and horizontal padding for content within rows.
     static let row = Row()
 
     /// Padding for content within rows.
