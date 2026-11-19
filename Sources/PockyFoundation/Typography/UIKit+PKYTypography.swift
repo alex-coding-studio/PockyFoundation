@@ -106,14 +106,19 @@
     }
 
     public extension UITextView {
-        /// The typography role that updates the view's uniform font on theme, content size,
-        /// or Bold Text changes, preserving text and selection.
+        /// Setting a role replaces any attributed-text binding. The role updates the view's uniform font on
+        /// theme, content size, or Bold Text changes, preserving text and selection.
         ///
         /// Set `nil` to stop managing the font and keep the current one. If the theme is missing on the
         /// first mount, the established diagnostic or fallback runs at the first visible UI update.
         var pkyTypography: PKYTypographyRole? {
             get { pkyReadTypography(on: self) }
-            set { pkySetTypography(newValue, on: self) }
+            set {
+                if newValue != nil {
+                    pkyAttributedText(nil)
+                }
+                pkySetTypography(newValue, on: self)
+            }
         }
     }
 
@@ -237,8 +242,8 @@
 
     public extension UITextView {
         /// Builds attributed text from the effective traits and keeps each selected range, including
-        /// multi-range bidirectional selections; timing, replacement, and `observing` match
-        /// `UILabel.pkyAttributedText`.
+        /// multi-range bidirectional selections. Installing a builder replaces any typography role;
+        /// timing, replacement, and `observing` match `UILabel.pkyAttributedText`.
         func pkyAttributedText(
             observing traits: [UITrait] = [],
             _ make: (@MainActor (UITraitCollection) -> NSAttributedString?)?
@@ -247,6 +252,7 @@
                 pkyInstallThemeUpdate(on: self, key: &pkyAttributedTextKey, update: nil)
                 return
             }
+            pkyTypography = nil
             pkyInstallThemeUpdate(
                 on: self,
                 key: &pkyAttributedTextKey,
