@@ -1,9 +1,9 @@
 import CoreGraphics
 
 /// Content-independent grid inputs; width is measured before directional padding.
-public struct PKYGridPlacementInput {
+public struct PKYGridPlacementInput: Hashable, Sendable {
     /// A fixed count or the largest count that fits a minimum item width.
-    public enum Columns {
+    public enum Columns: Hashable, Sendable {
         /// Uses at least one column.
         case fixed(Int)
         /// Fits the minimum width within the supplied inclusive column-count range.
@@ -11,7 +11,7 @@ public struct PKYGridPlacementInput {
     }
 
     /// Fill available width, optionally rounded, or distribute gaps around fixed-width items.
-    public enum ItemWidth {
+    public enum ItemWidth: Hashable, Sendable {
         /// Fills available width; nil rounding preserves fractional point sizes.
         case fill(rounding: FloatingPointRoundingRule? = nil)
         /// Preserves the supplied item width and distributes remaining horizontal space.

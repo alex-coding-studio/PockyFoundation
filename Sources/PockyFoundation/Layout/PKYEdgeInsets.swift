@@ -1,7 +1,7 @@
 import CoreGraphics
 
 /// Directional padding independent of AppKit and UIKit; callers resolve layout direction.
-public struct PKYEdgeInsets: Equatable, Sendable {
+public struct PKYEdgeInsets: Hashable, Sendable {
     /// Padding without any inset.
     public static let zero = PKYEdgeInsets()
 
