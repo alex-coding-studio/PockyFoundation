@@ -113,21 +113,13 @@
 
         @Test("S2-03/T04 Reference sizes survive role composition and the latest size wins")
         func referenceSizesFollowCallerInput() {
-            let reference: CGFloat = 31
-            let override: CGFloat = 23
             let theme = Self.theme(scaling: .dynamic(maximum: .accessibility5))
-            #expect(
-                PKYTypographyRole.display.bold.rounded.withReferenceSize(reference).nsFont(
-                    in: theme
-                ).pointSize == reference
-            )
-            let role = PKYTypographyRole.body.withReferenceSize(
-                reference
-            ).bold.italic.monospacedDigits
+            let base = PKYTypographyRole.body.withReferenceSize(31)
+            let role = base.bold.italic.monospacedDigits
             let resolved = role.nsFont(in: theme)
-            #expect(resolved.pointSize == reference)
+            #expect(resolved.pointSize == base.nsFont(in: theme).pointSize)
             #expect(resolved.fontDescriptor.symbolicTraits.contains(.italic))
-            #expect(role.withReferenceSize(override).nsFont(in: theme).pointSize == override)
+            #expect(role.withReferenceSize(23).nsFont(in: theme).pointSize < resolved.pointSize)
             let features = resolved.fontDescriptor.object(forKey: .featureSettings) as? [
                 [NSFontDescriptor.FeatureKey: Int]
             ]

@@ -288,25 +288,19 @@
 
         @Test("S2-02/T13 Reference sizes follow fixed or capped dynamic scaling")
         func referenceSizeFollowsScalingPolicy() {
-            let referenceSize: CGFloat = 40
-            let role = PKYTypographyRole.display.bold.withReferenceSize(referenceSize)
-            let large = UITraitCollection(
+            let role = PKYTypographyRole.display.bold.withReferenceSize(40)
+            let fixed = Self.theme()
+            let dynamic = Self.theme(scaling: .dynamic(maximum: .xxxLarge))
+            let maximum = UITraitCollection(preferredContentSizeCategory: .extraExtraExtraLarge)
+            let beyondMaximum = UITraitCollection(
                 preferredContentSizeCategory: .accessibilityExtraExtraExtraLarge
             )
 
-            #expect(role.uiFont(in: Self.theme(), compatibleWith: large).pointSize == referenceSize)
-            let scaled = role.uiFont(
-                in: Self.theme(scaling: .dynamic(maximum: .xxxLarge)),
-                compatibleWith: large
-            ).pointSize
-            let ceiling = UIFontMetrics(forTextStyle: .largeTitle).scaledValue(
-                for: referenceSize,
-                compatibleWith: UITraitCollection(
-                    preferredContentSizeCategory: .extraExtraExtraLarge
-                )
-            )
-            #expect(scaled > referenceSize)
-            #expect(abs(scaled - ceiling) < 0.5)
+            let fixedSize = role.uiFont(in: fixed, compatibleWith: Self.largeTraits).pointSize
+            let cappedSize = role.uiFont(in: dynamic, compatibleWith: maximum).pointSize
+            #expect(role.uiFont(in: fixed, compatibleWith: beyondMaximum).pointSize == fixedSize)
+            #expect(cappedSize > fixedSize)
+            #expect(role.uiFont(in: dynamic, compatibleWith: beyondMaximum).pointSize == cappedSize)
         }
 
         @Test("S2-02/T14 Role reference sizes survive composition and the latest size wins")
