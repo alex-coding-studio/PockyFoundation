@@ -18,9 +18,11 @@
             #expect(sheet.detents.map(\.identifier) == [.medium, .large])
             #expect(sheet.prefersGrabberVisible)
             #expect(sheet.prefersEdgeAttachedInCompactHeight)
-            if #available(iOS 26.1, *) {
-                #expect(sheet.backgroundEffect is UIColorEffect)
-            }
+            #if compiler(>=6.2.1)
+                if #available(iOS 26.1, *) {
+                    #expect(sheet.backgroundEffect is UIColorEffect)
+                }
+            #endif
         }
 
         @Test(
@@ -46,30 +48,32 @@
             #expect(!sheet.prefersEdgeAttachedInCompactHeight)
         }
 
-        @available(iOS 26.1, *)
-        @Test(
-            "S4-01/T04 Paper background is reapplied when the presented controller's theme changes"
-        )
-        func paperBackgroundFollowsPresentedTheme() throws {
-            let controller = UIViewController()
-            controller.modalPresentationStyle = .pageSheet
-            let sheet = try #require(controller.sheetPresentationController)
-            let initial = PKYThemeTraitValue(theme: PKYThemeFallback.system)
-            let replacement = PKYThemeTraitValue(theme: PKYTheme(
-                color: Self.colorTheme,
-                typography: .system(scaling: .fixed)
-            ))
-            controller.traitOverrides.pkyTheme = initial
-            controller.updateTraitsIfNeeded()
-            sheet.pkyApplyStandardStyle(detents: [.large()])
-            sheet.pkyUsePaperBackground()
-            let first = try #require(sheet.backgroundEffect as? UIColorEffect)
-            controller.traitOverrides.pkyTheme = replacement
-            controller.updateTraitsIfNeeded()
-            let second = try #require(sheet.backgroundEffect as? UIColorEffect)
-            #expect(second !== first)
-            #expect(sheet.detents.map(\.identifier) == [.large])
-        }
+        #if compiler(>=6.2.1)
+            @available(iOS 26.1, *)
+            @Test(
+                "S4-01/T04 Paper background is reapplied when the presented controller's theme changes"
+            )
+            func paperBackgroundFollowsPresentedTheme() throws {
+                let controller = UIViewController()
+                controller.modalPresentationStyle = .pageSheet
+                let sheet = try #require(controller.sheetPresentationController)
+                let initial = PKYThemeTraitValue(theme: PKYThemeFallback.system)
+                let replacement = PKYThemeTraitValue(theme: PKYTheme(
+                    color: Self.colorTheme,
+                    typography: .system(scaling: .fixed)
+                ))
+                controller.traitOverrides.pkyTheme = initial
+                controller.updateTraitsIfNeeded()
+                sheet.pkyApplyStandardStyle(detents: [.large()])
+                sheet.pkyUsePaperBackground()
+                let first = try #require(sheet.backgroundEffect as? UIColorEffect)
+                controller.traitOverrides.pkyTheme = replacement
+                controller.updateTraitsIfNeeded()
+                let second = try #require(sheet.backgroundEffect as? UIColorEffect)
+                #expect(second !== first)
+                #expect(sheet.detents.map(\.identifier) == [.large])
+            }
+        #endif
 
         private func makeSheet() throws -> UISheetPresentationController {
             let controller = UIViewController()

@@ -38,25 +38,30 @@
         ///
         /// The background updates with the effective theme and the system traits that affect color
         /// appearance; repeated calls do not add observers. Until the controller has a theme, the dynamic
-        /// color is used; afterwards it resolves against that theme.
+        /// color is used; afterwards it resolves against that theme. Builds without the iOS 26.1 SDK
+        /// (Xcode 26.0) keep the system sheet background.
         func pkyUsePaperBackground() {
-            guard #available(iOS 26.1, *) else {
-                return
-            }
-            let controller = presentedViewController
-            if pkyPaperBackgroundBinding?.controller !== controller {
-                pkyPaperBackgroundBinding?.stop()
-                let registration = controller.registerForTraitChanges(
-                    [PKYThemeTrait.self] + UITraitCollection.systemTraitsAffectingColorAppearance
-                ) { [weak self] (controller: UIViewController, _) in
-                    self?.pkyApplyPaperBackground(compatibleWith: controller.traitCollection)
+            #if compiler(>=6.2.1)
+                guard #available(iOS 26.1, *) else {
+                    return
                 }
-                pkyPaperBackgroundBinding = PKYPaperBackgroundBinding(
-                    controller: controller,
-                    registration: registration
-                )
-            }
-            pkyApplyPaperBackground(compatibleWith: controller.traitCollection)
+                let controller = presentedViewController
+                if pkyPaperBackgroundBinding?.controller !== controller {
+                    pkyPaperBackgroundBinding?.stop()
+                    let registration = controller.registerForTraitChanges(
+                        [
+                            PKYThemeTrait.self,
+                        ] + UITraitCollection.systemTraitsAffectingColorAppearance
+                    ) { [weak self] (controller: UIViewController, _) in
+                        self?.pkyApplyPaperBackground(compatibleWith: controller.traitCollection)
+                    }
+                    pkyPaperBackgroundBinding = PKYPaperBackgroundBinding(
+                        controller: controller,
+                        registration: registration
+                    )
+                }
+                pkyApplyPaperBackground(compatibleWith: controller.traitCollection)
+            #endif
         }
 
         private var pkyPaperBackgroundBinding: PKYPaperBackgroundBinding? {
@@ -83,12 +88,14 @@
             prefersEdgeAttachedInCompactHeight = true
         }
 
-        @available(iOS 26.1, *)
-        private func pkyApplyPaperBackground(compatibleWith traits: UITraitCollection) {
-            let paper = UIColor.pkyBackground(.grouped(.primary))
-            backgroundEffect = UIColorEffect(
-                color: traits.pkyTheme == nil ? paper : paper.resolvedColor(with: traits)
-            )
-        }
+        #if compiler(>=6.2.1)
+            @available(iOS 26.1, *)
+            private func pkyApplyPaperBackground(compatibleWith traits: UITraitCollection) {
+                let paper = UIColor.pkyBackground(.grouped(.primary))
+                backgroundEffect = UIColorEffect(
+                    color: traits.pkyTheme == nil ? paper : paper.resolvedColor(with: traits)
+                )
+            }
+        #endif
     }
 #endif

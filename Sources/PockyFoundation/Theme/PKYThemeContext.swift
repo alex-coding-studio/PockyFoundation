@@ -59,11 +59,25 @@
 
         /// Updates connected window scenes with no theme or this context’s previous snapshot, then notifies observers.
         ///
+        /// App extensions use ``activate(theme:in:)`` with their own scenes instead.
+        ///
         /// - Parameter theme: The next complete theme.
+        @available(iOSApplicationExtension, unavailable)
         public func activate(theme: PKYTheme) {
+            activate(theme: theme, in: UIApplication.shared.connectedScenes)
+        }
+
+        /// Updates the supplied window scenes with no theme or this context’s previous snapshot, then notifies observers.
+        ///
+        /// Use from app extensions or when the app tracks its own scenes; other scenes keep their current snapshot.
+        ///
+        /// - Parameters:
+        ///   - theme: The next complete theme.
+        ///   - scenes: The scenes whose theme trait follows this context.
+        public func activate(theme: PKYTheme, in scenes: some Sequence<UIScene>) {
             let previous = themeTraitValue
             themeTraitValue = PKYThemeTraitValue(theme: theme)
-            for case let scene as UIWindowScene in UIApplication.shared.connectedScenes {
+            for case let scene as UIWindowScene in scenes {
                 let installed = scene.traitOverrides.pkyTheme
                 if installed == nil || installed == previous {
                     scene.traitOverrides.pkyTheme = themeTraitValue
@@ -74,11 +88,25 @@
 
         /// Saves an appearance selection, applies it to every connected scene window, and then posts its message.
         ///
+        /// App extensions use ``activate(appearance:in:)`` with their own scenes instead.
+        ///
         /// - Parameter appearance: System, light, or dark appearance selected by the user.
+        @available(iOSApplicationExtension, unavailable)
         public func activate(appearance: PKYAppearance.Mode) {
+            activate(appearance: appearance, in: UIApplication.shared.connectedScenes)
+        }
+
+        /// Saves an appearance selection, applies it to the supplied scenes' windows, and then posts its message.
+        ///
+        /// Use from app extensions or when the app tracks its own scenes; other windows keep their current style.
+        ///
+        /// - Parameters:
+        ///   - appearance: System, light, or dark appearance selected by the user.
+        ///   - scenes: The scenes whose windows follow this context.
+        public func activate(appearance: PKYAppearance.Mode, in scenes: some Sequence<UIScene>) {
             self.appearance = appearance
             appearanceStorage.save(appearance)
-            for scene in UIApplication.shared.connectedScenes {
+            for scene in scenes {
                 guard let windowScene = scene as? UIWindowScene else {
                     continue
                 }
