@@ -6,6 +6,7 @@
         ///
         /// Prefer `pkyA11y(_:)` with a ``PKYAccessibilityIdentifier`` to avoid string literals.
         @MainActor
+        @discardableResult
         func pkyA11yID(_ identifier: String?) -> Self {
             guard let identifier else {
                 accessibilityIdentifier = nil

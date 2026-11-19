@@ -4,7 +4,9 @@
 
     /// Distributes an immutable theme through the view tree; missing injection stays nil and invalidates dynamic colors.
     public struct PKYThemeTrait: UITraitDefinition {
+        /// No snapshot outside an injected hierarchy, so missing injection stays detectable.
         public static let defaultValue: PKYThemeTraitValue? = nil
+        /// Theme changes re-resolve dynamic colors like other appearance traits.
         public static let affectsColorAppearance = true
     }
 
@@ -20,6 +22,8 @@
             self.theme = theme
         }
 
+        /// Compares activation identity rather than theme contents: copies of one snapshot are equal,
+        /// while separate activations of the same theme are not.
         public static func == (lhs: Self, rhs: Self) -> Bool {
             lhs.identity == rhs.identity
         }

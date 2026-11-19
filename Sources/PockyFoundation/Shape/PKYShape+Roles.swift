@@ -27,6 +27,8 @@ public extension PKYShape {
     }
 
     /// A storable semantic boundary role for component styles.
+    ///
+    /// ``PKYShape/Stroke/display`` sizes display graphics rather than boundaries, so it has no role.
     enum StrokeRole: Hashable, Sendable {
         /// An ordinary boundary.
         case standard
