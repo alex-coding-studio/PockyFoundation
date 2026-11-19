@@ -34,8 +34,9 @@ nsFont and monospaced-digit APIs. Explicit reference sizes retain
 the caller's value. `Theme/PKYTheme` is the immutable color/typography value. README.md owns platform mappings.
 
 Theme core is iOS-only except the shared `PKYThemeFallback.system` recipe and macOS NSColor
-semantic getters. iOS retains app-owned Observation contexts, typed notifications, window
-appearance, trait/SwiftUI snapshot bridging, dynamic semantic colors, and weak update bindings
+semantic getters. iOS retains app-owned Observation contexts, typed notifications, scene theme
+and appearance trait overrides, trait/SwiftUI snapshot bridging, dynamic semantic colors, and
+weak update bindings
 with UIUpdateLink deferral. Missing injection remains nil; Debug diagnoses it, while Release
 uses the explicit system-blue emergency recipe and logs the first fault. Diagnostics and Mutex
 are compiled only for iOS. Component implementation APIs use Pocky

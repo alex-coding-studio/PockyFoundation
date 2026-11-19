@@ -142,16 +142,51 @@
             }
         }
 
-        @Test("S3-01/T20 New windows receive the current appearance override")
-        func applyingAppearanceToWindowUsesCurrentMode() throws {
+        @Test("S3-01/T20 Scene setup installs the current theme and appearance overrides")
+        func sceneSetupInstallsThemeAndAppearance() throws {
             let store = try Self.isolatedStore()
             store.set("dark", forKey: "Pocky.appearance")
             let context = Self.makeContext(appearance: PKYAppearance(store: store))
             let window = UIWindow(frame: CGRect(x: 0, y: 0, width: 320, height: 640))
+            window.isHidden = false
+            defer { window.isHidden = true }
 
-            context.applyAppearance(to: window)
+            context.install(on: &window.traitOverrides)
+            window.updateTraitsIfNeeded()
 
-            #expect(window.overrideUserInterfaceStyle == .dark)
+            #expect(window.traitCollection.pkyTheme == context.themeTraitValue)
+            #expect(window.traitCollection.userInterfaceStyle == .dark)
+
+            context.activate(appearance: .system, in: [UIScene]())
+            context.applyAppearance(on: &window.traitOverrides)
+
+            #expect(!window.traitOverrides.contains(UITraitUserInterfaceStyle.self))
+        }
+
+        @Test("Theme activation replaces missing or previous snapshots and keeps custom ones")
+        func themeActivationKeepsCustomSnapshots() throws {
+            let context = try Self.makeContext(
+                appearance: PKYAppearance(store: Self.isolatedStore())
+            )
+            let previous = context.themeTraitValue
+            let custom = PKYThemeTraitValue(theme: PKYThemeFallback.system)
+            let missing = UIView()
+            let following = UIView()
+            let customized = UIView()
+            following.traitOverrides.pkyTheme = previous
+            customized.traitOverrides.pkyTheme = custom
+
+            context.activate(
+                theme: PKYThemeContextTests.makeTheme(contentPrimary: .blue),
+                in: [UIScene]()
+            )
+            for view in [missing, following, customized] {
+                context.replaceTheme(on: &view.traitOverrides, previous: previous)
+            }
+
+            #expect(missing.traitOverrides.pkyTheme == context.themeTraitValue)
+            #expect(following.traitOverrides.pkyTheme == context.themeTraitValue)
+            #expect(customized.traitOverrides.pkyTheme == custom)
         }
     }
 #endif

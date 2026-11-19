@@ -23,7 +23,7 @@
 
         /// A main-actor message posted after appearance activation so settings can update their selection.
         ///
-        /// Observe through `.pkyAppearanceDidChange`; dynamic colors already follow window appearance
+        /// Observe through `.pkyAppearanceDidChange`; dynamic colors already follow the scene appearance
         /// and do not need reassignment for this notification.
         public struct AppearanceDidChangeMessage: NotificationCenter.MainActorMessage {
             /// The notification name shared by typed and traditional appearance observers.
@@ -78,15 +78,12 @@
             let previous = themeTraitValue
             themeTraitValue = PKYThemeTraitValue(theme: theme)
             for case let scene as UIWindowScene in scenes {
-                let installed = scene.traitOverrides.pkyTheme
-                if installed == nil || installed == previous {
-                    scene.traitOverrides.pkyTheme = themeTraitValue
-                }
+                replaceTheme(on: &scene.traitOverrides, previous: previous)
             }
             NotificationCenter.default.post(ThemeDidChangeMessage(), subject: self)
         }
 
-        /// Saves an appearance selection, applies it to every connected scene window, and then posts its message.
+        /// Saves an appearance selection, applies it to every connected scene, and then posts its message.
         ///
         /// App extensions use ``activate(appearance:in:)`` with their own scenes instead.
         ///
@@ -96,34 +93,51 @@
             activate(appearance: appearance, in: UIApplication.shared.connectedScenes)
         }
 
-        /// Saves an appearance selection, applies it to the supplied scenes' windows, and then posts its message.
+        /// Saves an appearance selection, applies it to the supplied scenes, and then posts its message.
         ///
-        /// Use from app extensions or when the app tracks its own scenes; other windows keep their current style.
+        /// Each window scene receives a user-interface-style trait override that all of its windows
+        /// follow; `system` removes the override. Other scenes keep their current style.
         ///
         /// - Parameters:
         ///   - appearance: System, light, or dark appearance selected by the user.
-        ///   - scenes: The scenes whose windows follow this context.
+        ///   - scenes: The scenes that follow this context.
         public func activate(appearance: PKYAppearance.Mode, in scenes: some Sequence<UIScene>) {
             self.appearance = appearance
             appearanceStorage.save(appearance)
-            for scene in scenes {
-                guard let windowScene = scene as? UIWindowScene else {
-                    continue
-                }
-                for window in windowScene.windows {
-                    applyAppearance(to: window)
-                }
+            for case let scene as UIWindowScene in scenes {
+                applyAppearance(on: &scene.traitOverrides)
             }
             NotificationCenter.default.post(AppearanceDidChangeMessage(), subject: self)
         }
 
-        /// Applies the current appearance to a new window when its scene is created.
+        /// Installs the current theme snapshot and appearance on a newly connected scene.
         ///
-        /// Later ``activate(appearance:)`` calls update every connected scene window automatically.
+        /// Call from `scene(_:willConnectTo:options:)` in UIKit apps. Every window in the scene follows,
+        /// including windows created later, and later `activate` calls update the scene. SwiftUI apps
+        /// apply `View.pkyTheme(_:)` to the root view instead.
         ///
-        /// - Parameter window: The window that should follow the current appearance.
-        public func applyAppearance(to window: UIWindow) {
-            window.overrideUserInterfaceStyle = appearance.userInterfaceStyle
+        /// - Parameter scene: The window scene that follows this context.
+        public func apply(to scene: UIWindowScene) {
+            install(on: &scene.traitOverrides)
+        }
+
+        func install(on overrides: inout UITraitOverrides) {
+            overrides.pkyTheme = themeTraitValue
+            applyAppearance(on: &overrides)
+        }
+
+        func replaceTheme(on overrides: inout UITraitOverrides, previous: PKYThemeTraitValue) {
+            let installed = overrides.contains(PKYThemeTrait.self) ? overrides.pkyTheme : nil
+            if installed == nil || installed == previous {
+                overrides.pkyTheme = themeTraitValue
+            }
+        }
+
+        func applyAppearance(on overrides: inout UITraitOverrides) {
+            switch appearance {
+            case .system: overrides.remove(UITraitUserInterfaceStyle.self)
+            case .light, .dark: overrides.userInterfaceStyle = appearance.userInterfaceStyle
+            }
         }
     }
 

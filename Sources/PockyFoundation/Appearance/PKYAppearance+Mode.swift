@@ -19,7 +19,7 @@ public extension PKYAppearance {
         case dark
 
         #if os(iOS)
-            /// The window style override; `system` removes the override.
+            /// The interface style for this mode; `system` is `.unspecified`, which follows the system.
             public var userInterfaceStyle: UIUserInterfaceStyle {
                 switch self {
                 case .system: .unspecified
