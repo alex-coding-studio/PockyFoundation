@@ -36,6 +36,10 @@
         }
 
         /// Resolves the current theme: Debug diagnoses missing injection; Release logs a fault and uses the emergency recipe.
+        ///
+        /// Debug traps here because callers resolve synchronously, so the stack points at the uninjected
+        /// hierarchy. Dynamic colors resolve later during rendering and show magenta instead. Previews and
+        /// tests inject a theme like the app does; see ``PKYThemeTraitValue``.
         var pkyResolvedTheme: PKYTheme {
             if let pkyTheme {
                 return pkyTheme.theme

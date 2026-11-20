@@ -159,6 +159,11 @@ UIKit traits. Local trait or environment overrides keep the root selection uncha
 Missing injection remains nil: Debug diagnoses direct theme resolution and returns magenta for
 dynamic colors; Release reports a fault once and uses the explicit emergency recipe. That iOS
 recipe uses system blue accents, white on-accent, native system colors, and fixed typography.
+Direct resolution, including UIKit typography bindings and SwiftUI `View.pkyFont(_:)`, traps in
+Debug because its stack points at the uninjected hierarchy; dynamic colors resolve later during
+rendering, so they signal with magenta instead. Previews and tests inject a theme like the app:
+SwiftUI uses `MyView().pkyTheme(PKYThemeContext(theme: theme))`, and UIKit sets
+`traitOverrides.pkyTheme = PKYThemeTraitValue(theme: theme)` on a window or view.
 View and layer update bindings reuse registrations, hold owners weakly, and defer detached or
 not-yet-inherited theme work to a visible UI update. Cancelling preserves the last rendering.
 
