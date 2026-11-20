@@ -32,15 +32,15 @@ let placement = PKYMasonryPlacement.frames(
 | Domain | Public API |
 | --- | --- |
 | Layout | `PKYLayout.Space`, `Gap`, `Inset`, `Size`, `Split`, `Target`, `Variant`, `WidthClass`, `ContentWidth.maximum`; iOS content-width guides, `pin`/`lane`, full-width collection sections, and arranged stack initialization |
-| Shape | `PKYShape.Radius`, `RadiusRole`, `Stroke`, `StrokeRole`; iOS `UIView` and SwiftUI `View` corner/clipping adapters |
+| Shape | `PKYShape.Radius`, `RadiusRole`, `Stroke`, `StrokeRole`; SwiftUI `View` clipping adapters (concentric clipping needs macOS 26); iOS `UIView` corner adapters |
 | Motion | `PKYMotion.Duration`, `Spring` |
 | Opacity | `PKYOpacity.tint`, `focusScrim`, `dimmed`, `glassTint` |
-| Symbols | `PKYIcon.Size.pointSize`; iOS `symbolConfiguration`, `image`, and `font` adapters |
+| Symbols | `PKYIcon.Size.pointSize`; SwiftUI `font`; iOS `symbolConfiguration` and `image` adapters |
 | Geometry | `CGSize`, `CGPoint`, `CGRect`, `CGAffineTransform` arithmetic and `pky` helpers; `NSDirectionalEdgeInsets.pky` (iOS and macOS) and `UIEdgeInsets.pky` (iOS) |
 | Grid | `PKYGridPlacementInput`, `PKYGridPlacementOutput`, `PKYGridPlacementRole`, `PKYEdgeInsets` |
 | Masonry | `PKYMasonryPlacement.frames` and `.columns` |
 | Elevation | `PKYElevation.Style`, `.Appearance`, `.Recipe`, `CALayer.pkyApplyElevation`; iOS `UIView` and SwiftUI `View` elevation adapters |
-| Accessibility | `PKYAccessibilityIdentifier`; iOS `PKYAccessibility`, `pkyA11y`, and `pkyA11yID` adapters |
+| Accessibility | `PKYAccessibilityIdentifier`; iOS `PKYAccessibility`, `PKYAccessibilityDescription`, `pkyA11y`, and `pkyA11yID` adapters |
 | Haptics | iOS `PKYHaptics` interaction feedback |
 | UIKit helpers | iOS monospaced-digit fonts, multiline labels, minimum interaction-target bounds, standard sheet style and paper background, `NSCollectionLayoutSection.pkyFullWidth` and `pkyInsetGroupedList` |
 | Typography | `PKYFontFamily`, `PKYTypographyRole`, `PKYSectionHeaderRole`, `PKYTypographyTheme`; iOS `uiFont(in:compatibleWith:)`, macOS `nsFont(in:)`, SwiftUI `View.pkyFont(_:)`, and monospaced digits; iOS `pkyTypography` on labels, text fields and text views, `UIButton.pkyTitleTypography`, and theme-driven `pkyAttributedText` |
@@ -159,6 +159,11 @@ UIKit traits. Local trait or environment overrides keep the root selection uncha
 Missing injection remains nil: Debug diagnoses direct theme resolution and returns magenta for
 dynamic colors; Release reports a fault once and uses the explicit emergency recipe. That iOS
 recipe uses system blue accents, white on-accent, native system colors, and fixed typography.
+Direct resolution, including UIKit typography bindings and SwiftUI `View.pkyFont(_:)`, traps in
+Debug because its stack points at the uninjected hierarchy; dynamic colors resolve later during
+rendering, so they signal with magenta instead. Previews and tests inject a theme like the app:
+SwiftUI uses `MyView().pkyTheme(PKYThemeContext(theme: theme))`, and UIKit sets
+`traitOverrides.pkyTheme = PKYThemeTraitValue(theme: theme)` on a window or view.
 View and layer update bindings reuse registrations, hold owners weakly, and defer detached or
 not-yet-inherited theme work to a visible UI update. Cancelling preserves the last rendering.
 

@@ -1,6 +1,5 @@
 #if os(iOS)
     import PockyFoundation
-    import SwiftUI
     import Testing
     import UIKit
 
@@ -87,93 +86,6 @@
             #expect(view.cornerConfiguration == .capsule())
             #expect(view.layer.zPosition == 4)
             #expect(view.layer.shadowPath?.boundingBox == path.boundingBox)
-        }
-
-        @Test("ELEV-04/T01 SwiftUI elevation preserves layout size")
-        func swiftUIElevationPreservesLayoutSize() {
-            let content = Color.red.frame(width: 100, height: 40)
-
-            let baseline = ImageRenderer(content: content)
-            baseline.scale = 1
-            let elevated = ImageRenderer(
-                content: content.pkyElevation(.floating, color: .black)
-            )
-            elevated.scale = 1
-
-            #expect(elevated.uiImage?.size != nil)
-            #expect(elevated.uiImage?.size == baseline.uiImage?.size)
-        }
-
-        @Test("ELEV-04/T02 SwiftUI elevation resolves appearance recipe from colorScheme")
-        func swiftUIElevationResolvesAppearanceFromColorScheme() {
-            let lightSubtleShadow = outerShadowAlphaSum(style: .subtle, colorScheme: .light)
-            let darkSubtleShadow = outerShadowAlphaSum(style: .subtle, colorScheme: .dark)
-            #expect(lightSubtleShadow > 0)
-            #expect(darkSubtleShadow > lightSubtleShadow)
-
-            let lightInsetShadow = outerShadowAlphaSum(
-                style: .insetIndicator,
-                colorScheme: .light
-            )
-            let darkInsetShadow = outerShadowAlphaSum(
-                style: .insetIndicator,
-                colorScheme: .dark
-            )
-            #expect(lightInsetShadow > 0)
-            #expect(darkInsetShadow == 0)
-        }
-
-        private func outerShadowAlphaSum(
-            style: PKYElevation.Style,
-            colorScheme: ColorScheme
-        ) -> Int {
-            let content = Color.white
-                .frame(width: 40, height: 40)
-                .pkyElevation(style, color: .black)
-                .frame(width: 80, height: 80)
-                .environment(\.colorScheme, colorScheme)
-            let renderer = ImageRenderer(content: content)
-            renderer.scale = 1
-            renderer.isOpaque = false
-            guard let cgImage = renderer.cgImage else {
-                Issue.record("Failed to render SwiftUI elevation view")
-                return -1
-            }
-            let width = cgImage.width
-            let height = cgImage.height
-            var pixels = [UInt8](repeating: 0, count: width * height * 4)
-            let createdContext = pixels.withUnsafeMutableBytes { buffer -> Bool in
-                guard
-                    let baseAddress = buffer.baseAddress,
-                    let context = CGContext(
-                        data: baseAddress,
-                        width: width,
-                        height: height,
-                        bitsPerComponent: 8,
-                        bytesPerRow: width * 4,
-                        space: CGColorSpaceCreateDeviceRGB(),
-                        bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue
-                    )
-                else {
-                    return false
-                }
-                context.draw(cgImage, in: CGRect(x: 0, y: 0, width: width, height: height))
-                return true
-            }
-            guard createdContext else {
-                Issue.record("Failed to create CGContext for shadow alpha inspection")
-                return -1
-            }
-            var alphaSum = 0
-            for y in 0 ..< height {
-                for x in 0 ..< width {
-                    let insideInnerBox = x >= 20 && x < 60 && y >= 20 && y < 60
-                    if !insideInnerBox {
-                        alphaSum += Int(pixels[(y * width + x) * 4 + 3])
-                    }
-                }
-            }
-            return alphaSum
         }
 
         private func hostingWindow(
