@@ -35,11 +35,12 @@ portable tooling and a clean, independently reviewed initial commit with MIT lic
 
 Existing pure arithmetic, width/split, grid and masonry scenarios were migrated. View-hosted
 UIKit/SwiftUI rendering scenarios remain outside this package. Exact role-value restatements
-are replaced with relationship checks. New safety cases protect nonfinite input from invalid
-geometry or integer conversion traps, fractional height/cap behavior from layout drift, and
-coordinate/appearance handling from inverted or stale shadows. Compilers and constant-value
-tests cannot catch those transformations. Existing geometry examples supply the remaining
-coverage; no mutation checks or pixel-value tests are required.
+are replaced with relationship checks; a macOS test instead reads README.md and compares its
+platform-value table with the code, so documented values cannot drift. New safety cases protect
+nonfinite input from invalid geometry or integer conversion traps, fractional height/cap behavior
+from layout drift, and coordinate/appearance handling from inverted or stale shadows. Compilers
+and constant-value tests cannot catch those transformations. Existing geometry examples supply
+the remaining coverage; no mutation checks or pixel-value tests are required.
 
 CALayer adapter tests prove numeric conversion and preservation of caller-owned geometry;
 they do not prove screen rendering. Consumer application migration, unchanged GalleryX
