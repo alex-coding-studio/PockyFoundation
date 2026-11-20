@@ -41,8 +41,19 @@
         /// hierarchy. Dynamic colors resolve later during rendering and show magenta instead. Previews and
         /// tests inject a theme like the app does; see ``PKYThemeTraitValue``.
         var pkyResolvedTheme: PKYTheme {
-            if let pkyTheme {
-                return pkyTheme.theme
+            pkyTheme.pkyResolvedTheme
+        }
+    }
+
+    public extension PKYThemeTraitValue? {
+        /// Resolves an injected snapshot, or applies the missing-injection policy when there is none.
+        ///
+        /// SwiftUI views read `@Environment(\.pkyTheme)` and resolve it here in `body`. The snapshot compares
+        /// by activation identity, so an environment update that delivers the same snapshot again does not
+        /// update the view. Debug traps without a snapshot; Release logs a fault and uses the emergency recipe.
+        var pkyResolvedTheme: PKYTheme {
+            if let snapshot = self {
+                return snapshot.theme
             }
             #if DEBUG
                 preconditionFailure("Missing PKYThemeTrait injection")

@@ -154,6 +154,10 @@ App extensions cannot use the scene-free `activate` calls; they pass their own s
 `activate(theme:in:)` and `activate(appearance:in:)`.
 `View.pkyTheme(_:)` shares the context and snapshot with SwiftUI and bridges that snapshot to
 UIKit traits. Local trait or environment overrides keep the root selection unchanged.
+SwiftUI views read `@Environment(\.pkyTheme)` and resolve it with `pkyResolvedTheme` in `body`.
+The snapshot compares by activation identity, so an environment update that delivers it again does
+not update the view. `EnvironmentValues.pkyResolvedTheme` is deprecated: a resolved theme cannot be
+compared, so every such update re-evaluates the views that read it.
 
 `UIColor.pkyTheme` and semantic color getters resolve at use time from the requesting traits.
 Missing injection remains nil: Debug diagnoses direct theme resolution and returns magenta for

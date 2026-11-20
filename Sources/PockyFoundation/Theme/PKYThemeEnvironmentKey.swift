@@ -29,8 +29,16 @@
         }
 
         /// Resolves a theme with UIKit's missing-injection policy, without implicitly creating a context.
+        ///
+        /// A resolved theme cannot be compared, so a view reading it through `@Environment` updates whenever
+        /// the environment delivers the theme snapshot again, even unchanged. Read `\.pkyTheme` instead.
+        @available(
+            *,
+            deprecated,
+            message: "Read @Environment(\\.pkyTheme) and resolve it in body with pkyResolvedTheme."
+        )
         var pkyResolvedTheme: PKYTheme {
-            UITraitCollection { $0.pkyTheme = pkyTheme }.pkyResolvedTheme
+            pkyTheme.pkyResolvedTheme
         }
     }
 #endif
