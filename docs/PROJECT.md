@@ -41,11 +41,13 @@ Color tests compare supplied colors and native system mappings, preserve iOS con
 opposite-appearance behavior, and verify macOS content distinctions, grouped/standard equality,
 background appearance changes, and inverse luminance reversal under aqua/darkAqua. Typography
 tests cover native text styles, custom-face fallback, Dynamic Type ceilings, Bold Text, reference
-sizes, macOS preferred sizes, and SwiftUI parity with UIKit resolution. Theme tests cover
-notifications, Observation, snapshots, trait/environment bridging, appearance persistence, and
-scene trait overrides. Package tests have no connected scene, so scene overrides run against
-window and view trait overrides through the same internal helpers. The iOS test entry point also
-runs the theme trait suite in Release to exercise missing-injection fallback.
+sizes, macOS preferred sizes, SwiftUI parity with UIKit resolution, and UIKit control, title, and
+attributed-text bindings across theme swaps. Theme tests cover notifications, Observation,
+snapshots, trait/environment bridging, appearance persistence, scene trait overrides, binding
+lifecycle, theme-change callbacks, and layer colors. Package tests have no connected scene, so
+scene overrides run against window and view trait overrides through the same internal helpers.
+The iOS test entry point also runs the theme trait suite in Release to exercise missing-injection
+fallback and its diagnostic.
 
 CALayer adapter tests prove numeric conversion and preservation of caller-owned geometry; they do
 not prove screen rendering, and package tests do not prove application UI or minimum-OS runtime
