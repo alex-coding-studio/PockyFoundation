@@ -2,7 +2,7 @@
 set -euo pipefail
 cd "$(git rev-parse --show-toplevel)"
 if [[ "$(git branch --show-current)" == "main" ]] && git rev-parse --verify HEAD >/dev/null 2>&1; then
-  echo "Commit on a work branch and open a pull request; only the reviewed initial baseline may start on main." >&2
+  echo "Commit on a work branch and open a pull request; main only receives merged pull requests." >&2
   exit 1
 fi
 ./scripts/lint.sh

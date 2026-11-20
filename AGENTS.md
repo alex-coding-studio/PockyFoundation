@@ -2,14 +2,13 @@
 
 Read ProjectContext.md and docs/PROJECT.md before changing the package.
 
-- Keep one library product and target; add no dependencies without a Setup task.
+- Keep one library product and target; add no package dependencies without an explicit decision.
 - Keep public type identifiers prefixed with PKY and source identifiers in English.
-- Write meaningful English DocC comments for public API; internal implementation has no comments.
+- Write meaningful English DocC comments for public API. Implementation comments are rare, in
+  English, and explain why rather than what.
 - Prefer semantic roles, shared values, and pure geometry over views or theme systems.
 - Import AppKit or UIKit only inside `#if os(macOS)` / `#if os(iOS)` blocks. Shared roles stay
   platform-neutral; each platform mapping sits beside them. Never import private packages.
-- Foundation code moved from Pocky keeps its public API and behaviour; translate its documentation
-  to English and move its tests with it. Pocky remains the iOS-only component library.
 - Keep role values shared across platforms; branch only for native API or coordinate differences.
 - Preserve native floating-point geometry semantics except documented placement input guards.
 - Use repository lint, test, and build entry points. Tests assert relationships for visual roles,
@@ -17,6 +16,5 @@ Read ProjectContext.md and docs/PROJECT.md before changing the package.
 - Never commit personal emails, private paths, private links, tool-provider dependencies, caches,
   or symbolic links. Keep logs and result bundles in system temporary storage.
 - Enable committed hooks with `git config core.hooksPath .githooks`.
-- Later delivery uses work branches and ready pull requests with independent review where required.
-  The initial local commit may exist on main; pushing it requires separate explicit authorization.
+- Deliver changes through work branches and pull requests; never commit directly to main.
 - Do not change other repositories or publish releases as part of a package-only task.
