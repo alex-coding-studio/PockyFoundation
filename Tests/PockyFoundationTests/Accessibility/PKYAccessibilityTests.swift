@@ -11,10 +11,12 @@
 
         private struct FullDescription: PKYAccessibility {
             let identifier = "test.feature.photo"
-            let label: String? = "Photo"
-            let hint: String? = "Opens the photo"
-            let value: String? = "Selected"
-            let traits: UIAccessibilityTraits? = [.button, .selected]
+            let accessibility = PKYAccessibilityDescription(
+                label: "Photo",
+                hint: "Opens the photo",
+                value: "Selected",
+                traits: [.button, .selected]
+            )
         }
 
         private enum BareDescription: PKYAccessibility {
@@ -22,6 +24,10 @@
 
             var identifier: String {
                 FeatureID.delete.identifier
+            }
+
+            var accessibility: PKYAccessibilityDescription {
+                PKYAccessibilityDescription()
             }
         }
 

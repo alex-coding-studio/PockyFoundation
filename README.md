@@ -40,7 +40,7 @@ let placement = PKYMasonryPlacement.frames(
 | Grid | `PKYGridPlacementInput`, `PKYGridPlacementOutput`, `PKYGridPlacementRole`, `PKYEdgeInsets` |
 | Masonry | `PKYMasonryPlacement.frames` and `.columns` |
 | Elevation | `PKYElevation.Style`, `.Appearance`, `.Recipe`, `CALayer.pkyApplyElevation`; iOS `UIView` and SwiftUI `View` elevation adapters |
-| Accessibility | `PKYAccessibilityIdentifier`; iOS `PKYAccessibility`, `pkyA11y`, and `pkyA11yID` adapters |
+| Accessibility | `PKYAccessibilityIdentifier`; iOS `PKYAccessibility`, `PKYAccessibilityDescription`, `pkyA11y`, and `pkyA11yID` adapters |
 | Haptics | iOS `PKYHaptics` interaction feedback |
 | UIKit helpers | iOS monospaced-digit fonts, multiline labels, minimum interaction-target bounds, standard sheet style and paper background, `NSCollectionLayoutSection.pkyFullWidth` and `pkyInsetGroupedList` |
 | Typography | `PKYFontFamily`, `PKYTypographyRole`, `PKYSectionHeaderRole`, `PKYTypographyTheme`; iOS `uiFont(in:compatibleWith:)`, macOS `nsFont(in:)`, SwiftUI `View.pkyFont(_:)`, and monospaced digits; iOS `pkyTypography` on labels, text fields and text views, `UIButton.pkyTitleTypography`, and theme-driven `pkyAttributedText` |

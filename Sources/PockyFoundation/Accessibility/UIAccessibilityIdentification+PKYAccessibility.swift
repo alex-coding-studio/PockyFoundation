@@ -16,18 +16,19 @@
     }
 
     public extension UIAccessibilityIdentification where Self: NSObject {
-        /// Writes the identifier, label, hint, value, and traits, returning the same object for chaining.
+        /// Writes the identifier and description, returning the same object for chaining.
         ///
         /// Nil label, hint, or value clears text from an earlier call or cell configuration. Nil traits
-        /// preserve the element's existing traits; see ``PKYAccessibility/traits``.
+        /// preserve the element's existing traits; see ``PKYAccessibilityDescription/traits``.
         @MainActor
         @discardableResult
         func pkyA11y(_ a11y: some PKYAccessibility) -> Self {
+            let content = a11y.accessibility
             accessibilityIdentifier = a11y.identifier
-            accessibilityLabel = a11y.label
-            accessibilityHint = a11y.hint
-            accessibilityValue = a11y.value
-            if let traits = a11y.traits {
+            accessibilityLabel = content.label
+            accessibilityHint = content.hint
+            accessibilityValue = content.value
+            if let traits = content.traits {
                 accessibilityTraits = traits
             }
             return self
