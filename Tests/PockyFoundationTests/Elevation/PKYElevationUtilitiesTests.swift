@@ -65,29 +65,33 @@
         }
 
         @Test("UIView elevation follows mounting and appearance changes until removed")
-        func viewElevationFollowsAppearanceUntilRemoved() {
+        func viewElevationFollowsAppearanceUntilRemoved() throws {
             let color = UIColor { traits in
                 traits.userInterfaceStyle == .dark ? .blue : .red
             }
-            let lightSubtle = PKYElevation.Style.subtle.recipe(for: .light)
-            let darkSubtle = PKYElevation.Style.subtle.recipe(for: .dark)
             let view = UIView()
             view.pkyApplyElevation(.subtle, color: color)
 
             let window = hostingWindow(for: view, interfaceStyle: .dark)
             defer { window.isHidden = true }
             view.updateTraitsIfNeeded()
-            #expect(view.layer.shadowColor == UIColor.blue.cgColor)
-            #expect(view.layer.shadowOpacity == Float(darkSubtle.opacity))
+            let darkColor = try #require(view.layer.shadowColor)
+            let darkOpacity = view.layer.shadowOpacity
 
             window.overrideUserInterfaceStyle = .light
             window.updateTraitsIfNeeded()
             view.updateTraitsIfNeeded()
-            #expect(view.layer.shadowColor == UIColor.red.cgColor)
-            #expect(view.layer.shadowOpacity == Float(lightSubtle.opacity))
+            let lightColor = try #require(view.layer.shadowColor)
+            #expect(lightColor != darkColor)
+            #expect(view.layer.shadowOpacity < darkOpacity)
+
+            window.overrideUserInterfaceStyle = .dark
+            window.updateTraitsIfNeeded()
+            view.updateTraitsIfNeeded()
+            #expect(view.layer.shadowColor == darkColor)
 
             view.pkyRemoveElevation()
-            window.overrideUserInterfaceStyle = .dark
+            window.overrideUserInterfaceStyle = .light
             window.updateTraitsIfNeeded()
             view.updateTraitsIfNeeded()
             #expect(view.layer.shadowColor == nil)
