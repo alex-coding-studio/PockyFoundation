@@ -52,9 +52,10 @@ different Xcode are not CI evidence. API types ending in Placement avoid collidi
 layout wrappers.
 
 The public-content gate rejects nonportable paths, personal email addresses, symbolic links,
-private context, and non-English source documentation. Lint has no inherited suppression
-baseline. The shadow-assignment rule is excluded only for the dedicated CALayer adapter and its
-property assertions, which must assign the native shadow properties.
+private context, and non-English source comments. Implementation comments are allowed when they
+explain why code is written a certain way. Lint has no inherited suppression baseline. The
+shadow-assignment rule is excluded only for the dedicated CALayer adapter and its property
+assertions, which must assign the native shadow properties.
 
 ## Delivery
 

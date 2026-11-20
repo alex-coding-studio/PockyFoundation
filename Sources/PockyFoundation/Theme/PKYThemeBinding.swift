@@ -51,6 +51,8 @@
                 return
             }
             let traits = owner.traitCollection
+            // Run now only with final traits: mounted, or already inheriting a theme. Theme-resolving
+            // updates outside a trait callback also wait until the theme arrives.
             let waitsForTraits = resolvesTheme && !fromTraitChange && traits.pkyTheme == nil
             guard owner.window != nil || traits.pkyTheme != nil, !waitsForTraits else {
                 scheduleVisibleUpdate(owner)

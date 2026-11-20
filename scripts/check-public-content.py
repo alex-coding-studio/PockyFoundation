@@ -32,10 +32,8 @@ for name in filter(None, paths):
     if name.startswith("Sources/") and name.endswith(".swift"):
         for number, line in enumerate(text.splitlines(), 1):
             stripped = line.lstrip()
-            if stripped.startswith("//") and not stripped.startswith("///"):
-                failures.append(f"{name}:{number}: only English public API documentation is allowed")
-            if stripped.startswith("///") and re.search(r"[\u4e00-\u9fff]", stripped):
-                failures.append(f"{name}:{number}: public API documentation must be English")
+            if stripped.startswith("//") and re.search(r"[\u4e00-\u9fff]", stripped):
+                failures.append(f"{name}:{number}: source comments must be English")
 if failures:
     print("\n".join(failures), file=sys.stderr)
     sys.exit(1)

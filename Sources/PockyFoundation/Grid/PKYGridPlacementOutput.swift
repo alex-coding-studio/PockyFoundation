@@ -31,6 +31,7 @@ public struct PKYGridPlacementOutput: Equatable, Sendable {
         let lower = max(1, range.lowerBound)
         let upper = max(lower, range.upperBound)
         if target.isFinite, target > 0, target + gap > 0 {
+            // The tolerance keeps widths that exactly fit a column count from rounding down.
             let fitting = ((contentWidth + gap) / (
                 target + gap
             ) + 1e-6).rounded(.down)

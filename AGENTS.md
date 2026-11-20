@@ -4,7 +4,8 @@ Read ProjectContext.md and docs/PROJECT.md before changing the package.
 
 - Keep one library product and target; add no package dependencies without an explicit decision.
 - Keep public type identifiers prefixed with PKY and source identifiers in English.
-- Write meaningful English DocC comments for public API; internal implementation has no comments.
+- Write meaningful English DocC comments for public API. Implementation comments are rare, in
+  English, and explain why rather than what.
 - Prefer semantic roles, shared values, and pure geometry over views or theme systems.
 - Import AppKit or UIKit only inside `#if os(macOS)` / `#if os(iOS)` blocks. Shared roles stay
   platform-neutral; each platform mapping sits beside them. Never import private packages.

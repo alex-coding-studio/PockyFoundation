@@ -52,8 +52,9 @@ probes are Pocky SPI.
 
 Sources/PockyFoundation is grouped by semantic domain, with matching test directories.
 README.md documents the role catalogue and platform values. docs/PROJECT.md owns verification.
-Public types use the PKY prefix. Public API has English DocC comments; internal implementation
-has no explanatory comments. Native mappings live beside their roles under platform conditions.
+Public types use the PKY prefix. Public API has English DocC comments; implementation comments
+are rare, in English, and explain why rather than what. Native mappings live beside their roles
+under platform conditions.
 The formatter and linter configurations are ordinary committed files, never external links.
 
 ## Commands and evidence
