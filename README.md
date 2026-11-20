@@ -39,7 +39,7 @@ let placement = PKYMasonryPlacement.frames(
 | Geometry | `CGSize`, `CGPoint`, `CGRect`, `CGAffineTransform` arithmetic and `pky` helpers; `NSDirectionalEdgeInsets.pky` (iOS and macOS) and `UIEdgeInsets.pky` (iOS) |
 | Grid | `PKYGridPlacementInput`, `PKYGridPlacementOutput`, `PKYGridPlacementRole`, `PKYEdgeInsets` |
 | Masonry | `PKYMasonryPlacement.frames` and `.columns` |
-| Elevation | `PKYElevation.Style`, `.Appearance`, `.Recipe`, `CALayer.pkyApplyElevation`; iOS `UIView` and SwiftUI `View` elevation adapters |
+| Elevation | `PKYElevation.Style`, `.Appearance`, `.Recipe`, `CALayer.pkyApplyElevation`; SwiftUI `View` elevation adapter; iOS `UIView` elevation adapter |
 | Accessibility | `PKYAccessibilityIdentifier`; iOS `PKYAccessibility`, `PKYAccessibilityDescription`, `pkyA11y`, and `pkyA11yID` adapters |
 | Haptics | iOS `PKYHaptics` interaction feedback |
 | UIKit helpers | iOS monospaced-digit fonts, multiline labels, minimum interaction-target bounds, standard sheet style and paper background, `NSCollectionLayoutSection.pkyFullWidth` and `pkyInsetGroupedList` |
