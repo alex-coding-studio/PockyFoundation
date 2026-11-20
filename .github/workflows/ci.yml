@@ -35,26 +35,8 @@ jobs:
           xcodebuild -version
           swift --version
 
-      - name: Install SwiftFormat ${{ env.SWIFTFORMAT_VERSION }}
-        run: |
-          curl -fsSL -o "$RUNNER_TEMP/swiftformat.zip" \
-            "https://github.com/nicklockwood/SwiftFormat/releases/download/$SWIFTFORMAT_VERSION/swiftformat.zip"
-          echo "$SWIFTFORMAT_SHA256  $RUNNER_TEMP/swiftformat.zip" | shasum -a 256 -c -
-          mkdir -p "$RUNNER_TEMP/bin"
-          unzip -o -q "$RUNNER_TEMP/swiftformat.zip" -d "$RUNNER_TEMP/bin"
-          chmod +x "$RUNNER_TEMP/bin/swiftformat"
-          echo "$RUNNER_TEMP/bin" >> "$GITHUB_PATH"
-          test "$("$RUNNER_TEMP/bin/swiftformat" --version)" = "$SWIFTFORMAT_VERSION"
-
-      - name: Install SwiftLint ${{ env.SWIFTLINT_VERSION }}
-        run: |
-          curl -fsSL -o "$RUNNER_TEMP/swiftlint.zip" \
-            "https://github.com/realm/SwiftLint/releases/download/$SWIFTLINT_VERSION/portable_swiftlint.zip"
-          echo "$SWIFTLINT_SHA256  $RUNNER_TEMP/swiftlint.zip" | shasum -a 256 -c -
-          mkdir -p "$RUNNER_TEMP/bin"
-          unzip -o -q "$RUNNER_TEMP/swiftlint.zip" swiftlint -d "$RUNNER_TEMP/bin"
-          chmod +x "$RUNNER_TEMP/bin/swiftlint"
-          test "$("$RUNNER_TEMP/bin/swiftlint" version)" = "$SWIFTLINT_VERSION"
+      - name: Install pinned SwiftFormat and SwiftLint
+        run: ./scripts/bootstrap.sh
 
       - name: Lint
         run: ./scripts/lint.sh

@@ -204,7 +204,8 @@ Run `./scripts/lint.sh`, `./scripts/test.sh macos`, `./scripts/test.sh ios`, and
 `./scripts/build.sh macos|ios`. Use Xcode 26 or later with an available iOS Simulator runtime;
 CI verifies with the newest installed Xcode. The iOS 26.1 sheet paper background is compiled
 only with Xcode 26.1 or later; earlier toolchains keep the system sheet background.
-Formatter/linter versions and binary checksums are pinned in CI. No private tooling is needed.
+Formatter/linter versions and binary checksums are pinned in CI; `./scripts/bootstrap.sh` installs
+the same tools into the ignored `.tools/` directory for local linting. No private tooling is needed.
 
 Personally maintained; external issues and pull requests are not accepted; forks are welcome.
 MIT License. Copyright (c) 2026 Cunqi.

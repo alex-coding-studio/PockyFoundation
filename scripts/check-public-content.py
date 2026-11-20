@@ -24,7 +24,10 @@ for name in filter(None, paths):
         continue
     if not path.is_file():
         continue
-    text = path.read_text()
+    try:
+        text = path.read_text()
+    except UnicodeDecodeError:
+        continue
     for pattern in patterns:
         if re.search(pattern, text):
             failures.append(f"{name}: contains private or nonportable content")

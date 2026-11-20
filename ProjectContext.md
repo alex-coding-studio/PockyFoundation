@@ -66,7 +66,8 @@ with an available iPhone simulator, overridable with POCKY_FOUNDATION_TEST_DESTI
 CI runs these commands on a macOS runner, selecting its newest installed Xcode and recording
 the toolchain; older Xcode releases are not tested. The iOS build entry also builds with
 app-extension-only API so extension consumers keep compiling.
-SwiftFormat/SwiftLint versions and release checksums are pinned in CI.
+SwiftFormat/SwiftLint versions and release checksums are pinned in CI; `./scripts/bootstrap.sh`
+installs them into the ignored `.tools/` directory for both CI and local linting.
 Build caches are ignored; temporary iOS DerivedData is removed at command exit.
 Passing package tests do not prove application UI or minimum-OS runtime acceptance.
 

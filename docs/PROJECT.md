@@ -11,6 +11,7 @@ Swift Testing is bundled with the toolchain; no test dependency installation is 
 
 | Entry point | Evidence |
 | --- | --- |
+| `./scripts/bootstrap.sh` | Installs the pinned, checksum-verified SwiftFormat/SwiftLint into `.tools/bin` |
 | `./scripts/lint.sh` | Pinned SwiftFormat/SwiftLint, script syntax, public-content hygiene |
 | `./scripts/lint.sh --fix` | Format owned Swift sources, then run lint |
 | `./scripts/test.sh macos` | Executed host Swift Testing tests |
@@ -23,8 +24,9 @@ POCKY_FOUNDATION_TEST_DESTINATION can select a specific Simulator destination. W
 the test entry selects an available iPhone simulator. Build/test scripts never launch the
 Simulator UI or replace a running application. iOS DerivedData is temporary and cleaned
 on exit. CI runs lint and both platform build/test entry points on macos-26 with the newest
-installed Xcode, recording its version, and installs pinned, checksum-verified formatter/linter
-binaries. Older Xcode releases are not tested in CI. Package.swift owns compiler language mode.
+installed Xcode, recording its version, and installs the pinned, checksum-verified formatter and
+linter through the same bootstrap script. `./scripts/lint.sh` prefers tools in `.tools/bin`.
+Older Xcode releases are not tested in CI. Package.swift owns compiler language mode.
 
 ## Testing approach
 
