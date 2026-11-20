@@ -125,7 +125,31 @@
             #expect(role == .heading.bold.rounded.monospacedDigits)
         }
 
+        @Test("An environment snapshot resolves the same theme as traits carrying it")
+        func environmentSnapshotResolvesItsTheme() {
+            let theme = PKYThemeContextTests.makeTheme(contentPrimary: .red)
+            let snapshot: PKYThemeTraitValue? = PKYThemeTraitValue(theme: theme)
+            let resolved = snapshot.pkyResolvedTheme
+            #expect(resolved.color.content(.primary) === theme.color.content(.primary))
+            let traits = UITraitCollection { $0.pkyTheme = snapshot }
+            #expect(
+                traits.pkyResolvedTheme.color.content(.primary) === resolved.color.content(.primary)
+            )
+        }
+
         #if !DEBUG
+            @Test(
+                "Release resolves a missing environment snapshot with the emergency theme and reports it"
+            )
+            func releaseMissingSnapshotUsesEmergencyTheme() {
+                let snapshot: PKYThemeTraitValue? = nil
+                let before = PKYThemeDiagnostics.reportCount
+                let resolved = snapshot.pkyResolvedTheme
+                #expect(PKYThemeDiagnostics.reportCount > before)
+                let fallback = PKYThemeFallback.system.color.content(.primary)
+                #expect(resolved.color.content(.primary).isEqual(fallback))
+            }
+
             @Test(
                 "Release missing injection keeps the raw value nil and resolves the explicit emergency theme"
             )
