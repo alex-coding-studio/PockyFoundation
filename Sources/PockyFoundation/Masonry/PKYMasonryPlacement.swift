@@ -16,7 +16,7 @@ public enum PKYMasonryPlacement {
     ///   - rounding: Height rounding rule, or nil to retain fractional heights.
     ///   - maximumHeightRatio: Optional positive finite height-to-width cap, such as 2.5.
     ///   - minimumAspectRatio: Positive finite lower ratio limit; invalid limits use 0.01.
-    /// - Returns: Ordered frames and the nonnegative total content height.
+    /// - Returns: Ordered frames and the content height, which is the lowest frame edge and never negative.
     public static func frames(
         aspectRatios: [CGFloat],
         width: CGFloat,
@@ -63,9 +63,8 @@ public enum PKYMasonryPlacement {
             heights[selected] = frame.maxY + spacing
             frames.append(frame)
         }
-        let tallest = max(heights.max() ?? 0, count > heights.count ? 0 : -CGFloat.infinity)
-        let total = tallest - spacing
-        return (frames, max(total, 0))
+        let height = frames.reduce(CGFloat(0)) { max($0, $1.maxY) }
+        return (frames, height)
     }
 
     /// Fits columns to a minimum width within an inclusive range; nonpositive minima use its lower bound.

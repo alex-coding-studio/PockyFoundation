@@ -35,6 +35,26 @@ struct PlacementSafetyTests {
         #expect(fractional.frames[0].height != fractional.frames[0].height.rounded())
     }
 
+    @Test("Negative masonry spacing reports the lowest frame edge as content height")
+    func negativeSpacingHeight() {
+        let sparse = PKYMasonryPlacement.frames(
+            aspectRatios: [10],
+            width: 100,
+            columns: 2,
+            spacing: -20
+        )
+        #expect(sparse.frames.count == 1)
+        #expect(sparse.height == sparse.frames.map(\.maxY).max())
+        let overlapping = PKYMasonryPlacement.frames(
+            aspectRatios: [2, 12],
+            width: 60,
+            columns: 1,
+            spacing: -20
+        )
+        #expect(overlapping.frames[1].maxY < overlapping.frames[0].maxY)
+        #expect(overlapping.height == overlapping.frames.map(\.maxY).max())
+    }
+
     @Test("Empty and nonfinite layout inputs do not trap or allocate by an unbounded column count")
     func invalidContainerGeometry() {
         #expect(PKYMasonryPlacement.frames(
