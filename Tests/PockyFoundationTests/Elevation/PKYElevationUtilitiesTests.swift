@@ -64,6 +64,40 @@
             #expect(lightView.layer.shadowRadius == lightInset.radius)
         }
 
+        @Test("UIView elevation follows mounting and appearance changes until removed")
+        func viewElevationFollowsAppearanceUntilRemoved() throws {
+            let color = UIColor { traits in
+                traits.userInterfaceStyle == .dark ? .blue : .red
+            }
+            let view = UIView()
+            view.pkyApplyElevation(.subtle, color: color)
+
+            let window = hostingWindow(for: view, interfaceStyle: .dark)
+            defer { window.isHidden = true }
+            view.updateTraitsIfNeeded()
+            let darkColor = try #require(view.layer.shadowColor)
+            let darkOpacity = view.layer.shadowOpacity
+
+            window.overrideUserInterfaceStyle = .light
+            window.updateTraitsIfNeeded()
+            view.updateTraitsIfNeeded()
+            let lightColor = try #require(view.layer.shadowColor)
+            #expect(lightColor != darkColor)
+            #expect(view.layer.shadowOpacity < darkOpacity)
+
+            window.overrideUserInterfaceStyle = .dark
+            window.updateTraitsIfNeeded()
+            view.updateTraitsIfNeeded()
+            #expect(view.layer.shadowColor == darkColor)
+
+            view.pkyRemoveElevation()
+            window.overrideUserInterfaceStyle = .light
+            window.updateTraitsIfNeeded()
+            view.updateTraitsIfNeeded()
+            #expect(view.layer.shadowColor == nil)
+            #expect(view.layer.shadowOpacity == 0)
+        }
+
         @Test(
             "ELEV-03/T02 UIView preserves component geometry and clipping across apply and remove"
         )

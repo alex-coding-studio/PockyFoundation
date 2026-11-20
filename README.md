@@ -39,9 +39,9 @@ let placement = PKYMasonryPlacement.frames(
 | Geometry | `CGSize`, `CGPoint`, `CGRect`, `CGAffineTransform` arithmetic and `pky` helpers; `NSDirectionalEdgeInsets.pky` (iOS and macOS) and `UIEdgeInsets.pky` (iOS) |
 | Grid | `PKYGridPlacementInput`, `PKYGridPlacementOutput`, `PKYGridPlacementRole`, `PKYEdgeInsets` |
 | Masonry | `PKYMasonryPlacement.frames` and `.columns` |
-| Elevation | `PKYElevation.Style`, `.Appearance`, `.Recipe`, `CALayer.pkyApplyElevation`; iOS `UIView` and SwiftUI `View` elevation adapters |
+| Elevation | `PKYElevation.Style`, `.Appearance`, `.Recipe`, `CALayer.pkyApplyElevation`; SwiftUI `View` elevation adapter; iOS `UIView` elevation adapter |
 | Accessibility | `PKYAccessibilityIdentifier`; iOS `PKYAccessibility`, `PKYAccessibilityDescription`, `pkyA11y`, and `pkyA11yID` adapters |
-| Haptics | iOS `PKYHaptics` interaction feedback |
+| Haptics | iOS `PKYHaptics` interaction feedback with reused generators, `prepare(_:)`, and `PKYHaptics.Event.sensoryFeedback` for SwiftUI |
 | UIKit helpers | iOS monospaced-digit fonts, multiline labels, minimum interaction-target bounds, standard sheet style and paper background, `NSCollectionLayoutSection.pkyFullWidth` and `pkyInsetGroupedList` |
 | Typography | `PKYFontFamily`, `PKYTypographyRole`, `PKYSectionHeaderRole`, `PKYTypographyTheme`; iOS `uiFont(in:compatibleWith:)`, macOS `nsFont(in:)`, SwiftUI `View.pkyFont(_:)`, and monospaced digits; iOS `pkyTypography` on labels, text fields and text views, `UIButton.pkyTitleTypography`, and theme-driven `pkyAttributedText` |
 | Theme | `PKYTheme`, shared `PKYThemeFallback.system`; iOS Context, traits, SwiftUI environment and view/layer update bindings; macOS default-theme `NSColor.pky*` getters |
@@ -193,6 +193,9 @@ hierarchies; the adapter does not infer ancestor transforms. Pass resolved CGCol
 `appearance: .dark` when appropriate, and reapply after appearance or color changes.
 It changes only shadow color, opacity, radius, and offset. Clipping, corners, z-order,
 layout, and shadowPath remain caller-owned. `pkyRemoveElevation()` clears those four properties.
+The iOS `UIView` adapter keeps its recipe and color current as the view mounts and as the theme
+or color-appearance traits change, without requiring theme injection; its `pkyRemoveElevation()`
+also stops those updates. SwiftUI adapters follow `colorScheme` directly.
 
 ## Development
 
