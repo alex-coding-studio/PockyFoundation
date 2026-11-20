@@ -11,8 +11,8 @@ caller-colored elevation to CALayer.
 ## Installation
 
 Add `https://github.com/alex-coding-studio/PockyFoundation` as a Swift package dependency
-and link the `PockyFoundation` product. The initial version is not tagged yet.
-Use released semantic versions rather than a moving branch once releases are available.
+and link the `PockyFoundation` product. Depend on a tagged release, for example with
+`.upToNextMinor(from:)`; releases are listed on GitHub. Avoid depending on a moving branch.
 
 ```swift
 import PockyFoundation

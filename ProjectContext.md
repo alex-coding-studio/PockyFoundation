@@ -10,8 +10,8 @@ the directory layout; Package.swift is the source of truth. There are no package
 
 CoreGraphics and Foundation supply value types; QuartzCore supplies the thin CALayer adapter.
 UIKit and AppKit are imported only under platform conditional compilation for native mappings.
-The package is the target home for all of Pocky's foundation (appearance, colors, typography,
-themes), while Pocky is the iOS-only component library. Localized
+Component libraries build on this package; the private Pocky component library uses the Pocky
+SPI described below. Localized
 strings ship as English and Simplified Chinese `.lproj` string files, which every supported
 SwiftPM toolchain bundles; string catalogs are not used. The iOS theme environment root and
 window-appearance integration are infrastructure adapters, not product views. Device geometry
@@ -71,13 +71,10 @@ Passing package tests do not prove application UI or minimum-OS runtime acceptan
 
 ## Delivery and maintenance
 
-Use a clean initial history, MIT licensing, and no private development context. An initial
-default-branch publication requires a separately authorized complete baseline after gates
-and independent review of its exact commit. Later changes require work branches and ready
-pull requests. The auto-merge workflow squash-merges only the approved current head after CI
-passes and the needs-acceptance label is absent; a CI completion or label removal retries it.
-Repository interactions are limited to collaborators, and external issues and pull requests
-are not accepted. Do not publish tags, releases, or alter consumers without explicit scope.
-All direct dependency, toolchain, CI, or foundation changes belong to Setup and update this
-context when its stable facts change. Public API evolution preserves source compatibility
-within a declared release policy. Version tagging policy remains owner-controlled.
+Changes use work branches and pull requests under the MIT license, without private development
+context. The auto-merge workflow squash-merges only the approved current head after CI passes and
+the needs-acceptance label is absent; a CI completion or label removal retries it. Repository
+interactions are limited to collaborators, and external issues and pull requests are not
+accepted. Do not publish tags or releases, or change dependent repositories, without explicit
+scope. Dependency, toolchain, and CI changes update this context when its stable facts change.
+Version tagging and release policy remain owner-controlled.
