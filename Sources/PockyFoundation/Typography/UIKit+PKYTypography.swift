@@ -41,9 +41,8 @@
         (objc_getAssociatedObject(view, &pkyTypographyKey) as? PKYTypographyBinding)?.role
     }
 
-    /// Returns the view's active typography-role registration.
     @MainActor
-    @_spi(Pocky) public func pkyTypographyRegistration(
+    func pkyTypographyRegistration(
         on view: UIView
     ) -> (any UITraitChangeRegistration)? {
         (objc_getAssociatedObject(
@@ -149,9 +148,8 @@
         }
     }
 
-    /// Returns the button's active title-typography registration.
     @MainActor
-    @_spi(Pocky) public func pkyTitleTypographyRegistration(
+    func pkyTitleTypographyRegistration(
         on button: UIButton
     ) -> (any UITraitChangeRegistration)? {
         (objc_getAssociatedObject(
@@ -160,9 +158,8 @@
         ) as? PKYTitleTypographyBinding)?.observer.registration
     }
 
-    /// Returns the view's active attributed-text registration.
     @MainActor
-    @_spi(Pocky) public func pkyAttributedTextRegistration(
+    func pkyAttributedTextRegistration(
         on view: UIView
     ) -> (any UITraitChangeRegistration)? {
         pkyThemeUpdateRegistration(on: view, key: &pkyAttributedTextKey)

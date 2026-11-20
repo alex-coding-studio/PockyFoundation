@@ -6,9 +6,8 @@
     @MainActor private var pkyLayerColorBindingKey: UInt8 = 0
     @MainActor private var pkyLayerColorsKey: UInt8 = 0
 
-    /// Installs, replaces, or removes an associated theme update, reusing unchanged trait registrations.
     @MainActor
-    @_spi(Pocky) public func pkyInstallThemeUpdate(
+    func pkyInstallThemeUpdate(
         on view: UIView,
         key: UnsafeRawPointer,
         observing traits: [UITrait] = [],
@@ -36,26 +35,23 @@
         binding.refresh()
     }
 
-    /// Returns the active trait registration associated with the supplied owner and key.
     @MainActor
-    @_spi(Pocky) public func pkyThemeUpdateRegistration(
+    func pkyThemeUpdateRegistration(
         on view: UIView,
         key: UnsafeRawPointer
     ) -> (any UITraitChangeRegistration)? {
         (objc_getAssociatedObject(view, key) as? PKYThemeBinding)?.registration
     }
 
-    /// Returns the view's active one-line theme-change registration.
     @MainActor
-    @_spi(Pocky) public func pkyThemeChangeRegistration(
+    func pkyThemeChangeRegistration(
         on view: UIView
     ) -> (any UITraitChangeRegistration)? {
         pkyThemeUpdateRegistration(on: view, key: &pkyThemeChangeKey)
     }
 
-    /// Returns the view's active layer-color registration.
     @MainActor
-    @_spi(Pocky) public func pkyLayerColorRegistration(
+    func pkyLayerColorRegistration(
         on view: UIView
     ) -> (any UITraitChangeRegistration)? {
         pkyThemeUpdateRegistration(on: view, key: &pkyLayerColorBindingKey)

@@ -166,6 +166,10 @@ SwiftUI uses `MyView().pkyTheme(PKYThemeContext(theme: theme))`, and UIKit sets
 `traitOverrides.pkyTheme = PKYThemeTraitValue(theme: theme)` on a window or view.
 View and layer update bindings reuse registrations, hold owners weakly, and defer detached or
 not-yet-inherited theme work to a visible UI update. Cancelling preserves the last rendering.
+`pkyOnThemeChange(observing:_:)` keeps one callback per view for the host. A reusable component
+keeps its own `PKYThemeBinding` instead: set `onUpdate`, call `refresh()` after changing the state
+it renders, and `stop()` to end updates. Pass `resolvesTheme: true` when the update reads the
+theme, so a refresh waits for an inherited theme rather than running the missing-injection policy.
 
 macOS has no Context, trait propagation, diagnostic machinery, or NSView binding in this step.
 `PKYThemeFallback.system` is its default recipe: both accent levels are `NSColor.controlAccentColor`,
@@ -173,9 +177,6 @@ on-accent is white, and typography is `.system(scaling: .fixed)`. `NSColor.pkyCo
 `pkyBackground`, `pkyAccent`, `pkySeparator`, `pkyOnAccent`, `pkyStatus`, and `pkyOnStatus` return
 roles from that default theme. The native colors retain system appearance behavior; app-supplied
 macOS theme switching is deferred.
-
-Binding and diagnostic implementation access for the iOS Pocky component library is exposed only through
-`@_spi(Pocky) import PockyFoundation`. It is not part of the ordinary consumer API.
 
 ### Placement behavior
 

@@ -1,7 +1,7 @@
 #if os(iOS)
-    import PockyFoundation
     import Testing
     import UIKit
+    @testable import PockyFoundation
 
     @MainActor
     struct PKYThemeTraitTests {
@@ -81,6 +81,35 @@
             #endif
         }
 
+        @Test("Semantic color shorthands resolve each role from the theme in the supplied traits")
+        func semanticShorthandsResolveSuppliedThemeRoles() {
+            let themes = [
+                PKYThemeContextTests.makeTheme(contentPrimary: .red),
+                PKYThemeFallback.system,
+            ]
+            for theme in themes {
+                let traits = UITraitCollection { $0.pkyTheme = PKYThemeTraitValue(theme: theme) }
+                let color = theme.color
+                let pairs: [(UIColor, UIColor)] = [
+                    (.pkyContent(.primary), color.content(.primary)),
+                    (.pkyContent(.placeholder), color.content(.placeholder)),
+                    (.pkyBackground(.standard(.tertiary)), color.background.standard(.tertiary)),
+                    (.pkyBackground(.grouped(.secondary)), color.background.grouped(.secondary)),
+                    (.pkyAccent(.primary), color.accent(.primary)),
+                    (.pkyAccent(.secondary), color.accent(.secondary)),
+                    (.pkySeparator(.standard), color.separator(.standard)),
+                    (.pkySeparator(.opaque), color.separator(.opaque)),
+                    (.pkyOnAccent, color.onAccent),
+                    (.pkyStatus(.destructive), color.status(.destructive)),
+                    (.pkyOnStatus(.destructive), color.onStatus(.destructive)),
+                ]
+                for (shorthand, role) in pairs {
+                    let expected = role.resolvedColor(with: traits)
+                    #expect(shorthand.resolvedColor(with: traits).isEqual(expected))
+                }
+            }
+        }
+
         @Test("Typography roles remain unresolved until the current theme supplies their policy")
         func typographyRoleRemainsUnresolved() {
             let role = PKYTypographyRole.heading.bold.rounded.monospacedDigits
@@ -122,6 +151,34 @@
                         compatibleWith: traits
                     ).familyName)
                 #expect(traits.pkyTheme == nil)
+            }
+
+            @Test(
+                "Release theme bindings report a missing injection before updating with the emergency theme"
+            )
+            func releaseThemeBindingsReportMissingInjection() {
+                let window = UIWindow(frame: CGRect(x: 0, y: 0, width: 200, height: 200))
+                window.traitOverrides.preferredContentSizeCategory = .extraExtraExtraLarge
+                window.isHidden = false
+                defer { window.isHidden = true }
+                let callback = UIView()
+                var reports = [Int]()
+                callback.pkyOnThemeChange { (_: UIView) in
+                    reports.append(PKYThemeDiagnostics.reportCount)
+                }
+                let before = PKYThemeDiagnostics.reportCount
+                window.addSubview(callback)
+                window.updateTraitsIfNeeded()
+                #expect(callback.traitCollection.pkyTheme == nil)
+                #expect(!reports.isEmpty)
+                #expect(reports.allSatisfy { $0 > before })
+                let layered = UIView()
+                layered.pkyLayerBorderColor = .pkySeparator(.standard)
+                window.addSubview(layered)
+                window.updateTraitsIfNeeded()
+                let fallback = PKYThemeFallback.system.color.separator(.standard)
+                let expected = fallback.resolvedColor(with: layered.traitCollection).cgColor
+                #expect(layered.layer.borderColor == expected)
             }
         #endif
     }

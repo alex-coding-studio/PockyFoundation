@@ -1,27 +1,35 @@
 #if os(iOS)
     import UIKit
 
-    /// Tracks trait changes and one pending visible update without retaining the owner.
+    /// Keeps a component's theme-dependent rendering current without retaining its owner.
+    ///
+    /// Reusable components use a binding for updates of their own, independent of the host's
+    /// `pkyOnThemeChange(observing:_:)` callback. Set `onUpdate`, then call `refresh()` after changing
+    /// the state it renders. The update runs at once when the owner is in a window or already inherits
+    /// a theme, otherwise at the owner's first visible UI update, and again whenever the theme, content
+    /// size, legibility weight, or supplied traits change. Keep the binding for as long as updates are
+    /// needed; `stop()` ends them.
     @MainActor
-    @_spi(Pocky) public final class PKYThemeBinding {
-        /// The appearance-dependent callback, invoked with the owner's current traits.
-        @_spi(Pocky) public var onUpdate: (@MainActor (UITraitCollection) -> Void)?
-        /// The active trait registration, cleared by `stop()`.
-        @_spi(Pocky) public private(set) var registration: (
-            any UITraitChangeRegistration
-        )?
+    public final class PKYThemeBinding {
+        /// The theme-dependent update, invoked with the owner's current traits.
+        public var onUpdate: (@MainActor (UITraitCollection) -> Void)?
 
-        /// The pending visible-update link, if the owner is waiting to mount.
-        @_spi(Pocky) public private(set) var mountLink: UIUpdateLink?
-
-        /// Whether callbacks require inherited theme traits before an external refresh.
-        @_spi(Pocky) public var resolvesTheme: Bool
+        private(set) var registration: (any UITraitChangeRegistration)?
+        private(set) var mountLink: UIUpdateLink?
+        let resolvesTheme: Bool
 
         private weak var owner: UIView?
         private let observedTraits: [ObjectIdentifier]
 
-        /// Registers theme, content-size, legibility-weight, and supplied traits for a weakly held owner.
-        @_spi(Pocky) public init(
+        /// Registers for theme, content-size, legibility-weight, and supplied trait changes on the owner.
+        ///
+        /// - Parameters:
+        ///   - owner: The view whose traits drive the update; the binding holds it weakly.
+        ///   - traits: Additional traits that affect the rendering, such as
+        ///     `UITraitCollection.systemTraitsAffectingColorAppearance`.
+        ///   - resolvesTheme: Whether the update reads the theme. A refresh outside a trait change then
+        ///     waits until the owner inherits a theme rather than running the missing-injection policy.
+        public init(
             owner: UIView,
             traits: [UITrait] = [],
             resolvesTheme: Bool = false
@@ -38,15 +46,27 @@
             }
         }
 
-        /// Whether an active binding observes exactly the supplied additional traits in the same order.
-        @_spi(Pocky) public func observes(_ traits: [UITrait]) -> Bool {
+        /// Runs the update when the owner's traits are final, otherwise at its next visible UI update.
+        public func refresh() {
+            refresh(fromTraitChange: false)
+        }
+
+        /// Clears `onUpdate` and cancels the trait registration and any pending visible update.
+        public func stop() {
+            onUpdate = nil
+            mountLink?.isEnabled = false
+            mountLink = nil
+            if let owner, let registration {
+                owner.unregisterForTraitChanges(registration)
+            }
+            registration = nil
+        }
+
+        func observes(_ traits: [UITrait]) -> Bool {
             registration != nil && observedTraits == traits.map { ObjectIdentifier($0) }
         }
 
-        /// Refreshes the owner's appearance-dependent state when its current traits are ready.
-        ///
-        /// - Parameter fromTraitChange: Whether this is the owner's own trait callback, where its traits are current.
-        @_spi(Pocky) public func refresh(fromTraitChange: Bool = false) {
+        func refresh(fromTraitChange: Bool) {
             guard let owner else {
                 return
             }
@@ -65,19 +85,7 @@
             onUpdate?(traits)
         }
 
-        /// Clears the callback and cancels both trait registration and pending visible updates.
-        @_spi(Pocky) public func stop() {
-            onUpdate = nil
-            mountLink?.isEnabled = false
-            mountLink = nil
-            if let owner, let registration {
-                owner.unregisterForTraitChanges(registration)
-            }
-            registration = nil
-        }
-
-        /// Runs one pending callback when the owner reaches a visible update, clearing the wait; detached owners keep waiting.
-        @_spi(Pocky) public func performVisibleUpdate() {
+        func performVisibleUpdate() {
             guard mountLink != nil, let owner, owner.window != nil else {
                 return
             }
