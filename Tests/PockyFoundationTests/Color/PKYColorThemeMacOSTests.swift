@@ -11,7 +11,7 @@
             onAccent: .white
         )
 
-        @Test("S1-03/T01 System color roles map to their native AppKit semantics")
+        @Test("System color roles map to their native AppKit semantics")
         func systemRolesMapToAppKit() {
             let theme = PKYColorTheme.system(accent: accent)
             let backgrounds: [(PKYColorTheme.Background.Level, NSColor)] = [
@@ -70,7 +70,7 @@
             #expect(theme.shadow.isEqual(NSColor.black))
         }
 
-        @Test("S1-03/T02 System themes retain each caller-supplied accent color")
+        @Test("System themes retain each caller-supplied accent color")
         func systemThemeKeepsSuppliedAccent() {
             let theme = PKYColorTheme.system(accent: accent)
             let primary = PKYColor.systemRed
@@ -80,7 +80,7 @@
             #expect(theme.onAccent.isEqual(NSColor.white))
         }
 
-        @Test("S1-03/T03 Content levels remain distinct and backgrounds follow native appearance")
+        @Test("Content levels remain distinct and backgrounds follow native appearance")
         func contentAndBackgroundResolveAppearanceRelationships() throws {
             let theme = PKYColorTheme.system(accent: accent)
             for name in [NSAppearance.Name.aqua, .darkAqua] {
@@ -102,7 +102,7 @@
                 .isEqual(resolved(theme.background.standard(.primary), in: dark)))
         }
 
-        @Test("S1-04/T01 Inverse and on-inverse reverse luminance between aqua and darkAqua")
+        @Test("Inverse and on-inverse reverse luminance between aqua and darkAqua")
         func inversePairReversesWithAppearance() throws {
             let light = try #require(NSAppearance(named: .aqua))
             let dark = try #require(NSAppearance(named: .darkAqua))

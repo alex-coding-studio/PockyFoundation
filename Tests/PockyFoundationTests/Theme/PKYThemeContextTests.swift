@@ -17,7 +17,7 @@
             )
         }
 
-        @Test("S3-01/T01 Context activation atomically replaces the complete theme")
+        @Test("Context activation atomically replaces the complete theme")
         func activationReplacesCurrentTheme() {
             let initial = Self.makeTheme(contentPrimary: .red)
             let replacement = Self.makeTheme(
@@ -34,7 +34,7 @@
             #expect(context.theme.typography.scaling == .dynamic(maximum: .xxxLarge))
         }
 
-        @Test("S3-01/T02 Theme activation sends a scoped type-safe main-actor notification")
+        @Test("Theme activation sends a scoped type-safe main-actor notification")
         func activationPostsScopedMainActorMessage() async {
             let context = PKYThemeContext(theme: Self.makeTheme(contentPrimary: .red))
             let replacement = Self.makeTheme(contentPrimary: .blue)
@@ -53,7 +53,7 @@
             }
         }
 
-        @Test("S3-01/T03 Theme activation invalidates Swift Observation dependencies")
+        @Test("Theme activation invalidates Swift Observation dependencies")
         func activationInvalidatesObservation() async {
             let context = PKYThemeContext(theme: Self.makeTheme(contentPrimary: .red))
             let replacement = Self.makeTheme(contentPrimary: .blue)
@@ -69,7 +69,7 @@
             }
         }
 
-        @Test("S3-01/T04 The SwiftUI root injects the same context instance")
+        @Test("The SwiftUI root injects the same context instance")
         func swiftUIRootModifierInjectsContext() async throws {
             let context = PKYThemeContext(theme: Self.makeTheme(contentPrimary: .label))
             let recorder = ThemeEnvironmentRecorder()
@@ -94,7 +94,7 @@
             #expect(recorder.dynamicTypeSize == .large)
         }
 
-        @Test("S3-01/T05 The SwiftUI root clamps Dynamic Type to the explicit maximum")
+        @Test("The SwiftUI root clamps Dynamic Type to the explicit maximum")
         func swiftUIRootClampsDynamicTypeToMaximum() async throws {
             let context = PKYThemeContext(
                 theme: Self.makeTheme(
@@ -125,9 +125,7 @@
             #expect(recorder.dynamicTypeSize == .xxxLarge)
         }
 
-        @Test(
-            "S3-01/T06 Activating a different scaling policy updates the SwiftUI root environment"
-        )
+        @Test("Activating a different scaling policy updates the SwiftUI root environment")
         func activationUpdatesSwiftUIDynamicTypePolicy() async throws {
             let context = PKYThemeContext(
                 theme: Self.makeTheme(contentPrimary: .label, scaling: .fixed)

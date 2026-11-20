@@ -3,7 +3,7 @@ import PockyFoundation
 import Testing
 
 struct PKYGridPlacementRoleTests {
-    @Test("Grid placement preserves its column and spacing policies")
+    @Test("Phone portrait grids use three tile, two folder, and one card column")
     func phonePortraitColumns() {
         for phone: CGFloat in [375, 393, 402, 440] {
             let device = PKYGridPlacementRole.Device(
@@ -18,7 +18,7 @@ struct PKYGridPlacementRoleTests {
         }
     }
 
-    @Test("Grid placement preserves its column and spacing policies")
+    @Test("Large-device portrait tiles use five columns and landscape adds more")
     func largePortraitColumnsFollowTheDevice() {
         for (portrait, landscape) in [(CGFloat(820), CGFloat(1180)), (1032, 1376)] {
             let upright = PKYGridPlacementRole.Device(

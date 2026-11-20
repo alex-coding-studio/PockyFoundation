@@ -93,7 +93,7 @@
             #expect(try swiftUI == rendered(Text("0123 Bold").font(expected)))
         }
 
-        @Test("S2-02/T01 System roles use their corresponding native Apple text styles")
+        @Test("System roles use their corresponding native Apple text styles")
         func systemRolesUseNativeTextStyles() {
             let theme = Self.theme()
             let native: [UIFont.TextStyle] = [
@@ -112,7 +112,7 @@
             }
         }
 
-        @Test("S2-02/T02 Custom roles select the supplied faces and preserve the size hierarchy")
+        @Test("Custom roles select the supplied faces and preserve the size hierarchy")
         func customRolesUseReferenceSizesAndStandardWeights() {
             let theme = Self.theme(Self.customFamily)
             func font(_ role: PKYTypographyRole) -> UIFont {
@@ -131,9 +131,7 @@
             #expect(font(.action).fontName == "HelveticaNeue-Medium")
         }
 
-        @Test(
-            "S2-02/T03 Weight and italic modifiers compose in either order without changing role size"
-        )
+        @Test("Weight and italic modifiers compose in either order without changing role size")
         func systemWeightAndItalicCompose() {
             let theme = Self.theme()
             let weightThenItalic = PKYTypographyRole.body.bold.italic.uiFont(
@@ -154,9 +152,7 @@
             #expect(weightThenItalic.fontDescriptor.symbolicTraits.contains(.traitItalic))
         }
 
-        @Test(
-            "S2-02/T04 A missing custom italic face falls back to the upright face at the same weight"
-        )
+        @Test("A missing custom italic face falls back to the upright face at the same weight")
         func missingCustomItalicFallsBackToUprightWeight() {
             let theme = Self.theme(.custom(regular: "HelveticaNeue", bold: "HelveticaNeue-Bold"))
 
@@ -166,7 +162,7 @@
             ).fontName == "HelveticaNeue-Bold")
         }
 
-        @Test("S2-02/T05 A supplied custom bold italic face is used")
+        @Test("A supplied custom bold italic face is used")
         func suppliedCustomBoldItalicIsUsed() {
             #expect(PKYTypographyRole.body.bold.italic.uiFont(
                 in: Self.theme(Self.customFamily),
@@ -174,7 +170,7 @@
             ).fontName == "HelveticaNeue-BoldItalic")
         }
 
-        @Test("S2-02/T06 A missing custom weight falls back to the nearest available upright face")
+        @Test("A missing custom weight falls back to the nearest available upright face")
         func missingCustomWeightUsesNearestAvailableUpright() {
             let theme = Self.theme(.custom(regular: "HelveticaNeue", bold: "HelveticaNeue-Bold"))
 
@@ -188,7 +184,7 @@
             ).fontName == "HelveticaNeue-Bold")
         }
 
-        @Test("S2-02/T07 Fixed typography ignores UIKit content-size changes")
+        @Test("Fixed typography ignores UIKit content-size changes")
         func fixedTypographyIgnoresContentSizeCategory() {
             let theme = Self.theme(Self.customFamily)
             let large = PKYTypographyRole.body.uiFont(in: theme, compatibleWith: Self.largeTraits)
@@ -202,9 +198,7 @@
             #expect(accessibility.pointSize == large.pointSize)
         }
 
-        @Test(
-            "S2-02/T08 Dynamic typography scales with Apple categories and clamps to its explicit maximum"
-        )
+        @Test("Dynamic typography scales with Apple categories and clamps to its explicit maximum")
         func dynamicTypographyClampsToMaximum() {
             let theme = Self.theme(Self.customFamily, scaling: .dynamic(maximum: .xxxLarge))
             let large = PKYTypographyRole.body.uiFont(in: theme, compatibleWith: Self.largeTraits)
@@ -225,7 +219,7 @@
             #expect(beyondMaximum.pointSize == maximum.pointSize)
         }
 
-        @Test("S2-02/T09 SwiftUI roles scale with Dynamic Type up to the theme maximum")
+        @Test("SwiftUI roles scale with Dynamic Type up to the theme maximum")
         func swiftUIRoleScalesWithDynamicTypeUpToMaximum() {
             let theme = Self.theme(Self.customFamily, scaling: .dynamic(maximum: .xxxLarge))
             let large = renderedSize(.body, theme: theme, dynamicTypeSize: .large)
@@ -237,7 +231,7 @@
             #expect(beyondMaximum == maximum)
         }
 
-        @Test("S2-02/T10 System rounded design preserves size and weight")
+        @Test("System rounded design preserves size and weight")
         func systemRoundedUsesRoundedDesign() {
             let theme = Self.theme()
             let plain = PKYTypographyRole.display.bold.uiFont(
@@ -259,7 +253,7 @@
         }
 
         @Test(
-            "S2-02/T11 Rounded and weight modifiers compose in either order and repeated application is unchanged"
+            "Rounded and weight modifiers compose in either order and repeated application is unchanged"
         )
         func roundedComposesWithWeightInAnyOrder() {
             let theme = Self.theme()
@@ -272,7 +266,7 @@
             #expect(PKYTypographyRole.title.rounded.rounded == .title.rounded)
         }
 
-        @Test("S2-02/T12 Rounded custom fonts retain their supplied face")
+        @Test("Rounded custom fonts retain their supplied face")
         func customRoundedKeepsCustomFace() {
             let theme = Self.theme(Self.customFamily)
 
@@ -286,7 +280,7 @@
             ).fontName == "HelveticaNeue-Bold")
         }
 
-        @Test("S2-02/T13 Reference sizes follow fixed or capped dynamic scaling")
+        @Test("Reference sizes follow fixed or capped dynamic scaling")
         func referenceSizeFollowsScalingPolicy() {
             let role = PKYTypographyRole.display.bold.withReferenceSize(40)
             let fixed = Self.theme()
@@ -303,7 +297,7 @@
             #expect(role.uiFont(in: dynamic, compatibleWith: beyondMaximum).pointSize == cappedSize)
         }
 
-        @Test("S2-02/T14 Role reference sizes survive composition and the latest size wins")
+        @Test("Role reference sizes survive composition and the latest size wins")
         func roleReferenceSizeSurvivesCompositionAndLatestWins() {
             let theme = Self.theme()
             let small = PKYTypographyRole.display.withReferenceSize(
@@ -327,7 +321,7 @@
         }
 
         @Test(
-            "S2-02/T15 Monospaced role resolves a monospaced descriptor, keeps role size, and overrides rounded"
+            "Monospaced role resolves a monospaced descriptor, keeps role size, and overrides rounded"
         )
         func monospacedRolePreservesSizeAndOverridesRounded() {
             let theme = PKYThemeFallback.system

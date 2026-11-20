@@ -16,7 +16,7 @@
             )
         }
 
-        @Test("S2-03/T01 Both families use native preferred text-style sizes and ignore scaling")
+        @Test("Both families use native preferred text-style sizes and ignore scaling")
         func nativeSizesAndScalingPolicy() {
             let native: [NSFont.TextStyle] = [
                 .largeTitle,
@@ -53,9 +53,7 @@
             }
         }
 
-        @Test(
-            "S2-03/T02 Weight, italic, and rounded modifiers preserve size and native descriptor traits"
-        )
+        @Test("Weight, italic, and rounded modifiers preserve size and native descriptor traits")
         func modifiersPreserveNativeTraits() throws {
             let theme = Self.theme()
             let regular = PKYTypographyRole.body.regular.nsFont(in: theme)
@@ -86,9 +84,7 @@
             )
         }
 
-        @Test(
-            "S2-03/T03 Monospaced digits add the number-spacing feature while preserving the font"
-        )
+        @Test("Monospaced digits add the number-spacing feature while preserving the font")
         func monospacedDigitsPreserveFaceAndAddFeature() throws {
             let original = NSFont.systemFont(
                 ofSize: NSFont.preferredFont(forTextStyle: .body, options: [:]).pointSize,
@@ -111,7 +107,7 @@
             #expect(font.pkyMonospacedDigits.fontDescriptor.isEqual(font.fontDescriptor))
         }
 
-        @Test("S2-03/T04 Reference sizes survive role composition and the latest size wins")
+        @Test("Reference sizes survive role composition and the latest size wins")
         func referenceSizesFollowCallerInput() {
             let theme = Self.theme(scaling: .dynamic(maximum: .accessibility5))
             let base = PKYTypographyRole.body.withReferenceSize(31)
@@ -128,9 +124,7 @@
             )
         }
 
-        @Test(
-            "S2-03/T05 Custom faces fall back through matching upright and nearest available weight"
-        )
+        @Test("Custom faces fall back through matching upright and nearest available weight")
         func customFacesRetainFallbackOrder() {
             let theme = Self.theme(.custom(regular: "HelveticaNeue", bold: "HelveticaNeue-Bold"))
             func name(_ role: PKYTypographyRole) -> String {
@@ -147,7 +141,7 @@
             #expect(italic.fontName == "HelveticaNeue-BoldItalic")
         }
 
-        @Test("S2-03/T06 Unloadable custom faces fall back to the equivalent system font")
+        @Test("Unloadable custom faces fall back to the equivalent system font")
         func unloadableCustomFaceUsesSystemFont() {
             let role = PKYTypographyRole.body.bold.italic
             let custom = role.nsFont(in: Self.theme(.custom(
@@ -160,9 +154,7 @@
             #expect(custom.fontDescriptor.symbolicTraits == system.fontDescriptor.symbolicTraits)
         }
 
-        @Test(
-            "S2-03/T07 Monospaced role resolves a fixed-pitch font, keeps role size, and overrides rounded"
-        )
+        @Test("Monospaced role resolves a fixed-pitch font, keeps role size, and overrides rounded")
         func monospacedRolePreservesSizeAndOverridesRounded() {
             let theme = PKYThemeFallback.system
             let plain = PKYTypographyRole.body.nsFont(in: theme)

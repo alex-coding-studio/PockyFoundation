@@ -5,7 +5,7 @@
 
     @MainActor
     struct PKYShapeUtilitiesTests {
-        @Test("SHAPE-01/T01 UIKit capsule corners track the view's shortest dimension")
+        @Test("UIKit capsule corners track the view's shortest dimension")
         func uiKitCapsuleTracksViewGeometry() {
             let view = UIView(frame: CGRect(x: 0, y: 0, width: 100, height: 40))
 
@@ -20,7 +20,7 @@
             #expect(view.effectiveRadius(corner: .topLeft) == view.bounds.height / 2)
         }
 
-        @Test("SHAPE-02/T01 UIKit concentric corners resolve from container radius and inset")
+        @Test("UIKit concentric corners resolve from container radius and inset")
         func uiKitConcentricTracksContainerGeometry() {
             let containerRadius = PKYShape.Radius.panel
             let inset: CGFloat = 8
@@ -44,9 +44,7 @@
             #expect(child.effectiveRadius(corner: .topLeft) == containerRadius - inset)
         }
 
-        @Test(
-            "SHAPE-04/T01 Semantic Radius roles act as concentric minimums without a rounded container"
-        )
+        @Test("Semantic Radius roles act as concentric minimums without a rounded container")
         func semanticRadiiPreventConcentricSquareCorners() {
             let roles = [
                 PKYShape.Radius.tile,
@@ -70,7 +68,7 @@
             }
         }
 
-        @Test("SHAPE-06/T01 UIKit fixed corners ignore container concentric geometry")
+        @Test("UIKit fixed corners ignore container concentric geometry")
         func uiKitFixedCornersIgnoreContainerGeometry() {
             let container = UIView(frame: CGRect(x: 0, y: 0, width: 200, height: 200))
             container.cornerConfiguration = .corners(radius: .fixed(PKYShape.Radius.panel * 2))

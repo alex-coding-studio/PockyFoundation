@@ -11,7 +11,7 @@ struct PKYElevationSwiftUITests {
         var below = 0
     }
 
-    @Test("ELEV-04/T01 SwiftUI elevation preserves layout size")
+    @Test("SwiftUI elevation preserves layout size")
     func swiftUIElevationPreservesLayoutSize() {
         let content = Color.red.frame(width: 100, height: 40)
 
@@ -27,7 +27,7 @@ struct PKYElevationSwiftUITests {
         #expect(elevated.cgImage?.height == baseline.cgImage?.height)
     }
 
-    @Test("ELEV-04/T02 SwiftUI elevation resolves appearance recipe from colorScheme")
+    @Test("SwiftUI elevation resolves appearance recipe from colorScheme")
     func swiftUIElevationResolvesAppearanceFromColorScheme() {
         let lightSubtleShadow = shadowAlpha(style: .subtle, colorScheme: .light).outside
         let darkSubtleShadow = shadowAlpha(style: .subtle, colorScheme: .dark).outside

@@ -9,9 +9,7 @@
             accent: .init(primary: .systemBlue, secondary: .systemTeal, onAccent: .white)
         )
 
-        @Test(
-            "S4-01/T01 Standard style applies detents, a grabber, and compact-height edge attachment"
-        )
+        @Test("Standard style applies detents, a grabber, and compact-height edge attachment")
         func appliesStandardPresentation() throws {
             let sheet = try makeSheet()
             sheet.pkyApplyStandardStyle(detents: [.medium(), .large()])
@@ -25,10 +23,7 @@
             #endif
         }
 
-        @Test(
-            "S4-01/T02 Full-width landscape keeps the caller's edge attachment",
-            arguments: [false, true]
-        )
+        @Test("Full-width landscape keeps the caller's edge attachment", arguments: [false, true])
         func fullWidthPreservesEdgeAttachment(_ attached: Bool) throws {
             let sheet = try makeSheet()
             sheet.prefersEdgeAttachedInCompactHeight = attached
@@ -36,7 +31,7 @@
             #expect(sheet.prefersEdgeAttachedInCompactHeight == attached)
         }
 
-        @Test("S4-01/T03 Paper background alone keeps sheet geometry and grabber")
+        @Test("Paper background alone keeps sheet geometry and grabber")
         func paperBackgroundPreservesPresentation() throws {
             let sheet = try makeSheet()
             sheet.detents = [.medium()]
@@ -50,9 +45,7 @@
 
         #if compiler(>=6.2.1)
             @available(iOS 26.1, *)
-            @Test(
-                "S4-01/T04 Paper background is reapplied when the presented controller's theme changes"
-            )
+            @Test("Paper background is reapplied when the presented controller's theme changes")
             func paperBackgroundFollowsPresentedTheme() throws {
                 let controller = UIViewController()
                 controller.modalPresentationStyle = .pageSheet

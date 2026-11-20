@@ -5,7 +5,7 @@
 
     @MainActor
     struct PKYElevationUtilitiesTests {
-        @Test("ELEV-01/T01 UIView applies recipe and preserves component geometry")
+        @Test("UIView applies recipe and preserves component geometry")
         func viewAppliesRecipeAndPreservesGeometry() {
             let view = UIView(frame: CGRect(x: 0, y: 0, width: 80, height: 24))
             let originalFrame = view.frame
@@ -24,9 +24,7 @@
             #expect(view.frame == originalFrame)
         }
 
-        @Test(
-            "ELEV-03/T01 UIView resolves dynamic shadow color and recipe using current traits"
-        )
+        @Test("UIView resolves dynamic shadow color and recipe using current traits")
         func viewResolvesDynamicColorUsingCurrentTraits() {
             let view = UIView()
             let window = hostingWindow(for: view, interfaceStyle: .dark)
@@ -98,9 +96,7 @@
             #expect(view.layer.shadowOpacity == 0)
         }
 
-        @Test(
-            "ELEV-03/T02 UIView preserves component geometry and clipping across apply and remove"
-        )
+        @Test("UIView preserves component geometry and clipping across apply and remove")
         func viewApplicationAndRemovalPreserveComponentGeometry() {
             let view = UIView()
             let path = CGPath(rect: CGRect(x: 1, y: 2, width: 30, height: 40), transform: nil)

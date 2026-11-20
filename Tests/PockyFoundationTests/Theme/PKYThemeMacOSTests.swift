@@ -4,9 +4,7 @@
     import Testing
 
     struct PKYThemeMacOSTests {
-        @Test(
-            "S3-04/T01 The default theme uses the system control accent and fixed native typography"
-        )
+        @Test("The default theme uses the system control accent and fixed native typography")
         func defaultThemeUsesSystemControlAccent() {
             let theme = PKYThemeFallback.system
             #expect(theme.color.accent(.primary).isEqual(NSColor.controlAccentColor))
@@ -14,7 +12,7 @@
             #expect(theme.typography.scaling == .fixed)
         }
 
-        @Test("S3-04/T02 Every native semantic getter maps to the same macOS default-theme role")
+        @Test("Every native semantic getter maps to the same macOS default-theme role")
         func semanticGettersUseDefaultThemeRoles() {
             let color = PKYThemeFallback.system.color
             for role in [

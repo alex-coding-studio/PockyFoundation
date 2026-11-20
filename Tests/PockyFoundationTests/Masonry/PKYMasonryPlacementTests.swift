@@ -3,7 +3,7 @@ import PockyFoundation
 import Testing
 
 struct PKYMasonryPlacementTests {
-    @Test("Masonry placement preserves shortest-column and adaptive-column behavior")
+    @Test("Each masonry item enters the currently shortest column")
     func eachItemGoesToTheShortestColumn() {
         let result = PKYMasonryPlacement.frames(
             aspectRatios: [0.75, 1.5, 1.5, 1],
@@ -19,7 +19,7 @@ struct PKYMasonryPlacementTests {
         #expect(result.height == 239)
     }
 
-    @Test("Masonry placement preserves shortest-column and adaptive-column behavior")
+    @Test("Masonry column count fits the minimum column width within its range")
     func columnsFollowTheMinimumColumnWidth() {
         #expect(PKYMasonryPlacement.columns(
             width: 734,
@@ -51,5 +51,25 @@ struct PKYMasonryPlacementTests {
             spacing: 8,
             range: 2 ... 4
         ) == 2)
+    }
+
+    @Test("Negative masonry spacing overlaps items and still fits columns")
+    func negativeSpacingKeepsExistingMasonryGeometry() {
+        let result = PKYMasonryPlacement.frames(
+            aspectRatios: [1, 1],
+            width: 206,
+            columns: 2,
+            spacing: -6
+        )
+        #expect(result.frames == [
+            CGRect(x: 0, y: 0, width: 106, height: 106),
+            CGRect(x: 100, y: 0, width: 106, height: 106),
+        ])
+        #expect(PKYMasonryPlacement.columns(
+            width: 280,
+            minimumColumnWidth: 100,
+            spacing: -10,
+            range: 1 ... 8
+        ) == 3)
     }
 }

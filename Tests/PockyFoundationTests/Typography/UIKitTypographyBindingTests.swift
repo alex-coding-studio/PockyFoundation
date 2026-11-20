@@ -79,9 +79,7 @@
             #expect(label.font == regularFont)
         }
 
-        @Test(
-            "S4-02/T01 SPI registrations reuse one binding per control and clear when the role is removed"
-        )
+        @Test("SPI registrations reuse one binding per control and clear when the role is removed")
         func registrationsAreReusedAndReleased() throws {
             let label = UILabel()
             label.pkyTypography = .body

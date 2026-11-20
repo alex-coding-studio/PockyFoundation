@@ -3,27 +3,7 @@ import PockyFoundation
 import Testing
 
 struct PKYGridLayoutTests {
-    @Test("Grid placement preserves its column and spacing policies")
-    func negativeSpacingKeepsExistingMasonryGeometry() {
-        let result = PKYMasonryPlacement.frames(
-            aspectRatios: [1, 1],
-            width: 206,
-            columns: 2,
-            spacing: -6
-        )
-        #expect(result.frames == [
-            CGRect(x: 0, y: 0, width: 106, height: 106),
-            CGRect(x: 100, y: 0, width: 106, height: 106),
-        ])
-        #expect(PKYMasonryPlacement.columns(
-            width: 280,
-            minimumColumnWidth: 100,
-            spacing: -10,
-            range: 1 ... 8
-        ) == 3)
-    }
-
-    @Test("Grid placement preserves its column and spacing policies")
+    @Test("Adaptive grids fit columns within the width remaining after padding")
     func adaptiveGridUsesThePaddedWidth() {
         let output = PKYGridPlacementInput(
             width: 378,
@@ -36,7 +16,7 @@ struct PKYGridLayoutTests {
         #expect(output.width(spanning: 2) == 338)
     }
 
-    @Test("Grid placement preserves its column and spacing policies")
+    @Test("Fixed item widths distribute the remaining space as spacing")
     func fixedWidthDistributesTheRemainingSpace() {
         let output = PKYGridPlacementInput(
             width: 380,
@@ -54,7 +34,7 @@ struct PKYGridLayoutTests {
         #expect(single.spacing == 8)
     }
 
-    @Test("Grid placement preserves its column and spacing policies")
+    @Test("Fitting column counts change exactly at their width boundaries")
     func columnPoliciesKeepTheirBoundaryBehavior() {
         func columns(_ width: CGFloat) -> Int {
             PKYGridPlacementInput(
@@ -78,7 +58,7 @@ struct PKYGridLayoutTests {
         ).resolve().columns == 3)
     }
 
-    @Test("Grid placement preserves its column and spacing policies")
+    @Test("Rounded and over-padded grids keep usable nonnegative geometry")
     func narrowAndRoundedGridsHaveUsableGeometry() {
         let output = PKYGridPlacementInput(
             width: 350,
@@ -98,7 +78,7 @@ struct PKYGridLayoutTests {
         #expect(empty.itemWidth.isFinite && empty.itemWidth >= 0)
     }
 
-    @Test("Grid placement preserves its column and spacing policies")
+    @Test("Fitting columns match the floor formula across widths and targets")
     func migrationMatchesExistingGeometry() {
         for width in stride(from: CGFloat(280), through: 1400, by: 0.5) {
             for target in [CGFloat(104), 130, 137, 300, 340] {
