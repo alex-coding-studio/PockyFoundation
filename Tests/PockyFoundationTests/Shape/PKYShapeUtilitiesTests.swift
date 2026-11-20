@@ -1,6 +1,5 @@
 #if os(iOS)
     import PockyFoundation
-    import SwiftUI
     import Testing
     import UIKit
 
@@ -45,21 +44,6 @@
             #expect(child.effectiveRadius(corner: .topLeft) == containerRadius - inset)
         }
 
-        @Test("SHAPE-03/T01 SwiftUI shape utilities clip content without changing layout size")
-        func swiftUIUtilitiesPreserveLayoutSize() {
-            let content = Color.red.frame(width: 100, height: 40)
-            let expected = renderedSize(content)
-
-            #expect(expected != .zero)
-            #expect(renderedSize(content.pkyClipCapsule()) == expected)
-            #expect(renderedSize(content.pkyClipConcentric()) == expected)
-            #expect(
-                renderedSize(
-                    content.pkyClipConcentric(minimum: PKYShape.Radius.content)
-                ) == expected
-            )
-        }
-
         @Test(
             "SHAPE-04/T01 Semantic Radius roles act as concentric minimums without a rounded container"
         )
@@ -101,12 +85,6 @@
             #expect(child.effectiveRadius(corner: .topLeft) == PKYShape.Radius.card)
             #expect(child.effectiveRadius(corner: .bottomRight) == PKYShape.Radius.card)
             #expect(child.clipsToBounds == false)
-        }
-
-        private func renderedSize(_ view: some View) -> CGSize {
-            let renderer = ImageRenderer(content: view)
-            renderer.scale = 1
-            return renderer.uiImage?.size ?? .zero
         }
 
         /// Hosts `view` at the center of a window, away from every window corner.

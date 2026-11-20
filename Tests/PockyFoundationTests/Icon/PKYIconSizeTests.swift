@@ -1,11 +1,14 @@
-#if os(iOS)
-    import PockyFoundation
-    import SwiftUI
-    import Testing
-    import UIKit
+import PockyFoundation
+import SwiftUI
+import Testing
 
-    @MainActor
-    struct PKYIconSizeTests {
+#if os(iOS)
+    import UIKit
+#endif
+
+@MainActor
+struct PKYIconSizeTests {
+    #if os(iOS)
         @Test("ICON-01/T02 UIKit symbol configuration and image use the role point size and weight")
         func uiKitSymbolUsesPointSizeAndWeight() {
             let control = PKYIcon.Size.control
@@ -35,18 +38,18 @@
             #expect((smaller?.size.width ?? 0) < (image?.size.width ?? 0))
             #expect(item.image(systemName: "pocky.missing.symbol") == nil)
         }
+    #endif
 
-        @Test(
-            "ICON-01/T03 SwiftUI font resolves to a system font with the same point size and weight"
+    @Test(
+        "ICON-01/T03 SwiftUI font resolves to a system font with the same point size and weight"
+    )
+    func swiftUIFontUsesPointSizeAndWeight() {
+        let feature = PKYIcon.Size.feature
+        let badge = PKYIcon.Size.badge
+        #expect(
+            feature.font(weight: .semibold)
+                == Font.system(size: feature.pointSize, weight: .semibold)
         )
-        func swiftUIFontUsesPointSizeAndWeight() {
-            let feature = PKYIcon.Size.feature
-            let badge = PKYIcon.Size.badge
-            #expect(
-                feature.font(weight: .semibold)
-                    == Font.system(size: feature.pointSize, weight: .semibold)
-            )
-            #expect(badge.font() == Font.system(size: badge.pointSize, weight: .regular))
-        }
+        #expect(badge.font() == Font.system(size: badge.pointSize, weight: .regular))
     }
-#endif
+}

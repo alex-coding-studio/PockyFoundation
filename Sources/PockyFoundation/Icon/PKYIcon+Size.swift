@@ -1,7 +1,20 @@
-#if os(iOS)
-    import SwiftUI
-    import UIKit
+import SwiftUI
 
+#if os(iOS)
+    import UIKit
+#endif
+
+public extension PKYIcon.Size {
+    /// Creates a SwiftUI font at this role's point size for `Image(systemName:)`.
+    ///
+    /// - Parameter weight: Symbol weight, defaulting to `.regular`.
+    /// - Returns: A system font using this role's point size and the given weight.
+    func font(weight: Font.Weight = .regular) -> Font {
+        .system(size: pointSize, weight: weight)
+    }
+}
+
+#if os(iOS)
     public extension PKYIcon.Size {
         /// Creates a UIKit symbol configuration at this role's point size.
         ///
@@ -24,14 +37,6 @@
             weight: UIImage.SymbolWeight = .regular
         ) -> UIImage? {
             UIImage(systemName: systemName, withConfiguration: symbolConfiguration(weight: weight))
-        }
-
-        /// Creates a SwiftUI font at this role's point size for `Image(systemName:)`.
-        ///
-        /// - Parameter weight: Symbol weight, defaulting to `.regular`.
-        /// - Returns: A system font using this role's point size and the given weight.
-        func font(weight: Font.Weight = .regular) -> Font {
-            .system(size: pointSize, weight: weight)
         }
     }
 #endif

@@ -32,10 +32,10 @@ let placement = PKYMasonryPlacement.frames(
 | Domain | Public API |
 | --- | --- |
 | Layout | `PKYLayout.Space`, `Gap`, `Inset`, `Size`, `Split`, `Target`, `Variant`, `WidthClass`, `ContentWidth.maximum`; iOS content-width guides, `pin`/`lane`, full-width collection sections, and arranged stack initialization |
-| Shape | `PKYShape.Radius`, `RadiusRole`, `Stroke`, `StrokeRole`; iOS `UIView` and SwiftUI `View` corner/clipping adapters |
+| Shape | `PKYShape.Radius`, `RadiusRole`, `Stroke`, `StrokeRole`; SwiftUI `View` clipping adapters (concentric clipping needs macOS 26); iOS `UIView` corner adapters |
 | Motion | `PKYMotion.Duration`, `Spring` |
 | Opacity | `PKYOpacity.tint`, `focusScrim`, `dimmed`, `glassTint` |
-| Symbols | `PKYIcon.Size.pointSize`; iOS `symbolConfiguration`, `image`, and `font` adapters |
+| Symbols | `PKYIcon.Size.pointSize`; SwiftUI `font`; iOS `symbolConfiguration` and `image` adapters |
 | Geometry | `CGSize`, `CGPoint`, `CGRect`, `CGAffineTransform` arithmetic and `pky` helpers; `NSDirectionalEdgeInsets.pky` (iOS and macOS) and `UIEdgeInsets.pky` (iOS) |
 | Grid | `PKYGridPlacementInput`, `PKYGridPlacementOutput`, `PKYGridPlacementRole`, `PKYEdgeInsets` |
 | Masonry | `PKYMasonryPlacement.frames` and `.columns` |
