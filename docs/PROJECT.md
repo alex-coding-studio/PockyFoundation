@@ -14,6 +14,7 @@ Swift Testing is bundled with the toolchain; no test dependency installation is 
 | `./scripts/lint.sh` | Pinned SwiftFormat/SwiftLint, script syntax, public-content hygiene |
 | `./scripts/lint.sh --fix` | Format owned Swift sources, then run lint |
 | `./scripts/test.sh macos` | Executed host Swift Testing tests |
+| `xcrun swift run --package-path scripts/CheckReadmeValues CheckReadmeValues "$PWD/README.md"` | Checks the README platform-value table against the public API on macOS |
 | `./scripts/test.sh ios` | Executed package tests on an available iOS Simulator |
 | `./scripts/build.sh macos` | Release library build for macOS |
 | `./scripts/build.sh ios` | Release library builds for generic iOS Simulator, including app-extension-only API |
@@ -34,9 +35,9 @@ grid input safety, optional rounding/capping, and caller-owned appearance/coordi
 portable tooling and a clean, independently reviewed initial commit with MIT licensing.
 
 Existing pure arithmetic, width/split, grid and masonry scenarios were migrated. View-hosted
-UIKit/SwiftUI rendering scenarios remain outside this package. Exact role-value restatements
-are replaced with relationship checks; a macOS test instead reads README.md and compares its
-platform-value table with the code, so documented values cannot drift. New safety cases protect
+UIKit/SwiftUI rendering scenarios remain outside this package. Unit tests check relationships
+between visual roles. CI runs the README check as a separate documentation step. It reports
+missing rows and values that differ from the public API. New safety cases protect
 nonfinite input from invalid geometry or integer conversion traps, fractional height/cap behavior
 from layout drift, and coordinate/appearance handling from inverted or stale shadows. Compilers
 and constant-value tests cannot catch those transformations. Existing geometry examples supply
