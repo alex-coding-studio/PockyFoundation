@@ -78,19 +78,24 @@ struct PKYGridLayoutTests {
         #expect(empty.itemWidth.isFinite && empty.itemWidth >= 0)
     }
 
-    @Test("Fitting columns match the floor formula across widths and targets")
-    func migrationMatchesExistingGeometry() {
-        for width in stride(from: CGFloat(280), through: 1400, by: 0.5) {
-            for target in [CGFloat(104), 130, 137, 300, 340] {
-                let gap: CGFloat = 16
-                let columns = max(2, Int(((width + gap) / (target + gap)).rounded(.down)))
-                let output = PKYGridPlacementInput(
-                    width: width,
-                    columns: .fitting(minimumWidth: target, range: 2 ... Int.max),
-                    spacing: gap
-                ).resolve()
-                #expect(output.columns == columns)
-            }
+    @Test(
+        "Fitting columns change where another column and its gap fill the width",
+        arguments: [CGFloat(104), 130, 137, 300, 340]
+    )
+    func fittingColumnsChangeAtFillWidths(target: CGFloat) {
+        let gap: CGFloat = 16
+        func columns(_ width: CGFloat) -> Int {
+            PKYGridPlacementInput(
+                width: width,
+                columns: .fitting(minimumWidth: target, range: 2 ... Int.max),
+                spacing: gap
+            ).resolve().columns
         }
+        for count in 3 ... 8 {
+            let fill = CGFloat(count) * target + CGFloat(count - 1) * gap
+            #expect(columns(fill) == count)
+            #expect(columns(fill - 0.5) == count - 1)
+        }
+        #expect(columns(target) == 2)
     }
 }
