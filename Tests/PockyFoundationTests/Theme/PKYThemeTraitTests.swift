@@ -5,9 +5,7 @@
 
     @MainActor
     struct PKYThemeTraitTests {
-        @Test(
-            "S3-01/T09 Snapshot copies retain identity while activation replaces only the current snapshot"
-        )
+        @Test("Snapshot copies retain identity while activation replaces only the current snapshot")
         func activationPublishesImmutableSnapshot() {
             let initial = PKYThemeContextTests.makeTheme(contentPrimary: .red)
             let replacement = PKYThemeContextTests.makeTheme(contentPrimary: .blue)
@@ -22,9 +20,7 @@
             )
         }
 
-        @Test(
-            "S3-01/T10 Dynamic colors resolve from supplied traits without freezing derived colors"
-        )
+        @Test("Dynamic colors resolve from supplied traits without freezing derived colors")
         func dynamicColorUsesSuppliedTraits() {
             let first = PKYThemeTraitValue(
                 theme: PKYThemeContextTests.makeTheme(contentPrimary: .red)
@@ -85,9 +81,7 @@
             #endif
         }
 
-        @Test(
-            "S3-01/T11 Typography roles remain unresolved until the current theme supplies their policy"
-        )
+        @Test("Typography roles remain unresolved until the current theme supplies their policy")
         func typographyRoleRemainsUnresolved() {
             let role = PKYTypographyRole.heading.bold.rounded.monospacedDigits
             let fixed = PKYThemeFallback.system
@@ -104,7 +98,7 @@
 
         #if !DEBUG
             @Test(
-                "S3-01/T12 Release missing injection keeps the raw value nil and resolves the explicit emergency theme"
+                "Release missing injection keeps the raw value nil and resolves the explicit emergency theme"
             )
             func releaseMissingInjectionUsesEmergencyTheme() {
                 let traits = UITraitCollection()

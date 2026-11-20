@@ -5,9 +5,7 @@
 
     @MainActor
     struct PKYThemeBindingTests {
-        @Test(
-            "S3-02/T01 SPI bindings wait for a visible update and release registrations when stopped"
-        )
+        @Test("SPI bindings wait for a visible update and release registrations when stopped")
         func bindingWaitsAndReleasesItsRegistration() {
             let view = UIView()
             let binding = PKYThemeBinding(owner: view, resolvesTheme: true)

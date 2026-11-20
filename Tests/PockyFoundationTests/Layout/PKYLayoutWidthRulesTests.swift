@@ -4,7 +4,7 @@ import Testing
 
 struct PKYLayoutWidthRulesTests {
     @Test(
-        "Arrangement follows available content space",
+        "Width class turns wide at the minimum wide width",
         arguments: [
             (CGFloat(0), PKYLayout.WidthClass.narrow),
             (CGFloat(320), PKYLayout.WidthClass.narrow),
@@ -23,7 +23,7 @@ struct PKYLayoutWidthRulesTests {
     }
 
     @Test(
-        "Arrangement follows available content space",
+        "Split stacks content that fits and uses columns only in wide regions",
         arguments: [
             (CGFloat(600), CGSize(width: 390, height: 700), PKYLayout.Split.stacked),
             (CGFloat(600), CGSize(width: 1180, height: 700), PKYLayout.Split.stacked),

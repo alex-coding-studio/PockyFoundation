@@ -20,7 +20,7 @@
             )
         }
 
-        @Test("S3-01/T13 Context appearance defaults are configurable when no selection is stored")
+        @Test("Context appearance defaults are configurable when no selection is stored")
         func missingValueUsesDefaultMode() throws {
             let store = try Self.isolatedStore()
 
@@ -31,7 +31,7 @@
             )
         }
 
-        @Test("S3-01/T14 Context restores a saved appearance from the injected store and key")
+        @Test("Context restores a saved appearance from the injected store and key")
         func contextRestoresStoredModeFromCustomKey() throws {
             let store = try Self.isolatedStore()
             store.set("light", forKey: "pref.appearance")
@@ -43,7 +43,7 @@
             #expect(context.appearance == .light)
         }
 
-        @Test("S3-01/T15 Unrecognized stored appearance falls back to the configured default")
+        @Test("Unrecognized stored appearance falls back to the configured default")
         func unrecognizedStoredValueFallsBackToDefault() throws {
             let store = try Self.isolatedStore()
             store.set("sepia", forKey: "Pocky.appearance")
@@ -55,9 +55,7 @@
             #expect(context.appearance == .light)
         }
 
-        @Test(
-            "S3-01/T16 Appearance activation persists the selected mode itself for the next context"
-        )
+        @Test("Appearance activation persists the selected mode itself for the next context")
         func activationPersistsSelection() throws {
             let store = try Self.isolatedStore()
             let appearance = PKYAppearance(store: store, key: "pref.appearance", defaultMode: .dark)
@@ -70,7 +68,7 @@
             #expect(Self.makeContext(appearance: appearance).appearance == .system)
         }
 
-        @Test("S3-01/T17 Appearance activation posts only the appearance notification")
+        @Test("Appearance activation posts only the appearance notification")
         func appearanceActivationPostsOnlyAppearanceMessage() async throws {
             let context = try Self.makeContext(
                 appearance: PKYAppearance(store: Self.isolatedStore())
@@ -98,7 +96,7 @@
             }
         }
 
-        @Test("S3-01/T18 Theme activation posts only the theme notification")
+        @Test("Theme activation posts only the theme notification")
         func themeActivationPostsOnlyThemeMessage() async throws {
             let context = try Self.makeContext(
                 appearance: PKYAppearance(store: Self.isolatedStore())
@@ -125,7 +123,7 @@
             }
         }
 
-        @Test("S3-01/T19 Appearance activation invalidates Swift Observation dependencies")
+        @Test("Appearance activation invalidates Swift Observation dependencies")
         func appearanceActivationInvalidatesObservation() async throws {
             let context = try Self.makeContext(
                 appearance: PKYAppearance(store: Self.isolatedStore())
@@ -142,7 +140,7 @@
             }
         }
 
-        @Test("S3-01/T20 Scene setup installs the current theme and appearance overrides")
+        @Test("Scene setup installs the current theme and appearance overrides")
         func sceneSetupInstallsThemeAndAppearance() throws {
             let store = try Self.isolatedStore()
             store.set("dark", forKey: "Pocky.appearance")

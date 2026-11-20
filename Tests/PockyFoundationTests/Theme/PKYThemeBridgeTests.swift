@@ -6,7 +6,7 @@
 
     @MainActor
     struct PKYThemeBridgeTests {
-        @Test("S3-01/T07 UIKit theme overrides reach SwiftUI without creating a context")
+        @Test("UIKit theme overrides reach SwiftUI without creating a context")
         func uiKitOverrideReachesEnvironment() async throws {
             let recorder = Recorder()
             let initial = PKYThemeTraitValue(theme: PKYThemeFallback.system)
@@ -28,7 +28,7 @@
             #expect(recorder.snapshot == replacement)
         }
 
-        @Test("S3-01/T08 Context snapshots bridge to UIKit without replacing the native view")
+        @Test("Context snapshots bridge to UIKit without replacing the native view")
         func contextInjectionBridgesToUIView() async throws {
             let recorder = Recorder()
             let context = PKYThemeContext(theme: PKYThemeFallback.system)

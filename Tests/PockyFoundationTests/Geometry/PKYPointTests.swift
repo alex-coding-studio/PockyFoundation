@@ -3,7 +3,7 @@ import PockyFoundation
 import Testing
 
 struct PKYPointTests {
-    @Test("Core Graphics arithmetic preserves native semantics")
+    @Test("Point addition and subtraction work per coordinate")
     func pointArithmeticPreservesCoordinates() {
         let point = CGPoint(x: 11, y: -7)
         let offset = CGPoint(x: -3, y: 2)
@@ -12,7 +12,7 @@ struct PKYPointTests {
         #expect(point + .zero == point)
     }
 
-    @Test("Core Graphics arithmetic preserves native semantics")
+    @Test("Point scaling keeps fractional and negative coordinates")
     func scalarArithmeticPreservesFractions() {
         let point = CGPoint(x: 11, y: -7)
         #expect(point * CGFloat(-0.5) == CGPoint(x: -5.5, y: 3.5))
@@ -21,7 +21,7 @@ struct PKYPointTests {
         #expect(point * CGFloat(0) == .zero)
     }
 
-    @Test("Core Graphics arithmetic preserves native semantics")
+    @Test("Point division by zero keeps floating-point infinity and NaN")
     func divisionByZeroPreservesFloatingPointBehavior() {
         let result = CGPoint(x: 3, y: 0) / CGFloat(0)
         #expect(result.x.isInfinite)

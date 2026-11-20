@@ -62,6 +62,9 @@ jobs:
       - name: Test macOS
         run: ./scripts/test.sh macos
 
+      - name: Check README platform values
+        run: xcrun swift run --package-path scripts/CheckReadmeValues CheckReadmeValues "$PWD/README.md"
+
       - name: Build macOS
         run: ./scripts/build.sh macos
 

@@ -5,7 +5,7 @@ import Testing
 
 @MainActor
 struct PKYShapeSwiftUITests {
-    @Test("SHAPE-03/T01 SwiftUI shape utilities clip content without changing layout size")
+    @Test("SwiftUI shape utilities clip content without changing layout size")
     func swiftUIUtilitiesPreserveLayoutSize() {
         let content = Color.red.frame(width: 100, height: 40)
         let expected = renderedSize(content)

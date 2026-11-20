@@ -9,7 +9,7 @@ import Testing
 @MainActor
 struct PKYIconSizeTests {
     #if os(iOS)
-        @Test("ICON-01/T02 UIKit symbol configuration and image use the role point size and weight")
+        @Test("UIKit symbol configuration and image use the role point size and weight")
         func uiKitSymbolUsesPointSizeAndWeight() {
             let control = PKYIcon.Size.control
             let accessory = PKYIcon.Size.accessory
@@ -40,9 +40,7 @@ struct PKYIconSizeTests {
         }
     #endif
 
-    @Test(
-        "ICON-01/T03 SwiftUI font resolves to a system font with the same point size and weight"
-    )
+    @Test("SwiftUI font resolves to a system font with the same point size and weight")
     func swiftUIFontUsesPointSizeAndWeight() {
         let feature = PKYIcon.Size.feature
         let badge = PKYIcon.Size.badge

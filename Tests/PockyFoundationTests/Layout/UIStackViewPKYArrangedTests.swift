@@ -5,7 +5,7 @@
 
     @MainActor
     struct UIStackViewPKYArrangedTests {
-        @Test("STACK-01/T01 Initialization applies subviews and arrangement settings")
+        @Test("Initialization applies subviews and arrangement settings")
         func arrangedInitAppliesConfiguration() {
             let first = UIView()
             let second = UIView()
@@ -24,7 +24,7 @@
             #expect(stack.distribution == .equalSpacing)
         }
 
-        @Test("STACK-01/T02 Omitted settings retain UIKit defaults and autoresizing behavior")
+        @Test("Omitted settings retain UIKit defaults and autoresizing behavior")
         func omittedParametersKeepUIKitDefaults() {
             let stack = UIStackView(pkyArranged: [UIView()])
             let native = UIStackView(arrangedSubviews: [UIView()])

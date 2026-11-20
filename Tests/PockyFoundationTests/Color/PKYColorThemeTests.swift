@@ -91,7 +91,7 @@
             return 0.2126 * linear[0] + 0.7152 * linear[1] + 0.0722 * linear[2]
         }
 
-        @Test("S1-01/T02 Explicit color families resolve their independently supplied roles")
+        @Test("Explicit color families resolve their independently supplied roles")
         func explicitRolesResolveIndependentColors() {
             let theme = Self.makeColorTheme()
 
@@ -121,7 +121,7 @@
             #expect(theme.separator(.opaque).isEqual(UIColor.white))
         }
 
-        @Test("S1-02/T01 System themes preserve UIKit dynamic semantic colors")
+        @Test("System themes preserve UIKit dynamic semantic colors")
         func systemThemeMapsUIKitSemanticColors() {
             let theme = PKYColorTheme.system(accent: Self.accent)
 
@@ -158,9 +158,7 @@
             #expect(theme.separator(.opaque).isEqual(UIColor.opaqueSeparator))
         }
 
-        @Test(
-            "S1-01/T03 Themes retain independent primary, secondary, and on-accent identity colors"
-        )
+        @Test("Themes retain independent primary, secondary, and on-accent identity colors")
         func accentResolvesIndependentIdentityColors() {
             let accent = PKYColorTheme.Accent(
                 primary: .systemRed,
@@ -174,7 +172,7 @@
             #expect(theme.onAccent.isEqual(UIColor.systemYellow))
         }
 
-        @Test("S1-02/T02 System themes use all three app-supplied identity colors")
+        @Test("System themes use all three app-supplied identity colors")
         func systemThemeUsesSuppliedIdentityColors() {
             let theme = PKYColorTheme.system(accent: Self.accent)
 
@@ -183,7 +181,7 @@
             #expect(theme.onAccent.isEqual(UIColor.white))
         }
 
-        @Test("S1-02/T03 Secondary prominent fill uses systemGray3 from the opposite appearance")
+        @Test("Secondary prominent fill uses systemGray3 from the opposite appearance")
         func systemProminentSecondaryUsesOppositeStyleGray() {
             let secondary = PKYColorTheme.system(accent: Self.accent).filled.prominent(.secondary)
 
@@ -196,7 +194,7 @@
             }
         }
 
-        @Test("S1-02/T04 System prominent pairs are opaque with at least 4.5:1 contrast")
+        @Test("System prominent pairs are opaque with at least 4.5:1 contrast")
         func systemProminentPairsAreOpaqueAndLegible() {
             let filled = PKYColorTheme.system(accent: Self.accent).filled
 
@@ -211,9 +209,7 @@
             }
         }
 
-        @Test(
-            "S1-02/T05 Default inverse pairs are opaque with at least 7:1 contrast in both appearances"
-        )
+        @Test("Default inverse pairs are opaque with at least 7:1 contrast in both appearances")
         func defaultInversePairIsOpaqueWithStrongContrast() {
             let theme = PKYColorTheme.system(accent: Self.accent)
             for traits in Self.appearanceEnvironments {
@@ -225,7 +221,7 @@
             }
         }
 
-        @Test("S1-01/T04 Status, media, and shadows resolve their independently supplied colors")
+        @Test("Status, media, and shadows resolve their independently supplied colors")
         func statusMediaAndShadowResolveIndependentColors() {
             let theme = Self.makeColorTheme()
 
@@ -246,7 +242,7 @@
         }
 
         @Test(
-            "S1-02/T06 System status, media, and shadows map to Apple colors and the shared focus scrim role"
+            "System status, media, and shadows map to Apple colors and the shared focus scrim role"
         )
         func systemThemeMapsStatusMediaAndShadow() {
             let theme = PKYColorTheme.system(accent: Self.accent)
