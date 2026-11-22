@@ -4,14 +4,6 @@ import SwiftUI
     import UIKit
 
     public extension View {
-        /// Applies a typography role resolved from the injected theme and the SwiftUI environment.
-        ///
-        /// The font matches UIKit resolution for the same theme, Dynamic Type size, and Bold Text setting,
-        /// including reference sizes and monospaced digits. Missing theme injection follows the established
-        /// diagnostic or emergency policy.
-        ///
-        /// - Parameter role: The semantic role and its modifiers.
-        /// - Returns: A view whose text uses the resolved font.
         func pkyFont(_ role: PKYTypographyRole) -> some View {
             modifier(PKYTypographyModifier(role: role))
         }
@@ -36,12 +28,6 @@ import SwiftUI
 
 #elseif os(macOS)
     public extension View {
-        /// Applies a typography role resolved from the macOS default theme.
-        ///
-        /// macOS has no theme injection; use `Font(role.nsFont(in:))` to resolve against another theme.
-        ///
-        /// - Parameter role: The semantic role and its modifiers.
-        /// - Returns: A view whose text uses the resolved font.
         func pkyFont(_ role: PKYTypographyRole) -> some View {
             font(Font(role.nsFont(in: PKYThemeFallback.system)))
         }

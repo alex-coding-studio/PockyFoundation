@@ -2,12 +2,6 @@
     import SwiftUI
 
     public extension View {
-        /// Injects an app-root theme context into a SwiftUI subtree and applies its typography scaling policy.
-        ///
-        /// Descendants read it through `@Environment(PKYThemeContext.self)`; there is no implicit default context.
-        ///
-        /// - Parameter context: The same context instance shared with UIKit consumers.
-        /// - Returns: A view using this context and its Dynamic Type range.
         @MainActor
         func pkyTheme(_ context: PKYThemeContext) -> some View {
             PKYThemeRoot(context: context, content: self)

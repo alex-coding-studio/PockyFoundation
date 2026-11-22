@@ -6,11 +6,6 @@ import CoreGraphics
     import AppKit
 #endif
 
-/// A text role and its modifiers, independent of font family or scaling.
-///
-/// Roles are the only typography descriptor. Compose weight, italic, design, digit, and
-/// reference-size modifiers here; a ``PKYTypographyTheme`` supplies the family and scaling policy
-/// when UIKit, AppKit, or SwiftUI resolves the role.
 public struct PKYTypographyRole: Hashable, Sendable {
     enum Kind: Hashable, Sendable {
         case display
@@ -70,21 +65,13 @@ public struct PKYTypographyRole: Hashable, Sendable {
         #endif
     }
 
-    /// A visual focus or display value.
     public static let display = Self(kind: .display)
-    /// A persistent page title that does not collapse.
     public static let pageTitle = Self(kind: .pageTitle)
-    /// A primary object title or prominent section title.
     public static let title = Self(kind: .title)
-    /// A card, section, or content-group heading.
     public static let heading = Self(kind: .heading)
-    /// Body text or primary list content.
     public static let body = Self(kind: .body)
-    /// Subtitles, explanations, and supplementary content.
     public static let supporting = Self(kind: .supporting)
-    /// Compact metadata such as a time, count, or source.
     public static let caption = Self(kind: .caption)
-    /// Text in buttons and other actionable controls.
     public static let action = Self(kind: .action)
 
     let kind: Kind
@@ -95,50 +82,40 @@ public struct PKYTypographyRole: Hashable, Sendable {
     private(set) var usesMonospacedDigits = false
     private(set) var referenceSize: CGFloat?
 
-    /// Uses regular weight while preserving other modifiers.
     public var regular: Self {
         withWeight(.regular)
     }
 
-    /// Uses medium weight while preserving other modifiers.
     public var medium: Self {
         withWeight(.medium)
     }
 
-    /// Uses semibold weight while preserving other modifiers.
     public var semibold: Self {
         withWeight(.semibold)
     }
 
-    /// Uses bold weight while preserving other modifiers.
     public var bold: Self {
         withWeight(.bold)
     }
 
-    /// Selects the theme's italic face while preserving the semantic size; custom families fall back
-    /// to upright faces when needed.
     public var italic: Self {
         var copy = self
         copy.isItalic = true
         return copy
     }
 
-    /// Uses the system rounded design while preserving the semantic size; custom families keep their face.
     public var rounded: Self {
         var copy = self
         copy.isRounded = true
         return copy
     }
 
-    /// Uses the system monospaced design while preserving the semantic size; overrides rounded if both
-    /// are set, and custom families keep their face.
     public var monospaced: Self {
         var copy = self
         copy.isMonospaced = true
         return copy
     }
 
-    /// Applies the monospaced-digit feature to the resolved font, for changing counts or readings.
     public var monospacedDigits: Self {
         var copy = self
         copy.usesMonospacedDigits = true
@@ -149,12 +126,6 @@ public struct PKYTypographyRole: Hashable, Sendable {
         self.kind = kind
     }
 
-    /// Uses a component's reference size while preserving the theme's family and scaling policy.
-    ///
-    /// Fixed scaling uses the size directly; dynamic scaling uses it as the Dynamic Type baseline.
-    ///
-    /// - Parameter size: The component-owned point size.
-    /// - Returns: A role resolved at the reference size.
     public func withReferenceSize(_ size: CGFloat) -> Self {
         var copy = self
         copy.referenceSize = size

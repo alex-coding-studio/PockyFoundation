@@ -5,27 +5,10 @@ import Foundation
 #endif
 
 public extension PKYLayout {
-    /// A maximum width and centering tools for content that should not stretch indefinitely.
-    ///
-    /// The host guide fills its layout margins up to ``maximum``. Lanes use relative insets.
-    /// Callers choose the content or components to constrain; backgrounds and full-width media
-    /// retain their own layout.
     enum ContentWidth {
-        /// The maximum width, in points, of the host’s `pkyContentWidthGuide`.
         public static let maximum: CGFloat = 560
 
         #if os(iOS)
-            /// Centers a view horizontally in a content lane and prefers filling that lane.
-            ///
-            /// The lane adds insets to the supplied boundaries and subtracts the excess on either side of
-            /// the host's content-width guide. Callers supply vertical constraints.
-            ///
-            /// - Parameters:
-            ///   - view: The view to constrain horizontally.
-            ///   - host: The host containing the layout guides.
-            ///   - leading: The original leading boundary of the lane.
-            ///   - trailing: The original trailing boundary of the lane.
-            ///   - inset: The additional inset inside each original boundary.
             @MainActor
             public static func pin(
                 _ view: UIView,
@@ -44,19 +27,6 @@ public extension PKYLayout {
                 ])
             }
 
-            /// Creates a constrained content lane for views that share boundaries or align to either side.
-            ///
-            /// Each edge moves inward from its supplied boundary by the inset plus the gap between
-            /// the corresponding layout margin and content guide edge. With host-edge boundaries,
-            /// insets smaller than the layout margins can produce a lane wider than ``maximum``.
-            /// Each call creates a guide; retain and reuse the returned guide for a shared lane.
-            ///
-            /// - Parameters:
-            ///   - host: The host containing the guide.
-            ///   - leading: The original leading boundary of the lane.
-            ///   - trailing: The original trailing boundary of the lane.
-            ///   - inset: The additional inset on each side.
-            /// - Returns: A lane guide with horizontal constraints already installed.
             @MainActor
             public static func lane(
                 in host: UIView,
@@ -96,10 +66,6 @@ public extension PKYLayout {
     public extension UIView {
         private static let pkyContentWidthGuideID = "pky.contentWidth"
 
-        /// A guide centered inside the view's layout margins and bounded by the content-width maximum.
-        ///
-        /// Created on first access and reused thereafter. Its vertical extent matches the margins;
-        /// its horizontal extent shrinks with the available space.
         var pkyContentWidthGuide: UILayoutGuide {
             if let guide = layoutGuides.first(
                 where: { $0.identifier == Self.pkyContentWidthGuideID }

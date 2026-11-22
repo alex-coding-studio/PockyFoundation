@@ -6,17 +6,12 @@ import Foundation
     import AppKit
 #endif
 
-/// A system or custom font family shared by semantic typography roles.
-///
-/// Custom families provide at least a regular upright face. Missing faces fall back within the
-/// family before using an equivalent system font.
 public struct PKYFontFamily: Sendable {
     enum Storage: Sendable {
         case system
         case custom([PKYFontFaceKey: String])
     }
 
-    /// The system family supporting every declared weight and italic combination.
     public static let system = PKYFontFamily(storage: .system)
 
     let storage: Storage
@@ -25,22 +20,6 @@ public struct PKYFontFamily: Sendable {
         self.storage = storage
     }
 
-    /// Creates a custom family from PostScript names registered by the app.
-    ///
-    /// A missing italic face falls back to the upright face at the same weight, then the nearest
-    /// upright weight, then the system font. With Bold Text, the nearest loadable upright face
-    /// at or above the requested weight is preferred.
-    ///
-    /// - Parameters:
-    ///   - regular: The required regular upright face.
-    ///   - medium: An optional medium upright face.
-    ///   - semibold: An optional semibold upright face.
-    ///   - bold: An optional bold upright face.
-    ///   - italic: An optional regular italic face.
-    ///   - mediumItalic: An optional medium italic face.
-    ///   - semiboldItalic: An optional semibold italic face.
-    ///   - boldItalic: An optional bold italic face.
-    /// - Returns: A family whose faces are resolved by ``PKYTypographyTheme``.
     public static func custom(
         regular: String,
         medium: String? = nil,

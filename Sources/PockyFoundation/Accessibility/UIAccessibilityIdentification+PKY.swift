@@ -2,9 +2,6 @@
     import UIKit
 
     public extension UIAccessibilityIdentification {
-        /// Sets or clears an automation identifier and returns the same concrete object for chaining.
-        ///
-        /// Prefer `pkyA11y(_:)` with a ``PKYAccessibilityIdentifier`` to avoid string literals.
         @MainActor
         @discardableResult
         func pkyA11yID(_ identifier: String?) -> Self {

@@ -2,7 +2,6 @@
     import AppKit
 
     public extension NSFont {
-        /// Preserves family, size, and traits while making digits monospaced for changing counts or readings.
         var pkyMonospacedDigits: NSFont {
             let descriptor = fontDescriptor.addingAttributes([
                 .featureSettings: [[

@@ -1,22 +1,6 @@
 import CoreGraphics
 
-/// Places equal-width items in the shortest column; equal heights choose the leading column.
 public enum PKYMasonryPlacement {
-    /// Computes frames in a top-down coordinate space using width divided by height ratios.
-    ///
-    /// Nonpositive and nonfinite ratios use a square. Finite positive ratios are clamped
-    /// to `minimumAspectRatio`. Rounding affects height only; nil preserves fractional heights.
-    /// A height cap is applied after rounding so that rounded output never exceeds the cap.
-    /// Nonfinite width or spacing produces an empty placement. Negative spacing allows overlap.
-    /// - Parameters:
-    ///   - aspectRatios: Item width divided by item height, in display order.
-    ///   - width: Container width; negative values are treated as zero.
-    ///   - columns: Requested column count, clamped to at least one.
-    ///   - spacing: Gap between columns and items, including negative overlap.
-    ///   - rounding: Height rounding rule, or nil to retain fractional heights.
-    ///   - maximumHeightRatio: Optional positive finite height-to-width cap, such as 2.5.
-    ///   - minimumAspectRatio: Positive finite lower ratio limit; invalid limits use 0.01.
-    /// - Returns: Ordered frames and the content height, which is the lowest frame edge and never negative.
     public static func frames(
         aspectRatios: [CGFloat],
         width: CGFloat,
@@ -67,7 +51,6 @@ public enum PKYMasonryPlacement {
         return (frames, height)
     }
 
-    /// Fits columns to a minimum width within an inclusive range; nonpositive minima use its lower bound.
     public static func columns(
         width: CGFloat,
         minimumColumnWidth: CGFloat,

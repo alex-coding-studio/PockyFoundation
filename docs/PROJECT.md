@@ -47,7 +47,9 @@ snapshots, trait/environment bridging, appearance persistence, scene trait overr
 lifecycle, theme-change callbacks, and layer colors. Package tests have no connected scene, so
 scene overrides run against window and view trait overrides through the same internal helpers.
 The iOS test entry point also runs the theme trait suite in Release to exercise missing-injection
-fallback and its diagnostic.
+fallback and its diagnostic. UIViewPKYThemeChangeTests keeps explicit closure parameter types in
+pkyOnThemeChange calls to work around a Swift 6.2 compiler crash with untyped parameters or
+nested closures.
 
 CALayer adapter tests prove numeric conversion and preservation of caller-owned geometry; they do
 not prove screen rendering, and package tests do not prove application UI or minimum-OS runtime
@@ -56,8 +58,9 @@ different Xcode are not CI evidence. API types ending in Placement avoid collidi
 layout wrappers.
 
 The public-content gate rejects nonportable paths, personal email addresses, symbolic links,
-private context, and non-English source comments. Implementation comments are allowed when they
-explain why code is written a certain way. Lint has no inherited suppression baseline. The
+private context, and all Swift source comments under `Sources/`, `Tests/`, `Package.swift`, and
+`scripts/` except tool directives (`swift-tools-version:`, `swiftlint:`, `swiftformat:`,
+`sourcery:`). Lint has no inherited suppression baseline. The
 shadow-assignment rule is excluded only for the dedicated CALayer adapter and its property
 assertions, which must assign the native shadow properties.
 

@@ -8,15 +8,6 @@ import Foundation
 
 public extension PKYColorTheme {
     #if os(iOS)
-        /// Creates a complete color theme from native system semantics and app-provided brand colors.
-        ///
-        /// iOS keeps UIKit backgrounds, content, fills, and separators, including an opposite-appearance
-        /// secondary prominent fill. macOS uses AppKit roles and maps grouped backgrounds like standard
-        /// backgrounds. Status uses system red, orange, and green with white foregrounds. Media uses white
-        /// overlays and black shadows and scrims; the focus scrim uses ``PKYOpacity/focusScrim``.
-        ///
-        /// - Parameter accent: Three dynamic brand colors supplied by the app.
-        /// - Returns: A complete semantic color theme.
         static func system(accent: Accent) -> PKYColorTheme {
             PKYColorTheme(
                 background: .init(
@@ -73,15 +64,6 @@ public extension PKYColorTheme {
             )
         }
     #elseif os(macOS)
-        /// Creates a complete color theme from native system semantics and app-provided brand colors.
-        ///
-        /// iOS keeps UIKit backgrounds, content, fills, and separators, including an opposite-appearance
-        /// secondary prominent fill. macOS uses AppKit roles and maps grouped backgrounds like standard
-        /// backgrounds. Status uses system red, orange, and green with white foregrounds. Media uses white
-        /// overlays and black shadows and scrims; the focus scrim uses ``PKYOpacity/focusScrim``.
-        ///
-        /// - Parameter accent: Three dynamic brand colors supplied by the app.
-        /// - Returns: A complete semantic color theme.
         static func system(accent: Accent) -> PKYColorTheme {
             PKYColorTheme(
                 background: .init(

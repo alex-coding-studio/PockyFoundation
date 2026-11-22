@@ -66,16 +66,6 @@
     }
 
     public extension UIView {
-        /// Runs after mounting and again when the effective theme, content size, legibility weight,
-        /// color appearance, or extra `observing` traits change. Use for trait-cached content or layout.
-        ///
-        /// Each view keeps one callback. Replacing it reuses the registration when possible; cancel with
-        /// `pkyCancelThemeChange()`. The callback receives the view; do not capture it strongly. Detached
-        /// views wait, and a window without theme injection follows the existing diagnostic or emergency policy.
-        ///
-        /// - Parameters:
-        ///   - traits: Extra host traits affecting rendering, explicitly supplied because host types are unknown here.
-        ///   - update: Theme-related rendering or invalidation, such as `setNeedsLayout()`.
         func pkyOnThemeChange(
             observing traits: [UITrait] = [],
             _ update: @escaping @MainActor (Self) -> Void
@@ -90,35 +80,25 @@
             }
         }
 
-        /// Cancels the callback installed with `pkyOnThemeChange`, preserving the current rendering.
         func pkyCancelThemeChange() {
             pkyInstallThemeUpdate(on: self, key: &pkyThemeChangeKey, update: nil)
         }
 
-        /// A dynamic color driving `layer.borderColor`, resolved with the view's effective traits on mount and trait changes.
-        /// Set to nil to stop management while preserving the current CGColor.
         var pkyLayerBorderColor: UIColor? {
             get { pkyLayerColors?.border }
             set { pkyUpdateLayerColors { $0.border = newValue } }
         }
 
-        /// A dynamic color driving `layer.shadowColor`, resolved on mount and trait changes.
-        /// Set to nil to stop management while preserving the current CGColor.
         var pkyLayerShadowColor: UIColor? {
             get { pkyLayerColors?.shadow }
             set { pkyUpdateLayerColors { $0.shadow = newValue } }
         }
 
-        /// A dynamic color driving `layer.backgroundColor` when direct layer assignment is required;
-        /// prefer `backgroundColor` for ordinary backgrounds. Nil stops management and preserves the current CGColor.
         var pkyLayerBackgroundColor: UIColor? {
             get { pkyLayerColors?.background }
             set { pkyUpdateLayerColors { $0.background = newValue } }
         }
 
-        /// Extra host traits observed by layer-color bindings when colors depend on app-owned recipes.
-        /// Theme, content size, legibility weight, and color appearance are observed by default.
-        /// Set before or after colors.
         var pkyLayerColorTraits: [UITrait] {
             get { pkyLayerColors?.traits ?? [] }
             set { pkyUpdateLayerColors { $0.traits = newValue } }

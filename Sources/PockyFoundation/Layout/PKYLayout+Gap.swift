@@ -1,9 +1,7 @@
 import CoreGraphics
 
 public extension PKYLayout {
-    /// Distances between related content, groups, and page sections.
     enum Gap {
-        /// Returns spacing between closely related content.
         public static func content(_ variant: Variant = .standard) -> CGFloat {
             switch variant {
             case .compact: Space.s4
@@ -12,7 +10,6 @@ public extension PKYLayout {
             }
         }
 
-        /// Returns spacing between content groups.
         public static func group(_ variant: Variant = .standard) -> CGFloat {
             switch variant {
             case .compact: Space.s12
@@ -21,7 +18,6 @@ public extension PKYLayout {
             }
         }
 
-        /// Returns spacing between page sections.
         public static func section(_ variant: Variant = .standard) -> CGFloat {
             switch variant {
             case .compact: Space.s16
