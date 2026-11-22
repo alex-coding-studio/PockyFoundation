@@ -5,17 +5,6 @@
     @MainActor private var pkyElevationKey: UInt8 = 0
 
     public extension UIView {
-        /// Applies the shared elevation and keeps it current as the view's appearance changes.
-        ///
-        /// The recipe and color resolve against the view's current traits immediately, and again when
-        /// the view mounts or the theme or any trait affecting color appearance, such as dark mode or
-        /// increased contrast, changes. A later call replaces the style and color; theme injection is not
-        /// required. Preserves the view's clipping, corners, layout, and `shadowPath`. The shadow color is
-        /// managed here, so do not also set `pkyLayerShadowColor`.
-        ///
-        /// - Parameters:
-        ///   - style: The shadow role chosen for the surface relationship or media legibility.
-        ///   - color: The shadow color provided by the theme or component.
         func pkyApplyElevation(_ style: PKYElevation.Style, color: UIColor) {
             let observed = UITraitCollection.systemTraitsAffectingColorAppearance
             let current = objc_getAssociatedObject(self, &pkyElevationKey) as? PKYThemeBinding
@@ -38,8 +27,6 @@
             pkyResolveElevation(style, color: color, traits: traitCollection)
         }
 
-        /// Stops elevation updates and clears the managed shadow properties while preserving the
-        /// component's clipping, corners, layout, and `shadowPath`.
         func pkyRemoveElevation() {
             (objc_getAssociatedObject(self, &pkyElevationKey) as? PKYThemeBinding)?.stop()
             objc_setAssociatedObject(

@@ -20,14 +20,6 @@
     }
 
     public extension UISheetPresentationController {
-        /// Applies the supplied detents, a visible grabber, and the effective theme's grouped primary
-        /// background, which follows theme and appearance changes.
-        ///
-        /// - Parameters:
-        ///   - detents: The heights the sheet can rest at.
-        ///   - fillsWidthInLandscape: When `false`, the sheet attaches to the bottom edge in compact
-        ///     height. When `true`, `prefersEdgeAttachedInCompactHeight` is left unchanged, so the
-        ///     system's full-width presentation, or the caller's own setting, applies.
         func pkyApplyStandardStyle(
             detents: [Detent],
             fillsWidthInLandscape: Bool = false
@@ -36,13 +28,6 @@
             pkyUsePaperBackground()
         }
 
-        /// On iOS 26.1 and later, applies the grouped primary background from the presented controller's
-        /// effective theme without changing sheet geometry.
-        ///
-        /// The background updates with the effective theme and the system traits that affect color
-        /// appearance; repeated calls do not add observers. Until the controller has a theme, the dynamic
-        /// color is used; afterwards it resolves against that theme. Builds without the iOS 26.1 SDK
-        /// (Xcode 26.0) keep the system sheet background.
         func pkyUsePaperBackground() {
             #if compiler(>=6.2.1)
                 guard #available(iOS 26.1, *) else {

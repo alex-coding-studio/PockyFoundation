@@ -50,9 +50,9 @@ sheet styling, and the inset-grouped list section reuse those bindings.
 
 Sources/PockyFoundation is grouped by semantic domain, with matching test directories.
 README.md documents the role catalogue and platform values. docs/PROJECT.md owns verification.
-Public types use the PKY prefix. Public API has English DocC comments; implementation comments
-are rare, in English, and explain why rather than what. Native mappings live beside their roles
-under platform conditions.
+Public types use the PKY prefix. Source files allow only tool directives such as
+`swift-tools-version`; DocC and implementation comments are disallowed, and public API semantics
+live in README.md and tests. Native mappings live beside their roles under platform conditions.
 The formatter and linter configurations are ordinary committed files, never external links.
 
 ## Commands and evidence

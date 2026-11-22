@@ -1,27 +1,17 @@
 import CoreGraphics
 
-/// Content roles that select grid spacing and column policy.
 public enum PKYGridPlacementRole: Hashable, Sendable {
-    /// Thumbnail tiles, with extra spacing when accompanied by a caption.
     case tile(captioned: Bool)
-    /// Folder cards containing a prominent readout.
     case folder
-    /// Ordinary content cards that expand to a single column in narrow space.
     case card
 
-    /// Caller-provided window geometry; the library never queries devices or screens.
     public struct Device: Equatable, Sendable {
-        /// A fallback when no window geometry is available.
         public static let unknown = Device(portraitWidth: 0, availableWidth: 0, isLarge: false)
 
-        /// Reference width in portrait, or zero when unknown.
         public var portraitWidth: CGFloat
-        /// Currently available window width, or zero when unknown.
         public var availableWidth: CGFloat
-        /// Whether the caller requests the large-device reference column policy.
         public var isLarge: Bool
 
-        /// Records caller-provided window geometry without consulting platform state.
         public init(portraitWidth: CGFloat, availableWidth: CGFloat, isLarge: Bool) {
             self.portraitWidth = portraitWidth
             self.availableWidth = availableWidth
@@ -37,12 +27,10 @@ public enum PKYGridPlacementRole: Hashable, Sendable {
         static let cardMinimumWidth: CGFloat = 300
     }
 
-    /// Horizontal page margin for this grid role.
     public var margin: CGFloat {
         PKYLayout.Inset.page()
     }
 
-    /// Horizontal gap selected for the content role.
     public var columnSpacing: CGFloat {
         switch self {
         case .tile(captioned: false): PKYLayout.Gap.content()
@@ -51,7 +39,6 @@ public enum PKYGridPlacementRole: Hashable, Sendable {
         }
     }
 
-    /// Vertical gap selected for the content role.
     public var rowSpacing: CGFloat {
         switch self {
         case .tile(captioned: false): PKYLayout.Gap.content()
@@ -60,7 +47,6 @@ public enum PKYGridPlacementRole: Hashable, Sendable {
         }
     }
 
-    /// Resolves column geometry; content height, safe areas, and scrolling remain caller-owned.
     public func resolve(
         width: CGFloat,
         device: Device,
@@ -87,7 +73,6 @@ public enum PKYGridPlacementRole: Hashable, Sendable {
         ).resolve()
     }
 
-    /// Returns the column policy for the supplied content width and device geometry.
     public func columns(
         contentWidth: CGFloat,
         device: Device,

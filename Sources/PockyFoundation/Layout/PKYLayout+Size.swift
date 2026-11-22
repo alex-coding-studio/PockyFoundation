@@ -1,12 +1,9 @@
 import CoreGraphics
 
 public extension PKYLayout {
-    /// Minimum visual sizes for app-owned content; native controls keep their system sizing.
     enum Size {
-        /// Minimum visual height for a small auxiliary button.
         public static let auxiliaryButton: CGFloat = 32
 
-        /// Returns the minimum visual height of an app-owned button.
         public static func button(_ variant: Variant = .standard) -> CGFloat {
             switch variant {
             case .compact: 36
@@ -15,7 +12,6 @@ public extension PKYLayout {
             }
         }
 
-        /// Returns the diameter of a small status dot.
         public static func dot(_ variant: Variant = .standard) -> CGFloat {
             switch variant {
             case .compact: 6
@@ -24,7 +20,6 @@ public extension PKYLayout {
             }
         }
 
-        /// Returns the minimum height of an app-owned content row.
         public static func row(_ variant: Variant = .standard) -> CGFloat {
             switch variant {
             case .compact: 44

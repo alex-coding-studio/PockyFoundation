@@ -6,12 +6,8 @@
     import AppKit
 #endif
 
-/// A standard recipe used for the macOS default and iOS Release emergency rendering.
-///
-/// The iOS fallback does not mean injection succeeded or reflect a user-selected product theme.
 public enum PKYThemeFallback {
     #if os(iOS)
-        /// Uses native semantic colors, system blue accents, and fixed typography without app resources or preferences.
         public static let system = PKYTheme(
             color: .system(accent: .init(
                 primary: .systemBlue,
@@ -21,7 +17,6 @@ public enum PKYThemeFallback {
             typography: .system(scaling: .fixed)
         )
     #elseif os(macOS)
-        /// Uses native semantic colors, system control accents, and fixed typography without app resources or preferences.
         public static let system = PKYTheme(
             color: .system(accent: .init(
                 primary: .controlAccentColor,

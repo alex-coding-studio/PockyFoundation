@@ -3,9 +3,6 @@
 
     @MainActor
     public extension NSCollectionLayoutSection {
-        /// A vertical section with one full-width item per group, suitable for self-sizing cards or rows.
-        ///
-        /// - Parameter height: The item height; estimated heights let content determine the final size.
         static func pkyFullWidth(height: NSCollectionLayoutDimension) -> NSCollectionLayoutSection {
             let size = NSCollectionLayoutSize(
                 widthDimension: .fractionalWidth(1),
@@ -17,11 +14,6 @@
             ))
         }
 
-        /// An inset-grouped list section with a clear background and the standard separator color, so the
-        /// page supplies its own background.
-        ///
-        /// Use `UICollectionLayoutListConfiguration` directly for headers, hidden separators, or other
-        /// configuration.
         static func pkyInsetGroupedList(
             _ environment: any NSCollectionLayoutEnvironment
         ) -> NSCollectionLayoutSection {

@@ -85,11 +85,6 @@
             #expect(child.clipsToBounds == false)
         }
 
-        /// Hosts `view` at the center of a window, away from every window corner.
-        ///
-        /// Since iOS 27, `containerConcentric` also resolves against the display's rounded corners
-        /// when a view sits near a corner of its root hierarchy. Centering keeps the display corners
-        /// out of range, so the container under test is the only candidate ancestor geometry.
         private func hostingWindow(for view: UIView) -> UIWindow {
             let controller = UIViewController()
             controller.view.addSubview(view)

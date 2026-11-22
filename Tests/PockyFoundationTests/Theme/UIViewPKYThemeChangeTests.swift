@@ -38,7 +38,6 @@
             let themes = Self.makeThemes()
             let view = UIView()
             var stale = 0
-            // Swift 6.2 crashes on these calls with untyped parameters or inside other closures.
             view.pkyOnThemeChange { (_: UIView) in stale += 1 }
             let original = try #require(pkyThemeChangeRegistration(on: view))
             var seen = [PKYThemeTraitValue?]()

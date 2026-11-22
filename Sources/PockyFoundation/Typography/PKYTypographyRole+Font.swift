@@ -47,16 +47,6 @@ enum PKYFontWeight: Int, Hashable, Sendable {
 
 #if os(iOS)
     public extension PKYTypographyRole {
-        /// Resolves a UIKit font from the theme for a specific trait environment.
-        ///
-        /// System fonts use the role's native text-style size, or the reference size, under the theme's
-        /// fixed or capped dynamic scaling. Bold Text requests one heavier weight, up to bold. Custom
-        /// families fall back through their declared faces before using the equivalent system font.
-        ///
-        /// - Parameters:
-        ///   - theme: The theme supplying the font family and scaling policy.
-        ///   - traits: The target environment's traits, including content size and legibility weight.
-        /// - Returns: The resolved font.
         func uiFont(in theme: PKYTheme, compatibleWith traits: UITraitCollection) -> UIFont {
             let font = resolvedFont(in: theme, traits: traits)
             return usesMonospacedDigits ? font.pkyMonospacedDigits : font
@@ -160,13 +150,6 @@ enum PKYFontWeight: Int, Hashable, Sendable {
 
 #elseif os(macOS)
     public extension PKYTypographyRole {
-        /// Resolves an AppKit font from the theme; macOS ignores the scaling policy.
-        ///
-        /// Without a reference size, both families use the native preferred size of the role's text style.
-        /// Custom families fall back through their declared faces before using the equivalent system font.
-        ///
-        /// - Parameter theme: The theme supplying the font family.
-        /// - Returns: The resolved font.
         func nsFont(in theme: PKYTheme) -> NSFont {
             let font = resolvedFont(in: theme)
             return usesMonospacedDigits ? font.pkyMonospacedDigits : font

@@ -1,16 +1,12 @@
 import CoreGraphics
 
-/// Resolved column geometry independent of native collection layouts.
 public struct PKYGridPlacementOutput: Equatable, Sendable {
-    /// Directional padding; native layout adapters resolve its direction.
+    private static let exactFitRoundingTolerance: CGFloat = 1e-6
+
     public let padding: PKYEdgeInsets
-    /// Nonnegative width remaining after horizontal padding.
     public let contentWidth: CGFloat
-    /// Resolved column count, always at least one.
     public let columns: Int
-    /// Inter-column spacing; negative values intentionally allow overlap.
     public let spacing: CGFloat
-    /// Resolved nonnegative width of a single item.
     public let itemWidth: CGFloat
 
     init(_ input: PKYGridPlacementInput) {
@@ -31,10 +27,9 @@ public struct PKYGridPlacementOutput: Equatable, Sendable {
         let lower = max(1, range.lowerBound)
         let upper = max(lower, range.upperBound)
         if target.isFinite, target > 0, target + gap > 0 {
-            // The tolerance keeps widths that exactly fit a column count from rounding down.
             let fitting = ((contentWidth + gap) / (
                 target + gap
-            ) + 1e-6).rounded(.down)
+            ) + Self.exactFitRoundingTolerance).rounded(.down)
             if fitting >= CGFloat(upper) {
                 columns = upper
             } else if fitting > CGFloat(lower) {
@@ -60,7 +55,6 @@ public struct PKYGridPlacementOutput: Equatable, Sendable {
         itemWidth = width
     }
 
-    /// Returns the width of contiguous columns, including their intervening gaps.
     public func width(spanning count: Int) -> CGFloat {
         let count = max(1, count)
         return itemWidth * CGFloat(count) + spacing * CGFloat(count - 1)
